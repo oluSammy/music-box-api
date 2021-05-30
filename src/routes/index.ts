@@ -1,12 +1,19 @@
-import express from 'express';
-import usersRoute from './users'
+import express, { Request, Response } from "express";
+import usersRoute from "./users";
+import authRouter from "./googleAuth";
+import fbRouter from "./fbAuth";
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.send("music-box server is live")
-})
+router.get("/", (req: Request, res: Response) => {
+  res.send("music-box server is live");
+});
 
-router.use('/users', usersRoute)
+// google authentication route
+router.use("/auth", authRouter);
 
-export default router
+// facebook authentication route
+router.use("/fb", fbRouter);
+router.use("/users", usersRoute);
+
+export default router;

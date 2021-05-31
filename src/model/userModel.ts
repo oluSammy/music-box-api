@@ -13,9 +13,6 @@ const userSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    required(this: IUser) {
-      return this.provider === "local";
-    },
   },
   last_login: { type: Date, default: Date.now() },
 });

@@ -49,6 +49,8 @@ var passport_facebook_1 = require("passport-facebook");
 var passport_1 = __importDefault(require("passport"));
 var userModel_1 = require("../model/userModel");
 var auth_1 = require("../utils/auth");
+var response_1 = __importDefault(require("../utils/response"));
+var responseStatus = new response_1.default();
 var googleStrategy = function (passport) {
     passport.use(new passport_google_oauth20_1.Strategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
@@ -72,7 +74,7 @@ var facebookStrategy = function (passport) {
 };
 exports.facebookStrategy = facebookStrategy;
 var googleAuthController = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var email, firstName, lastName, user, newUser, token, token, e_1;
+    var email, firstName, lastName, user, newUser, token_1, data_1, token, data, e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -81,7 +83,7 @@ var googleAuthController = function (req, res) { return __awaiter(void 0, void 0
                 lastName = req.session.passport.user.name.familyName;
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 6, , 7]);
+                _a.trys.push([1, 5, , 6]);
                 return [4 /*yield*/, userModel_1.UserModel.findOne({ email: email })];
             case 2:
                 user = _a.sent();
@@ -94,30 +96,28 @@ var googleAuthController = function (req, res) { return __awaiter(void 0, void 0
                     })];
             case 3:
                 newUser = _a.sent();
-                token = auth_1.generateToken(newUser._id);
-                res.status(201).json({
-                    status: "success",
-                    token: token,
-                    data: newUser,
-                });
-                return [3 /*break*/, 5];
+                token_1 = auth_1.generateToken(newUser._id);
+                data_1 = {
+                    token: token_1,
+                    user: newUser,
+                };
+                responseStatus.setSuccess(201, "successful", data_1);
+                return [2 /*return*/, responseStatus.send(res)];
             case 4:
                 token = auth_1.generateToken(user._id);
-                res.status(200).json({
-                    status: "success",
+                data = {
                     token: token,
-                    data: user,
-                });
-                _a.label = 5;
-            case 5: return [3 /*break*/, 7];
-            case 6:
+                    user: user,
+                };
+                responseStatus.setSuccess(201, "successful", data);
+                return [2 /*return*/, responseStatus.send(res)];
+            case 5:
                 e_1 = _a.sent();
-                res.status(500).json({
-                    status: "fail",
-                    message: "an error occurred",
-                });
-                return [3 /*break*/, 7];
-            case 7: return [2 /*return*/];
+                return [2 /*return*/, res.status(500).json({
+                        status: "fail",
+                        message: "an error occurred",
+                    })];
+            case 6: return [2 /*return*/];
         }
     });
 }); };
@@ -130,7 +130,7 @@ passport_1.default.deserializeUser(function (profile, done) {
     return done(null, profile);
 });
 var fbAuthController = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var email, firstName, lastName, user, newUser, token, token, e_2;
+    var email, firstName, lastName, user, newUser, token_2, data_2, token, data, e_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -139,7 +139,7 @@ var fbAuthController = function (req, res) { return __awaiter(void 0, void 0, vo
                 lastName = req.session.passport.user.displayName.split(" ")[1];
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 6, , 7]);
+                _a.trys.push([1, 5, , 6]);
                 return [4 /*yield*/, userModel_1.UserModel.findOne({ email: email })];
             case 2:
                 user = _a.sent();
@@ -152,30 +152,28 @@ var fbAuthController = function (req, res) { return __awaiter(void 0, void 0, vo
                     })];
             case 3:
                 newUser = _a.sent();
-                token = auth_1.generateToken(newUser._id);
-                res.status(201).json({
-                    status: "success",
-                    token: token,
-                    data: newUser,
-                });
-                return [3 /*break*/, 5];
+                token_2 = auth_1.generateToken(newUser._id);
+                data_2 = {
+                    token: token_2,
+                    user: newUser,
+                };
+                responseStatus.setSuccess(201, "successful", data_2);
+                return [2 /*return*/, responseStatus.send(res)];
             case 4:
                 token = auth_1.generateToken(user._id);
-                res.status(200).json({
-                    status: "success",
+                data = {
                     token: token,
-                    data: user,
-                });
-                _a.label = 5;
-            case 5: return [3 /*break*/, 7];
-            case 6:
+                    user: user,
+                };
+                responseStatus.setSuccess(201, "successful", data);
+                return [2 /*return*/, responseStatus.send(res)];
+            case 5:
                 e_2 = _a.sent();
-                res.status(500).json({
-                    status: "fail",
-                    message: "an error occurred",
-                });
-                return [3 /*break*/, 7];
-            case 7: return [2 /*return*/];
+                return [2 /*return*/, res.status(500).json({
+                        status: "fail",
+                        message: "an error occurred",
+                    })];
+            case 6: return [2 /*return*/];
         }
     });
 }); };

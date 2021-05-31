@@ -33,9 +33,6 @@ var userSchema = new mongoose_1.Schema({
     },
     password: {
         type: String,
-        required: function () {
-            return this.provider === "local";
-        },
     },
     last_login: { type: Date, default: Date.now() },
 });

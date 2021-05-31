@@ -8,6 +8,9 @@ import passport, { PassportStatic } from "passport";
 import { UserModel } from "../model/userModel";
 import { Request, Response } from "express";
 import { generateToken } from "../utils/auth";
+import ResponseStatus from "../utils/response";
+
+const responseStatus = new ResponseStatus();
 
 export const googleStrategy = (passport: PassportStatic) => {
   passport.use(
@@ -60,22 +63,26 @@ export const googleAuthController = async (req: Request, res: Response) => {
       });
 
       const token = generateToken(newUser._id!);
+      const data = {
+        token,
+        user: newUser,
+      };
 
-      res.status(201).json({
-        status: "success",
-        token,
-        data: newUser,
-      });
-    } else {
-      const token = generateToken(user._id!);
-      res.status(200).json({
-        status: "success",
-        token,
-        data: user,
-      });
+      responseStatus.setSuccess(201, "successful", data);
+      return responseStatus.send(res);
     }
+
+    const token = generateToken(user._id!);
+
+    const data = {
+      token,
+      user,
+    };
+
+    responseStatus.setSuccess(201, "successful", data);
+    return responseStatus.send(res);
   } catch (e) {
-    res.status(500).json({
+    return res.status(500).json({
       status: "fail",
       message: "an error occurred",
     });
@@ -108,22 +115,25 @@ export const fbAuthController = async (req: Request, res: Response) => {
       });
 
       const token = generateToken(newUser._id!);
+      const data = {
+        token,
+        user: newUser,
+      };
 
-      res.status(201).json({
-        status: "success",
-        token,
-        data: newUser,
-      });
-    } else {
-      const token = generateToken(user._id!);
-      res.status(200).json({
-        status: "success",
-        token,
-        data: user,
-      });
+      responseStatus.setSuccess(201, "successful", data);
+      return responseStatus.send(res);
     }
+    const token = generateToken(user._id!);
+
+    const data = {
+      token,
+      user,
+    };
+
+    responseStatus.setSuccess(201, "successful", data);
+    return responseStatus.send(res);
   } catch (e) {
-    res.status(500).json({
+    return res.status(500).json({
       status: "fail",
       message: "an error occurred",
     });

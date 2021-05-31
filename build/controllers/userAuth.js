@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerUser = void 0;
+exports.loginUser = exports.registerUser = void 0;
 var joiValidate_1 = require("../middleware/joiValidate");
 var userModel_1 = require("../models/userModel");
 var auth_1 = require("../utils/auth");
@@ -66,7 +66,7 @@ var registerUser = function (req, res) {
                         return [2 /*return*/, responseStatus.send(res)];
                     }
                     return [4 /*yield*/, new userModel_1.UserModel({
-                            email: email,
+                            email: email.toLowerCase(),
                             password: password,
                             firstName: firstName,
                             lastName: lastName,
@@ -92,3 +92,47 @@ var registerUser = function (req, res) {
     });
 };
 exports.registerUser = registerUser;
+function loginUser(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var password, email, user, _a, data, error_2;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 4, , 5]);
+                    password = req.body.password;
+                    email = req.body.email.toLowerCase();
+                    return [4 /*yield*/, userModel_1.UserModel.findOne({ email: email })];
+                case 1:
+                    user = _b.sent();
+                    _a = user;
+                    if (!_a) return [3 /*break*/, 3];
+                    return [4 /*yield*/, user.isPasswordMatch(password)];
+                case 2:
+                    _a = (_b.sent());
+                    _b.label = 3;
+                case 3:
+                    if (_a) {
+                        data = {
+                            _id: user._id,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            password: password,
+                            gender: user.gender,
+                            dateOfBirth: user.dateOfBirth,
+                            token: auth_1.generateToken(user._id),
+                        };
+                        responseStatus.setSuccess(201, "success", data);
+                        return [2 /*return*/, responseStatus.send(res)];
+                    }
+                    responseStatus.setError(400, "Invalid Credentials");
+                    return [2 /*return*/, responseStatus.send(res)];
+                case 4:
+                    error_2 = _b.sent();
+                    responseStatus.setError(400, "Invalid Credentials");
+                    return [2 /*return*/, responseStatus.send(res)];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.loginUser = loginUser;

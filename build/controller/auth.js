@@ -35,43 +35,48 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var userModel_1 = require("../model/userModel");
-var response_1 = __importDefault(require("../utils/response"));
-var responseStatus = new response_1.default();
-function verifyToken(req, res, next) {
+exports.loginUser = void 0;
+function loginUser(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var token, decoded, user, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var _a, email, password, user, _b, error_1;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
-                    if (!(req.headers.authorization &&
-                        req.headers.authorization.startsWith("Bearer"))) return [3 /*break*/, 5];
-                    _a.label = 1;
+                    _c.trys.push([0, 4, , 5]);
+                    _a = req.body, email = _a.email, password = _a.password;
+                    return [4 /*yield*/, UserModelDB.findOne({ email: email })];
                 case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    token = req.headers.authorization.split(" ")[1];
-                    decoded = (jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY));
-                    return [4 /*yield*/, userModel_1.UserModel.findById(decoded.id)];
+                    user = _c.sent();
+                    _b = user;
+                    if (!_b) return [3 /*break*/, 3];
+                    return [4 /*yield*/, user.isPassowrdMatch(password)];
                 case 2:
-                    user = _a.sent();
-                    req.user = user;
-                    return [2 /*return*/, next()];
+                    _b = (_c.sent());
+                    _c.label = 3;
                 case 3:
-                    error_1 = _a.sent();
-                    responseStatus.setError(401, "Bearer token is missing");
-                    return [2 /*return*/, responseStatus.send(res)];
-                case 4: return [3 /*break*/, 6];
-                case 5:
-                    responseStatus.setError(404, "Not Authorised, invalid token");
-                    return [2 /*return*/, responseStatus.send(res)];
-                case 6: return [2 /*return*/];
+                    if (_b) {
+                        res.status(200).json({
+                            status: 'success',
+                            data: {
+                                _id: user._id,
+                                firstName: user.firstName,
+                                lastName: user.lastName,
+                                password: password,
+                                gender: user.gender,
+                                dateOfBirth: user.dateOfBirth,
+                                token: generateToken(user._id)
+                            }
+                        });
+                    }
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_1 = _c.sent();
+                    res.status(400);
+                    throw new Error('Invalid Credentials');
+                case 5: return [2 /*return*/];
             }
         });
     });
 }
-exports.default = verifyToken;
+exports.loginUser = loginUser;

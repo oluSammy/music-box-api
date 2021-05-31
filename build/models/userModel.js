@@ -58,7 +58,7 @@ var userSchema = new mongoose_1.Schema({
         required: function () {
             return this.provider === "local";
         },
-    }
+    },
 });
 // hash password
 userSchema.pre("save", function (next) {

@@ -35,60 +35,48 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserModel = void 0;
-var mongoose_1 = require("mongoose");
-var bcryptjs_1 = __importDefault(require("bcryptjs"));
-var userSchema = new mongoose_1.Schema({
-    email: { type: String, require: true, unique: true },
-    firstName: { type: String, require: true },
-    lastName: { type: String, require: true },
-    dateOfBirth: { type: Date, require: true },
-    gender: { type: String, require: true },
-    last_login: { type: Date, default: Date.now() },
-    provider: {
-        type: String,
-        enum: ["local", "google", "facebook"],
-    },
-    password: {
-        type: String,
-    },
-});
-// hash password
-userSchema.pre("save", function (next) {
+exports.loginUser = void 0;
+function loginUser(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var salt, _a, error_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var _a, email, password, user, _b, error_1;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
-                    _b.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, bcryptjs_1.default.genSalt(10)];
+                    _c.trys.push([0, 4, , 5]);
+                    _a = req.body, email = _a.email, password = _a.password;
+                    return [4 /*yield*/, UserModelDB.findOne({ email: email })];
                 case 1:
-                    salt = _b.sent();
-                    _a = this;
-                    return [4 /*yield*/, bcryptjs_1.default.hash(this.password, salt)];
+                    user = _c.sent();
+                    _b = user;
+                    if (!_b) return [3 /*break*/, 3];
+                    return [4 /*yield*/, user.isPassowrdMatch(password)];
                 case 2:
-                    _a.password = _b.sent();
-                    next();
-                    return [3 /*break*/, 4];
+                    _b = (_c.sent());
+                    _c.label = 3;
                 case 3:
-                    error_1 = _b.sent();
-                    console.log(error_1.message);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    if (_b) {
+                        res.status(200).json({
+                            status: 'success',
+                            data: {
+                                _id: user._id,
+                                firstName: user.firstName,
+                                lastName: user.lastName,
+                                password: password,
+                                gender: user.gender,
+                                dateOfBirth: user.dateOfBirth,
+                                token: generateToken(user._id)
+                            }
+                        });
+                    }
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_1 = _c.sent();
+                    res.status(400);
+                    throw new Error('Invalid Credentials');
+                case 5: return [2 /*return*/];
             }
         });
     });
-});
-// verify password
-userSchema.methods.isPasswordMatch = function (enteredPassword) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/, bcryptjs_1.default.compare(enteredPassword, this.password)];
-        });
-    });
-};
-exports.UserModel = mongoose_1.model("User", userSchema);
+}
+exports.loginUser = loginUser;

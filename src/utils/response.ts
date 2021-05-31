@@ -36,7 +36,6 @@ class ResponseStatus {
       message: this.message,
       data: this.data,
     };
-
     if (this.status === "successful") {
       return res.status(this.statusCode ? this.statusCode : 200).json(result);
     }
@@ -47,5 +46,4 @@ class ResponseStatus {
     });
   }
 }
-
 export default ResponseStatus;

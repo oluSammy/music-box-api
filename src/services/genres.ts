@@ -10,6 +10,10 @@ export const fetchGenres = async (): Promise<AxiosResponse<any>> => {
 // fetch a single genre from deezer api using axios
 export const fetchOne = async (id: number): Promise<AxiosResponse<any>> => {
   const url = process.env.GENRE_URL as string;
-  const response = await axios.get(`${url}/${id}`);
-  return response;
+  try {
+    const response = await axios.get(`${url}/${id}`);
+    return response;
+  } catch (error) {
+    throw new Error(error.data.error.message);
+  }
 };

@@ -38,6 +38,7 @@ var genreSchema = new mongoose_1.Schema({
 }, {
     timestamps: true,
 });
+// create relationship between genre and playlist
 genreSchema.virtual("playlist", {
     ref: "Playlist",
     localField: "_id",

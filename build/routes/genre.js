@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var genre_1 = require("../controllers/genre");
 var router = express_1.default.Router();
+// route to get all genres
 router.get("/", genre_1.getGenres);
+// route to get a genre by the deezer id
 router.get("/:id", genre_1.getOneGenre);
 exports.default = router;

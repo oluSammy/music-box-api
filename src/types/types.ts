@@ -1,4 +1,15 @@
 export interface IUser {
+  googleId: string;
+  displayName: string;
+  firstName: string;
+  lastName: string;
+  image: string;
+  provider: string;
+  _id?: string;
+}
+
+export interface SessionUser {
+  user: any;
   email: string;
   password: string;
   firstName: string;
@@ -15,8 +26,6 @@ export interface REQUESTUSER {
   token?: string;
 }
 
-export type ResponseData = Record<string, any> | Record<string, any>[];
-
 export interface GENRE {
   id: number;
   name: string;
@@ -27,3 +36,14 @@ export interface GENRE {
   picture_xl: string;
   type: string;
 }
+
+export interface Playlist {
+  name: string;
+  genre_id: string;
+  tracks: string[];
+  isPublic: boolean;
+  likes: string[];
+  owner_id: string;
+}
+
+export type ResponseData = Record<string, any> | Record<string, any>[];

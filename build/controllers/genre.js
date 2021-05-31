@@ -64,6 +64,7 @@ function getGenres(req, res) {
                     responseStatus.setSuccess(200, "successful", data);
                     return [2 /*return*/, responseStatus.send(res)];
                 case 4:
+                    // return successful response
                     responseStatus.setSuccess(200, "successful", genre);
                     return [2 /*return*/, responseStatus.send(res)];
                 case 5:
@@ -84,8 +85,14 @@ function getOneGenre(req, res) {
                 case 0:
                     _a.trys.push([0, 4, , 5]);
                     id = req.params.id;
+                    // return error if id is empty
                     if (!id) {
                         responseStatus.setError(400, "Please provide an Id");
+                        return [2 /*return*/, responseStatus.send(res)];
+                    }
+                    // check if id is a number, if not return error
+                    if (typeof +id !== "number") {
+                        responseStatus.setError(500, "error");
                         return [2 /*return*/, responseStatus.send(res)];
                     }
                     newId = Number.parseInt(id, 10);
@@ -96,9 +103,14 @@ function getOneGenre(req, res) {
                     return [4 /*yield*/, genres_1.fetchOne(newId)];
                 case 2:
                     oneGenre = _a.sent();
+                    if (oneGenre.data.error) {
+                        responseStatus.setError(404, "Not Found");
+                        return [2 /*return*/, responseStatus.send(res)];
+                    }
                     responseStatus.setSuccess(200, "successful", oneGenre);
                     return [2 /*return*/, responseStatus.send(res)];
                 case 3:
+                    // if data, return return success
                     responseStatus.setSuccess(200, "successful", data);
                     return [2 /*return*/, responseStatus.send(res)];
                 case 4:

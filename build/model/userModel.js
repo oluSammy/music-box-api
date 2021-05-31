@@ -43,18 +43,37 @@ exports.UserModel = void 0;
 var mongoose_1 = require("mongoose");
 var bcryptjs_1 = __importDefault(require("bcryptjs"));
 var userSchema = new mongoose_1.Schema({
-    email: { type: String, require: true, unique: true },
-    firstName: { type: String, require: true },
-    lastName: { type: String, require: true },
-    dateOfBirth: { type: Date, require: true },
-    gender: { type: String, require: true },
-    last_login: { type: Date, default: Date.now() },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    password: {
+        type: String,
+    },
+    firstName: {
+        type: String,
+        required: true,
+    },
+    lastName: {
+        type: String,
+        required: true,
+    },
+    dateOfBirth: {
+        type: Date,
+        required: true,
+    },
     provider: {
         type: String,
         enum: ["local", "google", "facebook"],
     },
-    password: {
+    gender: {
         type: String,
+        required: true,
+    },
+    last_login: {
+        type: Date,
+        default: Date.now(),
     },
 });
 // hash password
@@ -76,6 +95,7 @@ userSchema.pre("save", function (next) {
                     return [3 /*break*/, 4];
                 case 3:
                     error_1 = _b.sent();
+                    // eslint-disable-next-line no-console
                     console.log(error_1.message);
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];

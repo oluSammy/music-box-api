@@ -8,6 +8,7 @@ const userSchema = new Schema<IUser>({
   lastName: { type: String, require: true },
   dateOfBirth: { type: Date, require: true },
   gender: { type: String, require: true },
+  last_login: { type: Date, default: Date.now() },
   provider: {
     type: String,
     enum: ["local", "google", "facebook"],
@@ -15,7 +16,6 @@ const userSchema = new Schema<IUser>({
   password: {
     type: String,
   },
-  last_login: { type: Date, default: Date.now() },
 });
 // hash password
 userSchema.pre("save", async function (next) {

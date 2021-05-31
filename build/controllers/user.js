@@ -35,60 +35,53 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserModel = void 0;
-var mongoose_1 = require("mongoose");
-var bcryptjs_1 = __importDefault(require("bcryptjs"));
-var userSchema = new mongoose_1.Schema({
-    email: { type: String, require: true, unique: true },
-    firstName: { type: String, require: true },
-    lastName: { type: String, require: true },
-    dateOfBirth: { type: Date, require: true },
-    gender: { type: String, require: true },
-    last_login: { type: Date, default: Date.now() },
-    provider: {
-        type: String,
-        enum: ["local", "google", "facebook"],
-    },
-    password: {
-        type: String,
-    },
-});
-// hash password
-userSchema.pre("save", function (next) {
+exports.registerUser = void 0;
+var joiValidate_1 = require("../middleware/joiValidate");
+var userModel_1 = require("../models/userModel");
+var authorization_1 = require("../middleware/authorization");
+var registerUser = function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var salt, _a, error_1;
+        var error, _a, email, password, firstName, lastName, dateOfBirth, gender, exist, newUser, token, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    _b.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, bcryptjs_1.default.genSalt(10)];
+                    _b.trys.push([0, 4, , 5]);
+                    error = joiValidate_1.validateUser(req.body).error;
+                    if (error) {
+                        return [2 /*return*/, res.status(401).json({ message: "invalid credentials" })];
+                    }
+                    _a = req.body, email = _a.email, password = _a.password, firstName = _a.firstName, lastName = _a.lastName, dateOfBirth = _a.dateOfBirth, gender = _a.gender;
+                    return [4 /*yield*/, userModel_1.usersModelDB.findOne({ email: email })];
                 case 1:
-                    salt = _b.sent();
-                    _a = this;
-                    return [4 /*yield*/, bcryptjs_1.default.hash(this.password, salt)];
+                    exist = _b.sent();
+                    if (exist)
+                        return [2 /*return*/, res.json({ message: "user exist" })];
+                    return [4 /*yield*/, new userModel_1.usersModelDB({ email: email, password: password, firstName: firstName, lastName: lastName, dateOfBirth: dateOfBirth, last_login: "" })];
                 case 2:
-                    _a.password = _b.sent();
-                    next();
-                    return [3 /*break*/, 4];
+                    newUser = _b.sent();
+                    return [4 /*yield*/, newUser.save()];
                 case 3:
+                    _b.sent();
+                    token = authorization_1.generateToken(newUser._id);
+                    return [2 /*return*/, res.status(201).json({ data: newUser, token: token })];
+                case 4:
                     error_1 = _b.sent();
-                    console.log(error_1.message);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [2 /*return*/, { error: error_1.message }];
+                case 5: return [2 /*return*/];
             }
         });
     });
-});
-// verify password
-userSchema.methods.isPasswordMatch = function (enteredPassword) {
+};
+exports.registerUser = registerUser;
+var verifyToken = function () {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            return [2 /*return*/, bcryptjs_1.default.compare(enteredPassword, this.password)];
+            try {
+            }
+            catch (error) {
+            }
+            return [2 /*return*/];
         });
     });
 };
-exports.UserModel = mongoose_1.model("User", userSchema);

@@ -52,19 +52,27 @@ function changePassword(req, res) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 6, , 7]);
+                    // check parameter for user id and return error if no id
+                    if (!req.params.id) {
+                        responseStatus.setError(404, "bad request, no id specified");
+                        return [2 /*return*/, responseStatus.send(res)];
+                    }
                     return [4 /*yield*/, userModel_1.UserModel.findById(req.params.id)];
                 case 1:
                     user = _b.sent();
+                    // if no suer found in database, return error
                     if (!user) {
                         responseStatus.setError(404, "user not found");
                         return [2 /*return*/, responseStatus.send(res)];
                     }
                     _a = req.body, newPassword = _a.newPassword, oldPassword = _a.oldPassword;
                     error = passwordValidate_1.validateUserPassword({ password: newPassword }).error;
+                    // if joi error property exists, return error response
                     if (error) {
                         responseStatus.setError(400, error.message);
                         return [2 /*return*/, responseStatus.send(res)];
                     }
+                    // if old and new password are the same, return error
                     if (newPassword === oldPassword) {
                         responseStatus.setError(400, "new password should not be same with old password");
                         return [2 /*return*/, responseStatus.send(res)];
@@ -72,6 +80,7 @@ function changePassword(req, res) {
                     return [4 /*yield*/, bcryptjs_1.default.compare(oldPassword, user.password)];
                 case 2:
                     compare = _b.sent();
+                    // if no match return error
                     if (!compare) {
                         responseStatus.setError(401, "password mis-match");
                         return [2 /*return*/, responseStatus.send(res)];
@@ -82,6 +91,7 @@ function changePassword(req, res) {
                     return [4 /*yield*/, bcryptjs_1.default.hash(newPassword, salt)];
                 case 4:
                     newHashedPassword = _b.sent();
+                    // replace old password with new and update database
                     user.password = newHashedPassword;
                     return [4 /*yield*/, userModel_1.UserModel.findByIdAndUpdate(user._id, user, {
                             new: true,
@@ -89,15 +99,16 @@ function changePassword(req, res) {
                         })];
                 case 5:
                     data = _b.sent();
+                    // if no data returned, return an error
                     if (!data) {
                         responseStatus.setError(500, "could not update");
                         return [2 /*return*/, responseStatus.send(res)];
                     }
+                    // return successfully updated
                     responseStatus.setSuccess(200, "Successfully Updated", data);
                     return [2 /*return*/, responseStatus.send(res)];
                 case 6:
                     error_1 = _b.sent();
-                    console.log(error_1);
                     responseStatus.setError(500, "could not update");
                     return [2 /*return*/, responseStatus.send(res)];
                 case 7: return [2 /*return*/];

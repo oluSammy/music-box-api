@@ -45,7 +45,7 @@ export async function getOneGenre(
       return responseStatus.send(res);
     }
     // check if id is a number, if not return error
-    if (!Number.parseInt(id, 10)) {
+    if (typeof +id !== "number") {
       responseStatus.setError(500, "error");
       return responseStatus.send(res);
     }
@@ -57,6 +57,10 @@ export async function getOneGenre(
     // if data returns empty, resturn 404 error
     if (!data) {
       const oneGenre = await fetchOne(newId);
+      if (oneGenre.data.error) {
+        responseStatus.setError(404, "Not Found");
+        return responseStatus.send(res);
+      }
       responseStatus.setSuccess(200, "successful", oneGenre);
       return responseStatus.send(res);
     }

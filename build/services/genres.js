@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchOne = exports.fetchGenres = void 0;
 var axios_1 = __importDefault(require("axios"));
+// fetch genres from deezer using axios call
 var fetchGenres = function () { return __awaiter(void 0, void 0, void 0, function () {
     var url, response;
     return __generator(this, function (_a) {
@@ -55,16 +56,24 @@ var fetchGenres = function () { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 exports.fetchGenres = fetchGenres;
+// fetch a single genre from deezer api using axios
 var fetchOne = function (id) { return __awaiter(void 0, void 0, void 0, function () {
-    var url, response;
+    var url, response, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 url = process.env.GENRE_URL;
-                return [4 /*yield*/, axios_1.default.get(url + "/" + id)];
+                _a.label = 1;
             case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, axios_1.default.get(url + "/" + id)];
+            case 2:
                 response = _a.sent();
                 return [2 /*return*/, response];
+            case 3:
+                error_1 = _a.sent();
+                throw new Error(error_1.data.error.message);
+            case 4: return [2 /*return*/];
         }
     });
 }); };

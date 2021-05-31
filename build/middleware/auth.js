@@ -39,56 +39,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserModel = void 0;
-var mongoose_1 = require("mongoose");
-var bcryptjs_1 = __importDefault(require("bcryptjs"));
-var userSchema = new mongoose_1.Schema({
-    email: { type: String, require: true, unique: true },
-    firstName: { type: String, require: true },
-    lastName: { type: String, require: true },
-    dateOfBirth: { type: Date, require: true },
-    gender: { type: String, require: true },
-    last_login: { type: Date, default: Date.now() },
-    provider: {
-        type: String,
-        enum: ["local", "google", "facebook"],
-    },
-    password: {
-        type: String,
-    },
-});
-// hash password
-userSchema.pre("save", function (next) {
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var userModel_1 = require("../models/userModel");
+var response_1 = __importDefault(require("../utils/response"));
+var responseStatus = new response_1.default();
+function verifyToken(req, res, next) {
     return __awaiter(this, void 0, void 0, function () {
-        var salt, _a, error_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var token, decoded, user, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
-                    _b.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, bcryptjs_1.default.genSalt(10)];
+                    if (!(req.headers.authorization &&
+                        req.headers.authorization.startsWith("Bearer"))) return [3 /*break*/, 5];
+                    _a.label = 1;
                 case 1:
-                    salt = _b.sent();
-                    _a = this;
-                    return [4 /*yield*/, bcryptjs_1.default.hash(this.password, salt)];
+                    _a.trys.push([1, 3, , 4]);
+                    token = req.headers.authorization.split(" ")[1];
+                    decoded = (jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY));
+                    return [4 /*yield*/, userModel_1.UserModel.findById(decoded.id)];
                 case 2:
-                    _a.password = _b.sent();
-                    next();
-                    return [3 /*break*/, 4];
+                    user = _a.sent();
+                    req.user = user;
+                    return [2 /*return*/, next()];
                 case 3:
-                    error_1 = _b.sent();
-                    console.log(error_1.message);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    error_1 = _a.sent();
+                    responseStatus.setError(401, "Bearer token is missing");
+                    return [2 /*return*/, responseStatus.send(res)];
+                case 4: return [3 /*break*/, 6];
+                case 5:
+                    responseStatus.setError(404, "Not Authorised, invalid token");
+                    return [2 /*return*/, responseStatus.send(res)];
+                case 6: return [2 /*return*/];
             }
         });
     });
-});
-// verify password
-userSchema.methods.isPasswordMatch = function (enteredPassword) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/, bcryptjs_1.default.compare(enteredPassword, this.password)];
-        });
-    });
-};
-exports.UserModel = mongoose_1.model("User", userSchema);
+}
+exports.default = verifyToken;

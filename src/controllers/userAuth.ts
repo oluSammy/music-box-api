@@ -1,4 +1,4 @@
-import { validateUser } from "../middleware/joiValidate";
+import { validateUser } from "../validations/joiValidate";
 import { Request, Response } from "express";
 import { UserModel } from "../models/userModel";
 import { generateToken } from "../utils/auth";
@@ -57,12 +57,14 @@ export async function loginUser(
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
-        password,
+        email: user.email,
         gender: user.gender,
         dateOfBirth: user.dateOfBirth,
-        token: generateToken(user._id),
       };
-      responseStatus.setSuccess(201, "success", data);
+      responseStatus.setSuccess(201, "success", {
+        ...data,
+        token: generateToken(user._id),
+      });
       return responseStatus.send(res);
     }
     responseStatus.setError(400, "Invalid Credentials");

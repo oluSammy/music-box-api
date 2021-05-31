@@ -7,9 +7,13 @@ import dotenv from "dotenv";
 import indexRouter from "./routes/index";
 import cors from "cors";
 import connectDB from "./database/mongoConnect";
+import passport from "passport";
 import { dbConnect } from "./database/mongoMemoryConnect";
+import { facebookStrategy, googleStrategy } from "./controllers/passport";
+import session from "express-session";
 
 dotenv.config();
+
 const app = express();
 
 app.use(express.static(path.join(__dirname, "../", "public")));
@@ -21,11 +25,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(
+  session({
+    secret: "akfc76q3gbd83bqdh",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
 if (process.env.NODE_ENV === "test") {
   dbConnect();
 } else {
   connectDB();
 }
+
+// middleware for social login
+googleStrategy(passport);
+facebookStrategy(passport);
 
 app.get("/", (req, res) => {
   res.redirect("/api/v1/music-box-api");
@@ -33,7 +52,6 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/music-box-api", indexRouter);
 
-// connectDB();
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));

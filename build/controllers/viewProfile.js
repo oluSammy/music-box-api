@@ -35,53 +35,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerUser = void 0;
-var joiValidate_1 = require("../middleware/joiValidate");
+exports.viewProfile = void 0;
 var userModel_1 = require("../models/userModel");
-var authorization_1 = require("../middleware/authorization");
-var registerUser = function (req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var error, _a, email, password, firstName, lastName, dateOfBirth, gender, exist, newUser, token, error_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _b.trys.push([0, 4, , 5]);
-                    error = joiValidate_1.validateUser(req.body).error;
-                    if (error) {
-                        return [2 /*return*/, res.status(401).json({ message: "invalid credentials" })];
-                    }
-                    _a = req.body, email = _a.email, password = _a.password, firstName = _a.firstName, lastName = _a.lastName, dateOfBirth = _a.dateOfBirth, gender = _a.gender;
-                    return [4 /*yield*/, userModel_1.usersModelDB.findOne({ email: email })];
-                case 1:
-                    exist = _b.sent();
-                    if (exist)
-                        return [2 /*return*/, res.json({ message: "user exist" })];
-                    return [4 /*yield*/, new userModel_1.usersModelDB({ email: email, password: password, firstName: firstName, lastName: lastName, dateOfBirth: dateOfBirth, last_login: "" })];
-                case 2:
-                    newUser = _b.sent();
-                    return [4 /*yield*/, newUser.save()];
-                case 3:
-                    _b.sent();
-                    token = authorization_1.generateToken(newUser._id);
-                    return [2 /*return*/, res.status(201).json({ data: newUser, token: token })];
-                case 4:
-                    error_1 = _b.sent();
-                    return [2 /*return*/, { error: error_1.message }];
-                case 5: return [2 /*return*/];
-            }
-        });
+var response_1 = __importDefault(require("../utils/response"));
+var responseStatus = new response_1.default();
+var viewProfile = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, viewUserProfile, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                id = req.params.id;
+                if (!id) return [3 /*break*/, 2];
+                return [4 /*yield*/, userModel_1.UserModel.findById(id)];
+            case 1:
+                viewUserProfile = _a.sent();
+                responseStatus.setSuccess(200, "success", viewUserProfile);
+                return [2 /*return*/, responseStatus.send(res)];
+            case 2:
+                responseStatus.setError(404, "Cannot find user");
+                return [2 /*return*/, responseStatus.send(res)];
+            case 3:
+                err_1 = _a.sent();
+                responseStatus.setError(404, "Cannot find user");
+                return [2 /*return*/, responseStatus.send(res)];
+            case 4: return [2 /*return*/];
+        }
     });
-};
-exports.registerUser = registerUser;
-var verifyToken = function () {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            try {
-            }
-            catch (error) {
-            }
-            return [2 /*return*/];
-        });
-    });
-};
+}); };
+exports.viewProfile = viewProfile;

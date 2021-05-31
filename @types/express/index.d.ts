@@ -1,4 +1,4 @@
-import { REQUESTUSER } from "../src/types/types";
+import { REQUESTUSER } from "../../src/types/types";
 
 declare global {
   namespace Express {

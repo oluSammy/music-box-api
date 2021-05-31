@@ -54,7 +54,11 @@ var playlistSchema = new mongoose_1.Schema({
         {
             type: mongoose_1.default.Schema.Types.ObjectId,
             ref: "User",
+<<<<<<< HEAD
             required: true,
+=======
+            default: [],
+>>>>>>> a0db78226a83d1c58aac46406b00ee5009ae109e
         },
     ],
 }, { timestamps: true });

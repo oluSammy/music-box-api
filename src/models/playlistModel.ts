@@ -1,12 +1,8 @@
-import mongoose, { model, Schema } from "mongoose";
-import { Playlist } from "../types/types";
+import { model, Schema } from "mongoose";
+import { TPlaylist } from "../types/types";
 
-const playlistSchema = new Schema<Playlist>(
+const playlistSchema = new Schema<TPlaylist>(
   {
-    id: {
-      type: Schema.Types.ObjectId,
-      required: true,
-    },
     owner_id: {
       type: Schema.Types.ObjectId,
       required: true,
@@ -22,9 +18,9 @@ const playlistSchema = new Schema<Playlist>(
     },
     tracks: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "track",
+        type: String,
         unique: true,
+        sparse: true,
       },
     ],
     genre_id: {
@@ -33,13 +29,14 @@ const playlistSchema = new Schema<Playlist>(
     },
     likes: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "User",
-        default: [],
+        unique: true,
+        sparse: true,
       },
     ],
   },
   { timestamps: true }
 );
 
-export const PlaylistModel = model<Playlist>("playlist", playlistSchema);
+export const PlaylistModel = model("playlist", playlistSchema);

@@ -39,71 +39,51 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.likePublicPost = exports.createPlaylist = void 0;
-var playlistModel_1 = require("../models/playlistModel");
+exports.loginUser = void 0;
+var userModel_1 = require("../model/userModel");
+var auth_1 = require("../utils/auth");
 var response_1 = __importDefault(require("../utils/response"));
 var responseStatus = new response_1.default();
-var createPlaylist = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var playlist, newPlaylist, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                playlist = req.body;
-                playlist.owner_id = req.user.id;
-                return [4 /*yield*/, playlistModel_1.PlaylistModel.create(playlist)];
-            case 1:
-                newPlaylist = _a.sent();
-                if (newPlaylist) {
-                    responseStatus.setSuccess(201, "Successful!", { payload: newPlaylist });
+function loginUser(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, email, password, user, _b, data, error_1;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    _c.trys.push([0, 4, , 5]);
+                    _a = req.body, email = _a.email, password = _a.password;
+                    return [4 /*yield*/, userModel_1.UserModel.findOne({ email: email })];
+                case 1:
+                    user = _c.sent();
+                    _b = user;
+                    if (!_b) return [3 /*break*/, 3];
+                    return [4 /*yield*/, user.isPassowrdMatch(password)];
+                case 2:
+                    _b = (_c.sent());
+                    _c.label = 3;
+                case 3:
+                    if (_b) {
+                        data = {
+                            _id: user._id,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            password: password,
+                            gender: user.gender,
+                            dateOfBirth: user.dateOfBirth,
+                            token: auth_1.generateToken(user._id),
+                        };
+                        responseStatus.setSuccess(201, "success", data);
+                        return [2 /*return*/, responseStatus.send(res)];
+                    }
+                    responseStatus.setError(400, "Invalid Credentials");
                     return [2 /*return*/, responseStatus.send(res)];
-                }
-                responseStatus.setError(400, "Invalid input data");
-                return [2 /*return*/, responseStatus.send(res)];
-            case 2:
-                error_1 = _a.sent();
-                responseStatus.setError(400, "Error creating playlist");
-                return [2 /*return*/, responseStatus.send(res)];
-            case 3: return [2 /*return*/];
-        }
-    });
-}); };
-exports.createPlaylist = createPlaylist;
-var likePublicPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var toLike, addedLike, newData, err_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 4, , 5]);
-                return [4 /*yield*/, playlistModel_1.PlaylistModel.findOne({
-                        _id: req.params.id,
-                        isPublic: true,
-                        likes: { $in: [req.user._id] },
-                    }).exec()];
-            case 1:
-                toLike = _a.sent();
-                if (!!toLike) return [3 /*break*/, 3];
-                return [4 /*yield*/, playlistModel_1.PlaylistModel.findOneAndUpdate({ _id: req.params.id, isPublic: true }, { $push: { likes: req.user._id } }, { new: true }).exec()];
-            case 2:
-                addedLike = _a.sent();
-                if (addedLike) {
-                    newData = {
-                        data: addedLike,
-                    };
-                    responseStatus.setSuccess(200, "Successful", newData);
+                case 4:
+                    error_1 = _c.sent();
+                    responseStatus.setError(400, "Invalid Credentials");
                     return [2 /*return*/, responseStatus.send(res)];
-                }
-                responseStatus.setError(400, "failed");
-                return [2 /*return*/, responseStatus.send(res)];
-            case 3:
-                responseStatus.setError(400, "you can not like a playlist more than once");
-                return [2 /*return*/, responseStatus.send(res)];
-            case 4:
-                err_1 = _a.sent();
-                responseStatus.setError(400, "failed");
-                return [2 /*return*/, responseStatus.send(res)];
-            case 5: return [2 /*return*/];
-        }
+                case 5: return [2 /*return*/];
+            }
+        });
     });
-}); };
-exports.likePublicPost = likePublicPost;
+}
+exports.loginUser = loginUser;

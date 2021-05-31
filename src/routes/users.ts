@@ -1,9 +1,10 @@
 import express from "express";
+import { createPlaylist, likePublicPost } from "../controllers/playlist";
+import { loginUser, registerUser } from "../controllers/userAuth";
+import verifyToken from "../middleware/auth";
 import { changePassword } from "../controllers/users";
 import { updateProfile } from "../controllers/updateProfile";
 import { viewProfile } from "../controllers/viewProfile";
-import verifyToken from "../middleware/auth";
-import { loginUser, registerUser } from "../controllers/userAuth";
 
 const router = express.Router();
 

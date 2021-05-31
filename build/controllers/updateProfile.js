@@ -39,46 +39,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dbDisconnect = exports.dbConnect = void 0;
-var mongoose_1 = __importDefault(require("mongoose"));
-var mongodb_memory_server_1 = require("mongodb-memory-server");
-var mongoServer = new mongodb_memory_server_1.MongoMemoryServer();
-var dbConnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var uri, mongooseOpts;
+exports.updateProfile = void 0;
+var userModel_1 = require("../models/userModel");
+var response_1 = __importDefault(require("../utils/response"));
+var responseStatus = new response_1.default();
+var updateProfile = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, updateUserProfile, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoServer.getUri()];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                if (req.body.password) {
+                    responseStatus.setError(404, "you cannot update password");
+                    return [2 /*return*/, responseStatus.send(res)];
+                }
+                id = req.params.id;
+                return [4 /*yield*/, userModel_1.UserModel.findByIdAndUpdate(id, req.body, function (err, docs) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        else {
+                            console.log(docs);
+                        }
+                    })];
             case 1:
-                uri = _a.sent();
-                mongooseOpts = {
-                    useNewUrlParser: true,
-                    useCreateIndex: true,
-                    useUnifiedTopology: true,
-                    useFindAndModify: false,
-                };
-                mongoose_1.default
-                    .connect(uri, mongooseOpts)
-                    .then(function () { return console.log("info", "connected to memory-server"); })
-                    .catch(function () { return console.log("error", "could not connect"); });
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.dbConnect = dbConnect;
-var dbDisconnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoose_1.default.connection.dropDatabase()];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, mongoose_1.default.connection.close()];
+                updateUserProfile = _a.sent();
+                responseStatus.setSuccess(200, "success", updateUserProfile);
+                return [2 /*return*/, responseStatus.send(res)];
             case 2:
-                _a.sent();
-                return [4 /*yield*/, mongoServer.stop()];
-            case 3:
-                _a.sent();
-                return [2 /*return*/];
+                error_1 = _a.sent();
+                console.log(error_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
-exports.dbDisconnect = dbDisconnect;
+exports.updateProfile = updateProfile;

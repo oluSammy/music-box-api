@@ -39,46 +39,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dbDisconnect = exports.dbConnect = void 0;
-var mongoose_1 = __importDefault(require("mongoose"));
-var mongodb_memory_server_1 = require("mongodb-memory-server");
-var mongoServer = new mongodb_memory_server_1.MongoMemoryServer();
-var dbConnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var uri, mongooseOpts;
+exports.viewProfile = void 0;
+var userModel_1 = require("../models/userModel");
+var response_1 = __importDefault(require("../utils/response"));
+var responseStatus = new response_1.default();
+var viewProfile = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, viewUserProfile, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoServer.getUri()];
+            case 0:
+                _a.trys.push([0, 4, , 5]);
+                id = req.params.id;
+                console.log(id);
+                if (!id) return [3 /*break*/, 2];
+                return [4 /*yield*/, userModel_1.UserModel.findById(id)];
             case 1:
-                uri = _a.sent();
-                mongooseOpts = {
-                    useNewUrlParser: true,
-                    useCreateIndex: true,
-                    useUnifiedTopology: true,
-                    useFindAndModify: false,
-                };
-                mongoose_1.default
-                    .connect(uri, mongooseOpts)
-                    .then(function () { return console.log("info", "connected to memory-server"); })
-                    .catch(function () { return console.log("error", "could not connect"); });
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.dbConnect = dbConnect;
-var dbDisconnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoose_1.default.connection.dropDatabase()];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, mongoose_1.default.connection.close()];
+                viewUserProfile = _a.sent();
+                responseStatus.setSuccess(200, "success", viewUserProfile);
+                return [2 /*return*/, responseStatus.send(res)];
             case 2:
-                _a.sent();
-                return [4 /*yield*/, mongoServer.stop()];
-            case 3:
-                _a.sent();
-                return [2 /*return*/];
+                responseStatus.setError(404, "Cannot find user");
+                return [2 /*return*/, responseStatus.send(res)];
+            case 3: return [3 /*break*/, 5];
+            case 4:
+                err_1 = _a.sent();
+                console.log(err_1);
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
-exports.dbDisconnect = dbDisconnect;
+exports.viewProfile = viewProfile;

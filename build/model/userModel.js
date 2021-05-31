@@ -39,46 +39,76 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dbDisconnect = exports.dbConnect = void 0;
-var mongoose_1 = __importDefault(require("mongoose"));
-var mongodb_memory_server_1 = require("mongodb-memory-server");
-var mongoServer = new mongodb_memory_server_1.MongoMemoryServer();
-var dbConnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var uri, mongooseOpts;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoServer.getUri()];
-            case 1:
-                uri = _a.sent();
-                mongooseOpts = {
-                    useNewUrlParser: true,
-                    useCreateIndex: true,
-                    useUnifiedTopology: true,
-                    useFindAndModify: false,
-                };
-                mongoose_1.default
-                    .connect(uri, mongooseOpts)
-                    .then(function () { return console.log("info", "connected to memory-server"); })
-                    .catch(function () { return console.log("error", "could not connect"); });
-                return [2 /*return*/];
-        }
+exports.UserModel = void 0;
+var mongoose_1 = require("mongoose");
+var bcryptjs_1 = __importDefault(require("bcryptjs"));
+var userSchema = new mongoose_1.Schema({
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    password: {
+        type: String,
+    },
+    firstName: {
+        type: String,
+        required: true,
+    },
+    lastName: {
+        type: String,
+        required: true,
+    },
+    dateOfBirth: {
+        type: Date,
+        required: true,
+    },
+    provider: {
+        type: String,
+        enum: ["local", "google", "facebook"],
+    },
+    gender: {
+        type: String,
+        required: true,
+    },
+    last_login: {
+        type: Date,
+        default: Date.now(),
+    },
+});
+// hash password
+userSchema.pre("save", function (next) {
+    return __awaiter(this, void 0, void 0, function () {
+        var salt, _a, error_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, bcryptjs_1.default.genSalt(10)];
+                case 1:
+                    salt = _b.sent();
+                    _a = this;
+                    return [4 /*yield*/, bcryptjs_1.default.hash(this.password, salt)];
+                case 2:
+                    _a.password = _b.sent();
+                    next();
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_1 = _b.sent();
+                    // eslint-disable-next-line no-console
+                    console.log(error_1.message);
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
     });
-}); };
-exports.dbConnect = dbConnect;
-var dbDisconnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoose_1.default.connection.dropDatabase()];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, mongoose_1.default.connection.close()];
-            case 2:
-                _a.sent();
-                return [4 /*yield*/, mongoServer.stop()];
-            case 3:
-                _a.sent();
-                return [2 /*return*/];
-        }
+});
+// verify password
+userSchema.methods.isPasswordMatch = function (enteredPassword) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, bcryptjs_1.default.compare(enteredPassword, this.password)];
+        });
     });
-}); };
-exports.dbDisconnect = dbDisconnect;
+};
+exports.UserModel = mongoose_1.model("User", userSchema);

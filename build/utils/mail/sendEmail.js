@@ -51,7 +51,7 @@ var sendEmail = function (email, subject, payload, template
     return __generator(this, function (_a) {
         try {
             api_key = "f635b317d4808173f1505ce8cf661d74-fa6e84b7-12eb441d";
-            domain = "sandboxc58659d16b0e42dcb6680656e70c38ac.mailgun.org";
+            domain = "musicbox.decagon.com";
             auth = {
                 auth: { api_key: api_key, domain: domain },
             };

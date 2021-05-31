@@ -15,7 +15,7 @@ const sendEmail = async (
     // create reusable nodemailerMailgun object using the default SMTP transport;
     const api_key = "f635b317d4808173f1505ce8cf661d74-fa6e84b7-12eb441d";
     // const domain = "sandboxe84e584cd0e2469bad494e3a0dc0f913.mailgun.org";
-    const domain = "sandboxc58659d16b0e42dcb6680656e70c38ac.mailgun.org";
+    const domain = "musicbox.decagon.com";
     const auth = {
       auth: { api_key, domain },
     };

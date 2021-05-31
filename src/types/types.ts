@@ -16,4 +16,29 @@ export interface Token {
   createdAt: Date;
 }
 
-export type ResponseData = Record<string, unknown> | Record<string, unknown>[];
+export interface REQUESTUSER {
+  id?: string;
+  token?: string;
+}
+
+export interface GENRE {
+  id: number;
+  name: string;
+  picture: string;
+  picture_small: string;
+  picture_medium: string;
+  picture_big: string;
+  picture_xl: string;
+  type: string;
+}
+
+export interface Playlist {
+  name: string;
+  genre_id: string;
+  tracks: string[];
+  isPublic: boolean;
+  likes: string[];
+  owner_id: string;
+}
+
+export type ResponseData = Record<string, any> | Record<string, any>[];

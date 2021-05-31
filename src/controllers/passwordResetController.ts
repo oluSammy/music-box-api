@@ -4,6 +4,7 @@ import {
   resetPassword,
 } from "../services/resetPassword.service";
 import ResponseStatus from "../utils/response";
+import { validateUserPassword } from "../utils/passwordValidate";
 
 const response = new ResponseStatus();
 
@@ -30,11 +31,18 @@ export const resetPasswordController = async (
   res: Response
 ): Promise<Response> => {
   try {
+    const { error } = validateUserPassword({ password: req.body.password});
+    if(error) {
+      response.setError(400, "Invalid password format");
+      return response.send(res);
+    }
     const resp = await resetPassword(
       req.body.id,
       req.body.password,
       req.body.token
     );
+
+
     if (!resp) {
       response.setError(400, "password reset failed");
       return response.send(res);

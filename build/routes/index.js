@@ -12,8 +12,10 @@ router.get("/", function (req, res) {
     res.send("music-box server is live");
 });
 // google authentication route
+// http://localhost:3000/api/v1/music-box-api/auth/google
 router.use("/auth", googleAuth_1.default);
 // facebook authentication route
+// http://localhost:3000/api/v1/music-box-api/fb/facebook
 router.use("/fb", fbAuth_1.default);
 router.use("/users", users_1.default);
 exports.default = router;

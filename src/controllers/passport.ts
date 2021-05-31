@@ -5,7 +5,7 @@
 import { Strategy } from "passport-google-oauth20";
 import { Strategy as FBStrategy } from "passport-facebook";
 import passport, { PassportStatic } from "passport";
-import { UserModel } from "../model/userModel";
+import { UserModel } from "../models/userModel";
 import { Request, Response } from "express";
 import { generateToken } from "../utils/auth";
 import ResponseStatus from "../utils/response";

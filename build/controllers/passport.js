@@ -47,7 +47,7 @@ exports.fbAuthController = exports.googleAuthController = exports.facebookStrate
 var passport_google_oauth20_1 = require("passport-google-oauth20");
 var passport_facebook_1 = require("passport-facebook");
 var passport_1 = __importDefault(require("passport"));
-var userModel_1 = require("../model/userModel");
+var userModel_1 = require("../models/userModel");
 var auth_1 = require("../utils/auth");
 var response_1 = __importDefault(require("../utils/response"));
 var responseStatus = new response_1.default();

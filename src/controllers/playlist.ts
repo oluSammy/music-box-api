@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PlaylistModel } from "../model/playlistModel";
+import { PlaylistModel } from "../models/playlistModel";
 import ResponseStatus from "../utils/response";
 
 const responseStatus = new ResponseStatus();

@@ -20,7 +20,6 @@ const userSchema = new Schema<IUser>({
 });
 
 // hash password
-
 userSchema.pre("save", async function (next) {
   try {
     const salt = await bcrypt.genSalt(10);
@@ -35,5 +34,4 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.isPasswordMatch = async function (enteredPassword) {
   return bcrypt.compare(enteredPassword, this.password);
 };
-
 export const UserModel = model("User", userSchema);

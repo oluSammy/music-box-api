@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -40,7 +51,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUser = exports.registerUser = void 0;
-var joiValidate_1 = require("../middleware/joiValidate");
+var joiValidate_1 = require("../validations/joiValidate");
 var userModel_1 = require("../models/userModel");
 var auth_1 = require("../utils/auth");
 var response_1 = __importDefault(require("../utils/response"));
@@ -116,12 +127,11 @@ function loginUser(req, res) {
                             _id: user._id,
                             firstName: user.firstName,
                             lastName: user.lastName,
-                            password: password,
+                            email: user.email,
                             gender: user.gender,
                             dateOfBirth: user.dateOfBirth,
-                            token: auth_1.generateToken(user._id),
                         };
-                        responseStatus.setSuccess(201, "success", data);
+                        responseStatus.setSuccess(201, "success", __assign(__assign({}, data), { token: auth_1.generateToken(user._id) }));
                         return [2 /*return*/, responseStatus.send(res)];
                     }
                     responseStatus.setError(400, "Invalid Credentials");

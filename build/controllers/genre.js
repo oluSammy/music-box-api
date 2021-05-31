@@ -39,39 +39,87 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var userModel_1 = require("../models/userModel");
+exports.getOneGenre = exports.getGenres = void 0;
+var genres_1 = require("../services/genres");
+var genreModel_1 = require("../models/genreModel");
 var response_1 = __importDefault(require("../utils/response"));
 var responseStatus = new response_1.default();
-function verifyToken(req, res, next) {
+function getGenres(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var token, decoded, user, error_1;
+        var genre, allGenres, data, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!(req.headers.authorization &&
-                        req.headers.authorization.startsWith("Bearer"))) return [3 /*break*/, 5];
-                    _a.label = 1;
+                    _a.trys.push([0, 5, , 6]);
+                    return [4 /*yield*/, genreModel_1.genreModel.find({})];
                 case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    token = req.headers.authorization.split(" ")[1];
-                    decoded = (jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY));
-                    return [4 /*yield*/, userModel_1.UserModel.findById(decoded.id)];
+                    genre = _a.sent();
+                    if (!(genre.length === 0)) return [3 /*break*/, 4];
+                    return [4 /*yield*/, genres_1.fetchGenres()];
                 case 2:
-                    user = _a.sent();
-                    req.user = user;
-                    return [2 /*return*/, next()];
+                    allGenres = _a.sent();
+                    return [4 /*yield*/, genreModel_1.genreModel.insertMany(allGenres.data.data)];
                 case 3:
-                    error_1 = _a.sent();
-                    responseStatus.setError(401, "Bearer token is missing");
+                    data = _a.sent();
+                    responseStatus.setSuccess(200, "successful", data);
                     return [2 /*return*/, responseStatus.send(res)];
-                case 4: return [3 /*break*/, 6];
+                case 4:
+                    // return successful response
+                    responseStatus.setSuccess(200, "successful", genre);
+                    return [2 /*return*/, responseStatus.send(res)];
                 case 5:
-                    responseStatus.setError(404, "Not Authorised, invalid token");
+                    error_1 = _a.sent();
+                    responseStatus.setError(500, "error");
                     return [2 /*return*/, responseStatus.send(res)];
                 case 6: return [2 /*return*/];
             }
         });
     });
 }
-exports.default = verifyToken;
+exports.getGenres = getGenres;
+function getOneGenre(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var id, newId, data, oneGenre, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    id = req.params.id;
+                    // return error if id is empty
+                    if (!id) {
+                        responseStatus.setError(400, "Please provide an Id");
+                        return [2 /*return*/, responseStatus.send(res)];
+                    }
+                    // check if id is a number, if not return error
+                    if (typeof +id !== "number") {
+                        responseStatus.setError(500, "error");
+                        return [2 /*return*/, responseStatus.send(res)];
+                    }
+                    newId = Number.parseInt(id, 10);
+                    return [4 /*yield*/, genreModel_1.genreModel.findOne({ id: newId })];
+                case 1:
+                    data = _a.sent();
+                    if (!!data) return [3 /*break*/, 3];
+                    return [4 /*yield*/, genres_1.fetchOne(newId)];
+                case 2:
+                    oneGenre = _a.sent();
+                    if (oneGenre.data.error) {
+                        responseStatus.setError(404, "Not Found");
+                        return [2 /*return*/, responseStatus.send(res)];
+                    }
+                    responseStatus.setSuccess(200, "successful", oneGenre);
+                    return [2 /*return*/, responseStatus.send(res)];
+                case 3:
+                    // if data, return return success
+                    responseStatus.setSuccess(200, "successful", data);
+                    return [2 /*return*/, responseStatus.send(res)];
+                case 4:
+                    error_2 = _a.sent();
+                    responseStatus.setError(500, "error");
+                    return [2 /*return*/, responseStatus.send(res)];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.getOneGenre = getOneGenre;

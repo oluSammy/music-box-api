@@ -52,7 +52,6 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/music-box-api", indexRouter);
 
-// connectDB();
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));

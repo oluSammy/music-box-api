@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { UserModel } from "../model/userModel";
+import { UserModel } from "../models/userModel";
 import ResponseStatus from "../utils/response";
 
 const responseStatus = new ResponseStatus();
@@ -19,7 +19,6 @@ async function verifyToken(
       const decoded = <any>(
         jwt.verify(token, process.env.JWT_SECRET_KEY as string)
       );
-
       const user = await UserModel.findById(decoded.id);
       req.user = user;
       return next();
@@ -32,5 +31,4 @@ async function verifyToken(
     return responseStatus.send(res);
   }
 }
-
 export default verifyToken;

@@ -1,14 +1,4 @@
 export interface IUser {
-  googleId: string;
-  displayName: string;
-  firstName: string;
-  lastName: string;
-  image: string;
-  provider: string;
-  _id?: string;
-}
-
-export interface SessionUser {
   user: any;
   email: string;
   password: string;

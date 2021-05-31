@@ -1,12 +1,17 @@
-import express from 'express';
-import usersRoute from './users'
+import express from "express";
+import usersRoute from "./users";
+import genreRoutes from "./genre";
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.send("music-box server is live")
-})
+router.get("/", (req, res) => {
+  res.send("music-box server is live");
+});
 
-router.use('/users', usersRoute)
+// controllers for users route
+router.use("/users", usersRoute);
 
-export default router
+// controller for genre route
+router.use("/genres", genreRoutes);
+
+export default router;

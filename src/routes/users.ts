@@ -1,9 +1,14 @@
-import express from 'express';
+import express from "express";
+import { changePassword } from "../controllers/users";
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.send("users route")
-})
+// route for users
+router.get("/", (req, res) => {
+  res.send("users route");
+});
 
-export default router
+// controller route to change user password
+router.put("/change-password/:id", changePassword);
+
+export default router;

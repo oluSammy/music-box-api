@@ -4,10 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var users_1 = require("../controllers/users");
+var genre_1 = require("../controllers/genre");
 var router = express_1.default.Router();
-router.get("/", function (req, res) {
-    res.send("users route");
-});
-router.put("/change-password/:id", users_1.changePassword);
+router.get("/", genre_1.getGenres);
+router.get("/:id", genre_1.getOneGenre);
 exports.default = router;

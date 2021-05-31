@@ -39,46 +39,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dbDisconnect = exports.dbConnect = void 0;
-var mongoose_1 = __importDefault(require("mongoose"));
-var mongodb_memory_server_1 = require("mongodb-memory-server");
-var mongoServer = new mongodb_memory_server_1.MongoMemoryServer();
-var dbConnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var uri, mongooseOpts;
+exports.fetchOne = exports.fetchGenres = void 0;
+var axios_1 = __importDefault(require("axios"));
+var fetchGenres = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var url, response;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoServer.getUri()];
+            case 0:
+                url = process.env.GENRE_URL;
+                return [4 /*yield*/, axios_1.default.get(url)];
             case 1:
-                uri = _a.sent();
-                mongooseOpts = {
-                    useNewUrlParser: true,
-                    useCreateIndex: true,
-                    useUnifiedTopology: true,
-                    useFindAndModify: false,
-                };
-                mongoose_1.default
-                    .connect(uri, mongooseOpts)
-                    .then(function () { return console.log("info", "connected to memory-server"); })
-                    .catch(function () { return console.log("error", "could not connect"); });
-                return [2 /*return*/];
+                response = _a.sent();
+                return [2 /*return*/, response];
         }
     });
 }); };
-exports.dbConnect = dbConnect;
-var dbDisconnect = function () { return __awaiter(void 0, void 0, void 0, function () {
+exports.fetchGenres = fetchGenres;
+var fetchOne = function (id) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, response;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoose_1.default.connection.dropDatabase()];
+            case 0:
+                url = process.env.GENRE_URL;
+                return [4 /*yield*/, axios_1.default.get(url + "/" + id)];
             case 1:
-                _a.sent();
-                return [4 /*yield*/, mongoose_1.default.connection.close()];
-            case 2:
-                _a.sent();
-                return [4 /*yield*/, mongoServer.stop()];
-            case 3:
-                _a.sent();
-                return [2 /*return*/];
+                response = _a.sent();
+                return [2 /*return*/, response];
         }
     });
 }); };
-exports.dbDisconnect = dbDisconnect;
+exports.fetchOne = fetchOne;

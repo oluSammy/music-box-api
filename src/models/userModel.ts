@@ -1,6 +1,5 @@
 import { Schema, model } from "mongoose";
 import { IUser } from "../types/types";
-
 import bcrypt from "bcryptjs";
 
 const userSchema = new Schema<IUser>({
@@ -18,7 +17,6 @@ const userSchema = new Schema<IUser>({
     type: String,
   },
 });
-
 // hash password
 userSchema.pre("save", async function (next) {
   try {
@@ -29,7 +27,6 @@ userSchema.pre("save", async function (next) {
     console.log(error.message);
   }
 });
-
 // verify password
 userSchema.methods.isPasswordMatch = async function (enteredPassword) {
   return bcrypt.compare(enteredPassword, this.password);

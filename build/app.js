@@ -46,7 +46,6 @@ app.get("/", function (req, res) {
     res.redirect("/api/v1/music-box-api");
 });
 app.use("/api/v1/music-box-api", index_1.default);
-// connectDB();
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(http_errors_1.default(404));

@@ -1,9 +1,20 @@
 import express, { Request, Response } from "express";
 import usersRoute from "./users";
+import genreRoutes from "./genre";
 import authRouter from "./googleAuth";
 import fbRouter from "./fbAuth";
 
 const router = express.Router();
+
+router.get("/", (req, res) => {
+  res.send("music-box server is live");
+});
+
+// controllers for users route
+router.use("/users", usersRoute);
+
+// controller for genre route
+router.use("/genres", genreRoutes);
 
 router.get("/", (req: Request, res: Response) => {
   res.send("music-box server is live");

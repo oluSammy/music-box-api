@@ -16,9 +16,25 @@ export interface SessionUser {
   lastName: string;
   dateOfBirth: Date;
   gender: string;
-  provider: string;
   token?: string;
+  provider: string;
   last_login?: string;
+}
+
+export interface REQUESTUSER {
+  id?: string;
+  token?: string;
+}
+
+export interface GENRE {
+  id: number;
+  name: string;
+  picture: string;
+  picture_small: string;
+  picture_medium: string;
+  picture_big: string;
+  picture_xl: string;
+  type: string;
 }
 
 export interface Playlist {

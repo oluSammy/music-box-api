@@ -1,5 +1,4 @@
 "use strict";
-<<<<<<< HEAD
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -20,26 +19,43 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserModel = void 0;
+exports.PlaylistModel = void 0;
 var mongoose_1 = __importStar(require("mongoose"));
-var userSchema = new mongoose_1.Schema({
-    email: { type: String, require: true, unique: true },
-    firstName: { type: String, require: true },
-    lastName: { type: String, require: true },
-    dateOfBirth: { type: Date, require: true },
-    gender: { type: String, require: true },
-    provider: {
-        type: String,
-        enum: ["local", "google", "facebook"],
+var playlistSchema = new mongoose_1.Schema({
+    id: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        required: true,
     },
-    password: {
+    owner_id: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        required: true,
+        ref: "User",
+    },
+    name: {
         type: String,
-        required: function () {
-            return this.provider === "local";
+        unique: true,
+    },
+    isPublic: {
+        type: Boolean,
+        default: true,
+    },
+    tracks: [
+        {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: "track",
+            unique: true,
         },
+    ],
+    genre_id: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: "Genre",
     },
-    last_login: { type: Date, default: Date.now() },
-});
-exports.UserModel = mongoose_1.default.model("User", userSchema);
-=======
->>>>>>> 85e389637967ff8097041c41e394fd009ce37e5c
+    likes: [
+        {
+            type: mongoose_1.default.Schema.Types.ObjectId,
+            ref: "User",
+            default: [],
+        },
+    ],
+}, { timestamps: true });
+exports.PlaylistModel = mongoose_1.model("playlist", playlistSchema);

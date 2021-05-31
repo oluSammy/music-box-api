@@ -10,7 +10,7 @@ var message = process.env.NODE_ENV === "production"
 var connectDB = function () {
     var url = process.env.NODE_ENV === "production"
         ? process.env.DATABASE_URL
-        : "mongodb://127.0.0.1:27017/node-ninja";
+        : "mongodb://127.0.0.1:27017/music-box";
     mongoose_1.default
         .connect(url, {
         useNewUrlParser: true,

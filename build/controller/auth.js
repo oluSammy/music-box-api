@@ -35,50 +35,48 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dbDisconnect = exports.dbConnect = void 0;
-var mongoose_1 = __importDefault(require("mongoose"));
-var mongodb_memory_server_1 = require("mongodb-memory-server");
-var mongoServer = new mongodb_memory_server_1.MongoMemoryServer();
-var dbConnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var uri, mongooseOpts;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoServer.getUri()];
-            case 1:
-                uri = _a.sent();
-                mongooseOpts = {
-                    useNewUrlParser: true,
-                    useCreateIndex: true,
-                    useUnifiedTopology: true,
-                    useFindAndModify: false,
-                };
-                mongoose_1.default
-                    .connect(uri, mongooseOpts)
-                    .then(function () { return console.log("info", "connected to memory-server"); })
-                    .catch(function () { return console.log("error", "could not connect"); });
-                return [2 /*return*/];
-        }
+exports.loginUser = void 0;
+function loginUser(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, email, password, user, _b, error_1;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    _c.trys.push([0, 4, , 5]);
+                    _a = req.body, email = _a.email, password = _a.password;
+                    return [4 /*yield*/, UserModelDB.findOne({ email: email })];
+                case 1:
+                    user = _c.sent();
+                    _b = user;
+                    if (!_b) return [3 /*break*/, 3];
+                    return [4 /*yield*/, user.isPassowrdMatch(password)];
+                case 2:
+                    _b = (_c.sent());
+                    _c.label = 3;
+                case 3:
+                    if (_b) {
+                        res.status(200).json({
+                            status: 'success',
+                            data: {
+                                _id: user._id,
+                                firstName: user.firstName,
+                                lastName: user.lastName,
+                                password: password,
+                                gender: user.gender,
+                                dateOfBirth: user.dateOfBirth,
+                                token: generateToken(user._id)
+                            }
+                        });
+                    }
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_1 = _c.sent();
+                    res.status(400);
+                    throw new Error('Invalid Credentials');
+                case 5: return [2 /*return*/];
+            }
+        });
     });
-}); };
-exports.dbConnect = dbConnect;
-var dbDisconnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoose_1.default.connection.dropDatabase()];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, mongoose_1.default.connection.close()];
-            case 2:
-                _a.sent();
-                return [4 /*yield*/, mongoServer.stop()];
-            case 3:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.dbDisconnect = dbDisconnect;
+}
+exports.loginUser = loginUser;

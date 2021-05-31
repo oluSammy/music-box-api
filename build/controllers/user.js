@@ -35,50 +35,53 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dbDisconnect = exports.dbConnect = void 0;
-var mongoose_1 = __importDefault(require("mongoose"));
-var mongodb_memory_server_1 = require("mongodb-memory-server");
-var mongoServer = new mongodb_memory_server_1.MongoMemoryServer();
-var dbConnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var uri, mongooseOpts;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoServer.getUri()];
-            case 1:
-                uri = _a.sent();
-                mongooseOpts = {
-                    useNewUrlParser: true,
-                    useCreateIndex: true,
-                    useUnifiedTopology: true,
-                    useFindAndModify: false,
-                };
-                mongoose_1.default
-                    .connect(uri, mongooseOpts)
-                    .then(function () { return console.log("info", "connected to memory-server"); })
-                    .catch(function () { return console.log("error", "could not connect"); });
-                return [2 /*return*/];
-        }
+exports.registerUser = void 0;
+var joiValidate_1 = require("../middleware/joiValidate");
+var userModel_1 = require("../models/userModel");
+var authorization_1 = require("../middleware/authorization");
+var registerUser = function (req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var error, _a, email, password, firstName, lastName, dateOfBirth, gender, exist, newUser, token, error_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 4, , 5]);
+                    error = joiValidate_1.validateUser(req.body).error;
+                    if (error) {
+                        return [2 /*return*/, res.status(401).json({ message: "invalid credentials" })];
+                    }
+                    _a = req.body, email = _a.email, password = _a.password, firstName = _a.firstName, lastName = _a.lastName, dateOfBirth = _a.dateOfBirth, gender = _a.gender;
+                    return [4 /*yield*/, userModel_1.usersModelDB.findOne({ email: email })];
+                case 1:
+                    exist = _b.sent();
+                    if (exist)
+                        return [2 /*return*/, res.json({ message: "user exist" })];
+                    return [4 /*yield*/, new userModel_1.usersModelDB({ email: email, password: password, firstName: firstName, lastName: lastName, dateOfBirth: dateOfBirth, last_login: "" })];
+                case 2:
+                    newUser = _b.sent();
+                    return [4 /*yield*/, newUser.save()];
+                case 3:
+                    _b.sent();
+                    token = authorization_1.generateToken(newUser._id);
+                    return [2 /*return*/, res.status(201).json({ data: newUser, token: token })];
+                case 4:
+                    error_1 = _b.sent();
+                    return [2 /*return*/, { error: error_1.message }];
+                case 5: return [2 /*return*/];
+            }
+        });
     });
-}); };
-exports.dbConnect = dbConnect;
-var dbDisconnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoose_1.default.connection.dropDatabase()];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, mongoose_1.default.connection.close()];
-            case 2:
-                _a.sent();
-                return [4 /*yield*/, mongoServer.stop()];
-            case 3:
-                _a.sent();
-                return [2 /*return*/];
-        }
+};
+exports.registerUser = registerUser;
+var verifyToken = function () {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            try {
+            }
+            catch (error) {
+            }
+            return [2 /*return*/];
+        });
     });
-}); };
-exports.dbDisconnect = dbDisconnect;
+};

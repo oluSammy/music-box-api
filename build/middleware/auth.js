@@ -39,46 +39,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dbDisconnect = exports.dbConnect = void 0;
-var mongoose_1 = __importDefault(require("mongoose"));
-var mongodb_memory_server_1 = require("mongodb-memory-server");
-var mongoServer = new mongodb_memory_server_1.MongoMemoryServer();
-var dbConnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var uri, mongooseOpts;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoServer.getUri()];
-            case 1:
-                uri = _a.sent();
-                mongooseOpts = {
-                    useNewUrlParser: true,
-                    useCreateIndex: true,
-                    useUnifiedTopology: true,
-                    useFindAndModify: false,
-                };
-                mongoose_1.default
-                    .connect(uri, mongooseOpts)
-                    .then(function () { return console.log("info", "connected to memory-server"); })
-                    .catch(function () { return console.log("error", "could not connect"); });
-                return [2 /*return*/];
-        }
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var userModel_1 = require("../model/userModel");
+var response_1 = __importDefault(require("../utils/response"));
+var responseStatus = new response_1.default();
+function verifyToken(req, res, next) {
+    return __awaiter(this, void 0, void 0, function () {
+        var token, decoded, user, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!(req.headers.authorization &&
+                        req.headers.authorization.startsWith("Bearer"))) return [3 /*break*/, 5];
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    token = req.headers.authorization.split(" ")[1];
+                    decoded = (jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY));
+                    return [4 /*yield*/, userModel_1.UserModel.findById(decoded.id)];
+                case 2:
+                    user = _a.sent();
+                    req.user = user;
+                    return [2 /*return*/, next()];
+                case 3:
+                    error_1 = _a.sent();
+                    responseStatus.setError(401, "Bearer token is missing");
+                    return [2 /*return*/, responseStatus.send(res)];
+                case 4: return [3 /*break*/, 6];
+                case 5:
+                    responseStatus.setError(404, "Not Authorised, invalid token");
+                    return [2 /*return*/, responseStatus.send(res)];
+                case 6: return [2 /*return*/];
+            }
+        });
     });
-}); };
-exports.dbConnect = dbConnect;
-var dbDisconnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoose_1.default.connection.dropDatabase()];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, mongoose_1.default.connection.close()];
-            case 2:
-                _a.sent();
-                return [4 /*yield*/, mongoServer.stop()];
-            case 3:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.dbDisconnect = dbDisconnect;
+}
+exports.default = verifyToken;

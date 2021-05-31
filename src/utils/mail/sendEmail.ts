@@ -12,23 +12,24 @@ const sendEmail = async (
   // eslint-disable-next-line consistent-return
 ): Promise<unknown> => {
   try {
-    // create reusable nodemailerMailgun object using the default SMTP transport;
-    const api_key = "f635b317d4808173f1505ce8cf661d74-fa6e84b7-12eb441d";
-    // const domain = "sandboxe84e584cd0e2469bad494e3a0dc0f913.mailgun.org";
-    const domain = "musicbox.decagon.com";
-    const auth = {
-      auth: { api_key, domain },
-    };
-    const nodemailerMailgun = nodemailer.createTransport(mg(auth));
-
+    // Create a nodemailer transporter with the outlook mail account
+    const transporter = nodemailer.createTransport({
+      service: "hotmail",
+      auth: { 
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS
+      }
+    })
+    // Template source which contains specific email format
     const templateSource = fs.readFileSync(
       path.join(__dirname, "../../../templates/", template),
       "utf8"
     );
+    // Compile template with handlebars compile method
     const compiledTemplate = handlebars.compile(templateSource);
     const options = () => {
       return {
-        from: "musicboxb@outlook.com",
+        from: "MUSIC BOX <musicboxb@outlook.com>",
         to: email,
         subject,
         html: compiledTemplate(payload),
@@ -36,7 +37,7 @@ const sendEmail = async (
     };
 
     // Send email
-    return nodemailerMailgun.sendMail(options(), (error, info) => {
+    return transporter.sendMail(options(), (error, info) => {
       if (error) {
         return error;
       }

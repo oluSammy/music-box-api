@@ -43,31 +43,31 @@ var nodemailer_1 = __importDefault(require("nodemailer"));
 var handlebars_1 = __importDefault(require("handlebars"));
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
-var nodemailer_mailgun_transport_1 = __importDefault(require("nodemailer-mailgun-transport"));
 var sendEmail = function (email, subject, payload, template
 // eslint-disable-next-line consistent-return
 ) { return __awaiter(void 0, void 0, void 0, function () {
-    var api_key, domain, auth, nodemailerMailgun, templateSource, compiledTemplate_1, options;
+    var transporter, templateSource, compiledTemplate_1, options;
     return __generator(this, function (_a) {
         try {
-            api_key = "f635b317d4808173f1505ce8cf661d74-fa6e84b7-12eb441d";
-            domain = "musicbox.decagon.com";
-            auth = {
-                auth: { api_key: api_key, domain: domain },
-            };
-            nodemailerMailgun = nodemailer_1.default.createTransport(nodemailer_mailgun_transport_1.default(auth));
+            transporter = nodemailer_1.default.createTransport({
+                service: "hotmail",
+                auth: {
+                    user: process.env.MAIL_USER,
+                    pass: process.env.MAIL_PASS
+                }
+            });
             templateSource = fs_1.default.readFileSync(path_1.default.join(__dirname, "../../../templates/", template), "utf8");
             compiledTemplate_1 = handlebars_1.default.compile(templateSource);
             options = function () {
                 return {
-                    from: "musicboxb@outlook.com",
+                    from: "MUSIC BOX <musicboxb@outlook.com>",
                     to: email,
                     subject: subject,
                     html: compiledTemplate_1(payload),
                 };
             };
             // Send email
-            return [2 /*return*/, nodemailerMailgun.sendMail(options(), function (error, info) {
+            return [2 /*return*/, transporter.sendMail(options(), function (error, info) {
                     if (error) {
                         return error;
                     }

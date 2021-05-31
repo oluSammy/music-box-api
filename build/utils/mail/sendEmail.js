@@ -39,46 +39,45 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dbDisconnect = exports.dbConnect = void 0;
-var mongoose_1 = __importDefault(require("mongoose"));
-var mongodb_memory_server_1 = require("mongodb-memory-server");
-var mongoServer = new mongodb_memory_server_1.MongoMemoryServer();
-var dbConnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var uri, mongooseOpts;
+var nodemailer_1 = __importDefault(require("nodemailer"));
+var handlebars_1 = __importDefault(require("handlebars"));
+var fs_1 = __importDefault(require("fs"));
+var path_1 = __importDefault(require("path"));
+var nodemailer_mailgun_transport_1 = __importDefault(require("nodemailer-mailgun-transport"));
+var sendEmail = function (email, subject, payload, template
+// eslint-disable-next-line consistent-return
+) { return __awaiter(void 0, void 0, void 0, function () {
+    var api_key, domain, auth, nodemailerMailgun, templateSource, compiledTemplate_1, options;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoServer.getUri()];
-            case 1:
-                uri = _a.sent();
-                mongooseOpts = {
-                    useNewUrlParser: true,
-                    useCreateIndex: true,
-                    useUnifiedTopology: true,
-                    useFindAndModify: false,
+        try {
+            api_key = "f635b317d4808173f1505ce8cf661d74-fa6e84b7-12eb441d";
+            domain = "sandboxc58659d16b0e42dcb6680656e70c38ac.mailgun.org";
+            auth = {
+                auth: { api_key: api_key, domain: domain },
+            };
+            nodemailerMailgun = nodemailer_1.default.createTransport(nodemailer_mailgun_transport_1.default(auth));
+            templateSource = fs_1.default.readFileSync(path_1.default.join(__dirname, "../../../templates/", template), "utf8");
+            compiledTemplate_1 = handlebars_1.default.compile(templateSource);
+            options = function () {
+                return {
+                    from: "musicboxb@outlook.com",
+                    to: email,
+                    subject: subject,
+                    html: compiledTemplate_1(payload),
                 };
-                mongoose_1.default
-                    .connect(uri, mongooseOpts)
-                    .then(function () { return console.log("info", "connected to memory-server"); })
-                    .catch(function () { return console.log("error", "could not connect"); });
-                return [2 /*return*/];
+            };
+            // Send email
+            return [2 /*return*/, nodemailerMailgun.sendMail(options(), function (error, info) {
+                    if (error) {
+                        return error;
+                    }
+                    return { info: info };
+                })];
         }
+        catch (error) {
+            return [2 /*return*/, error];
+        }
+        return [2 /*return*/];
     });
 }); };
-exports.dbConnect = dbConnect;
-var dbDisconnect = function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoose_1.default.connection.dropDatabase()];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, mongoose_1.default.connection.close()];
-            case 2:
-                _a.sent();
-                return [4 /*yield*/, mongoServer.stop()];
-            case 3:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.dbDisconnect = dbDisconnect;
+exports.default = sendEmail;

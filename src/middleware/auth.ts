@@ -4,6 +4,7 @@ import { UserModel } from "../models/userModel";
 import ResponseStatus from "../utils/response";
 
 const responseStatus = new ResponseStatus();
+
 async function verifyToken(
   req: Request,
   res: Response,

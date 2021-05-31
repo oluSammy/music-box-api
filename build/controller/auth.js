@@ -35,36 +35,48 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.viewProfile = void 0;
-var userModel_1 = require("../models/userModel");
-var response_1 = __importDefault(require("../utils/response"));
-var responseStatus = new response_1.default();
-var viewProfile = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, viewUserProfile, err_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 3, , 4]);
-                id = req.params.id;
-                if (!id) return [3 /*break*/, 2];
-                return [4 /*yield*/, userModel_1.UserModel.findById(id)];
-            case 1:
-                viewUserProfile = _a.sent();
-                responseStatus.setSuccess(200, "success", viewUserProfile);
-                return [2 /*return*/, responseStatus.send(res)];
-            case 2:
-                responseStatus.setError(404, "Cannot find user");
-                return [2 /*return*/, responseStatus.send(res)];
-            case 3:
-                err_1 = _a.sent();
-                responseStatus.setError(404, "Cannot find user");
-                return [2 /*return*/, responseStatus.send(res)];
-            case 4: return [2 /*return*/];
-        }
+exports.loginUser = void 0;
+function loginUser(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, email, password, user, _b, error_1;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    _c.trys.push([0, 4, , 5]);
+                    _a = req.body, email = _a.email, password = _a.password;
+                    return [4 /*yield*/, UserModelDB.findOne({ email: email })];
+                case 1:
+                    user = _c.sent();
+                    _b = user;
+                    if (!_b) return [3 /*break*/, 3];
+                    return [4 /*yield*/, user.isPassowrdMatch(password)];
+                case 2:
+                    _b = (_c.sent());
+                    _c.label = 3;
+                case 3:
+                    if (_b) {
+                        res.status(200).json({
+                            status: 'success',
+                            data: {
+                                _id: user._id,
+                                firstName: user.firstName,
+                                lastName: user.lastName,
+                                password: password,
+                                gender: user.gender,
+                                dateOfBirth: user.dateOfBirth,
+                                token: generateToken(user._id)
+                            }
+                        });
+                    }
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_1 = _c.sent();
+                    res.status(400);
+                    throw new Error('Invalid Credentials');
+                case 5: return [2 /*return*/];
+            }
+        });
     });
-}); };
-exports.viewProfile = viewProfile;
+}
+exports.loginUser = loginUser;

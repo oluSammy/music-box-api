@@ -1,5 +1,6 @@
-import { Schema, model, connect, Document } from "mongoose";
+import { Schema, model } from "mongoose";
 import { IUser } from "../types/types";
+
 import bcrypt from "bcryptjs";
 
 const userSchema = new Schema<IUser>({
@@ -15,9 +16,6 @@ const userSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    required(this: IUser) {
-      return this.provider === "local";
-    },
   },
 });
 
@@ -28,10 +26,10 @@ userSchema.pre("save", async function (next) {
     this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.log(error.message);
   }
 });
+
 // verify password
 userSchema.methods.isPasswordMatch = async function (enteredPassword) {
   return bcrypt.compare(enteredPassword, this.password);

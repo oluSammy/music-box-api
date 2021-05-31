@@ -54,13 +54,9 @@ var updateProfile = function (req, res) { return __awaiter(void 0, void 0, void 
                     return [2 /*return*/, responseStatus.send(res)];
                 }
                 id = req.params.id;
-                return [4 /*yield*/, userModel_1.UserModel.findByIdAndUpdate(id, req.body, function (err, docs) {
-                        if (err) {
-                            console.log(err);
-                        }
-                        else {
-                            console.log(docs);
-                        }
+                return [4 /*yield*/, userModel_1.UserModel.findByIdAndUpdate(id, req.body, {
+                        new: true,
+                        runValidators: true,
                     })];
             case 1:
                 updateUserProfile = _a.sent();
@@ -68,8 +64,8 @@ var updateProfile = function (req, res) { return __awaiter(void 0, void 0, void 
                 return [2 /*return*/, responseStatus.send(res)];
             case 2:
                 error_1 = _a.sent();
-                console.log(error_1);
-                return [3 /*break*/, 3];
+                responseStatus.setError(404, "you cannot update password");
+                return [2 /*return*/, responseStatus.send(res)];
             case 3: return [2 /*return*/];
         }
     });

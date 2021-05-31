@@ -4,19 +4,21 @@ import ResponseStatus from "../utils/response";
 
 const responseStatus = new ResponseStatus();
 
-export const viewProfile = async (req: Request, res: Response) => {
+export const viewProfile = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
     const { id } = req.params;
-    console.log(id);
-    if(id) {
-        const viewUserProfile = await UserModel.findById(id);
-        responseStatus.setSuccess(200, "success", viewUserProfile);
-        return responseStatus.send(res);
-    } else{
-        responseStatus.setError(404, "Cannot find user");
-        return responseStatus.send(res)
+    if (id) {
+      const viewUserProfile = await UserModel.findById(id);
+      responseStatus.setSuccess(200, "success", viewUserProfile);
+      return responseStatus.send(res);
     }
+    responseStatus.setError(404, "Cannot find user");
+    return responseStatus.send(res);
   } catch (err) {
-    console.log(err);
+    responseStatus.setError(404, "Cannot find user");
+    return responseStatus.send(res);
   }
 };

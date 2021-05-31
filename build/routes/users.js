@@ -7,10 +7,13 @@ var express_1 = __importDefault(require("express"));
 var updateProfile_1 = require("../controllers/updateProfile");
 var viewProfile_1 = require("../controllers/viewProfile");
 var auth_1 = __importDefault(require("../middleware/auth"));
+var userAuth_1 = require("../controllers/userAuth");
 var router = express_1.default.Router();
 router.get("/", function (req, res) {
     res.send("users route");
 });
 router.get("/profile/:id", auth_1.default, viewProfile_1.viewProfile);
 router.put("/profile/:id", auth_1.default, updateProfile_1.updateProfile);
+router.post("/register", userAuth_1.registerUser);
+router.post("/login", userAuth_1.loginUser);
 exports.default = router;

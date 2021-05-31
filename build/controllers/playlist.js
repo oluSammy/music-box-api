@@ -39,32 +39,45 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.viewProfile = void 0;
-var userModel_1 = require("../models/userModel");
+exports.likePublicPost = void 0;
+var playlistModel_1 = require("../models/playlistModel");
 var response_1 = __importDefault(require("../utils/response"));
 var responseStatus = new response_1.default();
-var viewProfile = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, viewUserProfile, err_1;
+var likePublicPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var toLike, addedLike, newData, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 3, , 4]);
-                id = req.params.id;
-                if (!id) return [3 /*break*/, 2];
-                return [4 /*yield*/, userModel_1.UserModel.findById(id)];
+                _a.trys.push([0, 4, , 5]);
+                return [4 /*yield*/, playlistModel_1.PlaylistModel.findOne({
+                        _id: req.params.id,
+                        isPublic: true,
+                        likes: { $in: [req.user._id] },
+                    }).exec()];
             case 1:
-                viewUserProfile = _a.sent();
-                responseStatus.setSuccess(200, "success", viewUserProfile);
-                return [2 /*return*/, responseStatus.send(res)];
+                toLike = _a.sent();
+                if (!!toLike) return [3 /*break*/, 3];
+                return [4 /*yield*/, playlistModel_1.PlaylistModel.findOneAndUpdate({ _id: req.params.id, isPublic: true }, { $push: { likes: req.user._id } }, { new: true }).exec()];
             case 2:
-                responseStatus.setError(404, "Cannot find user");
+                addedLike = _a.sent();
+                if (addedLike) {
+                    newData = {
+                        data: addedLike,
+                    };
+                    responseStatus.setSuccess(200, "Successful", newData);
+                    return [2 /*return*/, responseStatus.send(res)];
+                }
+                responseStatus.setError(400, "failed");
                 return [2 /*return*/, responseStatus.send(res)];
             case 3:
-                err_1 = _a.sent();
-                responseStatus.setError(404, "Cannot find user");
+                responseStatus.setError(400, "you can not like a playlist more than once");
                 return [2 /*return*/, responseStatus.send(res)];
-            case 4: return [2 /*return*/];
+            case 4:
+                err_1 = _a.sent();
+                responseStatus.setError(400, "failed");
+                return [2 /*return*/, responseStatus.send(res)];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
-exports.viewProfile = viewProfile;
+exports.likePublicPost = likePublicPost;

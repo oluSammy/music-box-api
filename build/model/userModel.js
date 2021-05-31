@@ -39,32 +39,76 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.viewProfile = void 0;
-var userModel_1 = require("../models/userModel");
-var response_1 = __importDefault(require("../utils/response"));
-var responseStatus = new response_1.default();
-var viewProfile = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, viewUserProfile, err_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 3, , 4]);
-                id = req.params.id;
-                if (!id) return [3 /*break*/, 2];
-                return [4 /*yield*/, userModel_1.UserModel.findById(id)];
-            case 1:
-                viewUserProfile = _a.sent();
-                responseStatus.setSuccess(200, "success", viewUserProfile);
-                return [2 /*return*/, responseStatus.send(res)];
-            case 2:
-                responseStatus.setError(404, "Cannot find user");
-                return [2 /*return*/, responseStatus.send(res)];
-            case 3:
-                err_1 = _a.sent();
-                responseStatus.setError(404, "Cannot find user");
-                return [2 /*return*/, responseStatus.send(res)];
-            case 4: return [2 /*return*/];
-        }
+exports.UserModel = void 0;
+var mongoose_1 = require("mongoose");
+var bcryptjs_1 = __importDefault(require("bcryptjs"));
+var userSchema = new mongoose_1.Schema({
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    password: {
+        type: String,
+    },
+    firstName: {
+        type: String,
+        required: true,
+    },
+    lastName: {
+        type: String,
+        required: true,
+    },
+    dateOfBirth: {
+        type: Date,
+        required: true,
+    },
+    provider: {
+        type: String,
+        enum: ["local", "google", "facebook"],
+    },
+    gender: {
+        type: String,
+        required: true,
+    },
+    last_login: {
+        type: Date,
+        default: Date.now(),
+    },
+});
+// hash password
+userSchema.pre("save", function (next) {
+    return __awaiter(this, void 0, void 0, function () {
+        var salt, _a, error_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, bcryptjs_1.default.genSalt(10)];
+                case 1:
+                    salt = _b.sent();
+                    _a = this;
+                    return [4 /*yield*/, bcryptjs_1.default.hash(this.password, salt)];
+                case 2:
+                    _a.password = _b.sent();
+                    next();
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_1 = _b.sent();
+                    // eslint-disable-next-line no-console
+                    console.log(error_1.message);
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
     });
-}); };
-exports.viewProfile = viewProfile;
+});
+// verify password
+userSchema.methods.isPasswordMatch = function (enteredPassword) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, bcryptjs_1.default.compare(enteredPassword, this.password)];
+        });
+    });
+};
+exports.UserModel = mongoose_1.model("User", userSchema);

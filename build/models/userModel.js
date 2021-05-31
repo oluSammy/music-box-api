@@ -55,9 +55,6 @@ var userSchema = new mongoose_1.Schema({
     },
     password: {
         type: String,
-        required: function () {
-            return this.provider === "local";
-        },
     },
 });
 // hash password
@@ -79,7 +76,6 @@ userSchema.pre("save", function (next) {
                     return [3 /*break*/, 4];
                 case 3:
                     error_1 = _b.sent();
-                    // eslint-disable-next-line no-console
                     console.log(error_1.message);
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];

@@ -55,9 +55,6 @@ var userSchema = new mongoose_1.Schema({
     },
     password: {
         type: String,
-        required: function () {
-            return this.provider === "local";
-        },
     },
 });
 // hash password

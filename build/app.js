@@ -12,7 +12,10 @@ var dotenv_1 = __importDefault(require("dotenv"));
 var index_1 = __importDefault(require("./routes/index"));
 var cors_1 = __importDefault(require("cors"));
 var mongoConnect_1 = __importDefault(require("./database/mongoConnect"));
+var passport_1 = __importDefault(require("passport"));
 var mongoMemoryConnect_1 = require("./database/mongoMemoryConnect");
+var passport_2 = require("./controllers/passport");
+var express_session_1 = __importDefault(require("express-session"));
 dotenv_1.default.config();
 var app = express_1.default();
 app.use(express_1.default.static(path_1.default.join(__dirname, "../", "public")));
@@ -22,12 +25,23 @@ app.use(morgan_1.default("dev"));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use(cookie_parser_1.default());
+// passport middleware
+app.use(passport_1.default.initialize());
+app.use(passport_1.default.session());
+app.use(express_session_1.default({
+    secret: "akfc76q3gbd83bqdh",
+    resave: false,
+    saveUninitialized: true,
+}));
 if (process.env.NODE_ENV === "test") {
     mongoMemoryConnect_1.dbConnect();
 }
 else {
     mongoConnect_1.default();
 }
+// middleware for social login
+passport_2.googleStrategy(passport_1.default);
+passport_2.facebookStrategy(passport_1.default);
 app.get("/", function (req, res) {
     res.redirect("/api/v1/music-box-api");
 });

@@ -1,4 +1,4 @@
-import { Schema, model, connect, Document } from "mongoose";
+import { Schema, model } from "mongoose";
 import { IUser } from "../types/types";
 
 import bcrypt from "bcryptjs";
@@ -16,9 +16,6 @@ const userSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    required(this: IUser) {
-      return this.provider === "local";
-    },
   },
 });
 

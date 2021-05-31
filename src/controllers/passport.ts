@@ -72,6 +72,14 @@ export const googleAuthController = async (req: Request, res: Response) => {
       return responseStatus.send(res);
     }
 
+    if (user.provider === "facebook") {
+      responseStatus.setError(
+        400,
+        "you already have an account with facebook, please login with facebook"
+      );
+      return responseStatus.send(res);
+    }
+
     const token = generateToken(user._id!);
 
     const data = {
@@ -82,10 +90,8 @@ export const googleAuthController = async (req: Request, res: Response) => {
     responseStatus.setSuccess(201, "successful", data);
     return responseStatus.send(res);
   } catch (e) {
-    return res.status(500).json({
-      status: "fail",
-      message: "an error occurred",
-    });
+    responseStatus.setError(500, "an error occurred");
+    return responseStatus.send(res);
   }
 };
 
@@ -123,6 +129,15 @@ export const fbAuthController = async (req: Request, res: Response) => {
       responseStatus.setSuccess(201, "successful", data);
       return responseStatus.send(res);
     }
+
+    if (user.provider === "google") {
+      responseStatus.setError(
+        400,
+        "you already have an account with google, please login with google"
+      );
+      return responseStatus.send(res);
+    }
+
     const token = generateToken(user._id!);
 
     const data = {
@@ -133,9 +148,7 @@ export const fbAuthController = async (req: Request, res: Response) => {
     responseStatus.setSuccess(201, "successful", data);
     return responseStatus.send(res);
   } catch (e) {
-    return res.status(500).json({
-      status: "fail",
-      message: "an error occurred",
-    });
+    responseStatus.setError(500, "an error occurred");
+    return responseStatus.send(res);
   }
 };

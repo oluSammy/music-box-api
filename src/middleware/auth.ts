@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { UserModel } from "../model/userModel";
+import { UserModel } from "../models/userModel";
 import ResponseStatus from "../utils/response";
 
 const responseStatus = new ResponseStatus();

@@ -39,10 +39,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.likePublicPost = void 0;
-var playlistModel_1 = require("../model/playlistModel");
+exports.likePublicPost = exports.createPlaylist = void 0;
+var playlistModel_1 = require("../models/playlistModel");
 var response_1 = __importDefault(require("../utils/response"));
 var responseStatus = new response_1.default();
+var createPlaylist = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var playlist, newPlaylist, error_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                playlist = req.body;
+                playlist.owner_id = req.user.id;
+                return [4 /*yield*/, playlistModel_1.PlaylistModel.create(playlist)];
+            case 1:
+                newPlaylist = _a.sent();
+                if (newPlaylist) {
+                    responseStatus.setSuccess(201, "Successful!", { payload: newPlaylist });
+                    return [2 /*return*/, responseStatus.send(res)];
+                }
+                responseStatus.setError(400, "Invalid input data");
+                return [2 /*return*/, responseStatus.send(res)];
+            case 2:
+                error_1 = _a.sent();
+                responseStatus.setError(400, "Error creating playlist");
+                return [2 /*return*/, responseStatus.send(res)];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.createPlaylist = createPlaylist;
 var likePublicPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var toLike, addedLike, newData, err_1;
     return __generator(this, function (_a) {

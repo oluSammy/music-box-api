@@ -8,14 +8,18 @@ export interface IUser {
   provider: string;
   token?: string;
   last_login?: string;
+  _id?: string;
 }
-
-export interface Playlist {
+export interface REQUESTUSER {
+  id?: string;
+  token?: string;
+}
+export interface TPlaylist {
   name: string;
   genre_id: string;
   tracks: string[];
   isPublic: boolean;
-  likes: string[];
+  likes?: string[];
   owner_id: string;
 }
 

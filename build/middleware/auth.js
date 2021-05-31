@@ -40,7 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var userModel_1 = require("../model/userModel");
+var userModel_1 = require("../models/userModel");
 var response_1 = __importDefault(require("../utils/response"));
 var responseStatus = new response_1.default();
 function verifyToken(req, res, next) {

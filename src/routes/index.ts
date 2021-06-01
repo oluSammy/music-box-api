@@ -1,11 +1,16 @@
 import express, { Request, Response } from "express";
+import playlistRoute from "./playlist";
 import usersRoute from "./users";
 import genreRoutes from "./genre";
 import authRouter from "./googleAuth";
 import fbRouter from "./fbAuth";
-import playlistRouter from "./playlist";
 
 const router = express.Router();
+
+// Playlist Route
+router.use("/playlist", playlistRoute);
+
+
 
 router.get("/", (req: Request, res: Response) => {
   res.send("music-box server is live");
@@ -18,7 +23,6 @@ router.use("/users", usersRoute);
 router.use("/genres", genreRoutes);
 
 // controller for playlist
-router.use("/playlist", playlistRouter);
 
 // google authentication route
 // http://localhost:3000/api/v1/music-box-api/auth/google

@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { Schema, model } from "mongoose";
 import { TPlaylist } from "../types/types";
 
 const playlistSchema = new Schema<TPlaylist>(
@@ -20,7 +20,6 @@ const playlistSchema = new Schema<TPlaylist>(
       {
         type: String,
         unique: true,
-        sparse: true,
       },
     ],
     genre_id: {
@@ -32,11 +31,10 @@ const playlistSchema = new Schema<TPlaylist>(
         type: Schema.Types.ObjectId,
         ref: "User",
         unique: true,
-        sparse: true,
       },
     ],
   },
   { timestamps: true }
 );
 
-export const PlaylistModel = model("playlist", playlistSchema);
+export default model<TPlaylist>("Playlist", playlistSchema);

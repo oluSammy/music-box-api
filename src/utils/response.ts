@@ -46,5 +46,4 @@ class ResponseStatus {
     });
   }
 }
-
 export default ResponseStatus;

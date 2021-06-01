@@ -39,8 +39,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removePlaylist = exports.removeFromPlaylist = exports.addToPlaylist = exports.createPlaylist = exports.getPlaylist = exports.getPublicPlaylists = void 0;
-var playlist_1 = __importDefault(require("../models/playlist"));
+exports.likePublicPost = exports.removePlaylist = exports.removeFromPlaylist = exports.addToPlaylist = exports.createPlaylist = exports.getPlaylist = exports.getPublicPlaylists = void 0;
+var playlistModel_1 = __importDefault(require("../models/playlistModel"));
 var response_1 = __importDefault(require("../utils/response"));
 var response = new response_1.default();
 var getPublicPlaylists = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
@@ -49,12 +49,12 @@ var getPublicPlaylists = function (req, res) { return __awaiter(void 0, void 0, 
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                currentUser = req.body.id;
+                currentUser = req.user.id;
                 if (!currentUser) {
                     response.setError(401, "Unauthorized access");
                     return [2 /*return*/, response.send(res)];
                 }
-                return [4 /*yield*/, playlist_1.default.find({ isPublic: true })
+                return [4 /*yield*/, playlistModel_1.default.find({ isPublic: true })
                         .lean()
                         .exec()];
             case 1:
@@ -82,15 +82,14 @@ var getPlaylist = function (req, res) { return __awaiter(void 0, void 0, void 0,
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 playlistId = req.params.id;
-                currentUser = req.body.id;
+                currentUser = req.user.id;
                 console.log(currentUser);
-                return [4 /*yield*/, playlist_1.default.findById({ _id: playlistId }).lean().exec()];
+                return [4 /*yield*/, playlistModel_1.default.findById({ _id: playlistId }).lean().exec()];
             case 1:
                 playlist = _a.sent();
                 if (playlist) {
-                    console.log(playlist.owner_id);
                     if (playlist.isPublic ||
-                        (currentUser && playlist.owner_id === currentUser)) {
+                        (currentUser && playlist.owner_id == currentUser)) {
                         response.setSuccess(200, "Successful!", { payload: playlist.tracks });
                         return [2 /*return*/, response.send(res)];
                     }
@@ -116,7 +115,8 @@ var createPlaylist = function (req, res) { return __awaiter(void 0, void 0, void
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 playlist = req.body;
-                return [4 /*yield*/, playlist_1.default.create(playlist)];
+                playlist.owner_id = req.user.id;
+                return [4 /*yield*/, playlistModel_1.default.create(playlist)];
             case 1:
                 newPlaylist = _a.sent();
                 if (newPlaylist) {
@@ -146,8 +146,8 @@ var addToPlaylist = function (req, res) { return __awaiter(void 0, void 0, void 
                 _a.trys.push([0, 4, , 5]);
                 playlistId = req.params.id;
                 newTrack_1 = req.body.track;
-                currentUser = req.body.id;
-                return [4 /*yield*/, playlist_1.default.findOne({
+                currentUser = req.user.id;
+                return [4 /*yield*/, playlistModel_1.default.findOne({
                         _id: playlistId,
                         owner_id: currentUser,
                     }).exec()];
@@ -189,8 +189,8 @@ var removeFromPlaylist = function (req, res) { return __awaiter(void 0, void 0, 
                 _a.trys.push([0, 4, , 5]);
                 playlistId = req.params.id;
                 unwantedTrack_1 = req.body.track;
-                currentUser = req.body.id;
-                return [4 /*yield*/, playlist_1.default.findById({
+                currentUser = req.user.id;
+                return [4 /*yield*/, playlistModel_1.default.findById({
                         _id: playlistId,
                         owner_id: currentUser,
                     }).exec()];
@@ -231,8 +231,8 @@ var removePlaylist = function (req, res) { return __awaiter(void 0, void 0, void
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 playlistId = req.params.id;
-                currentUser = req.body.id;
-                return [4 /*yield*/, playlist_1.default.findOneAndRemove({
+                currentUser = req.user.id;
+                return [4 /*yield*/, playlistModel_1.default.findOneAndRemove({
                         _id: playlistId,
                         owner_id: currentUser,
                     }).exec()];
@@ -254,3 +254,41 @@ var removePlaylist = function (req, res) { return __awaiter(void 0, void 0, void
     });
 }); };
 exports.removePlaylist = removePlaylist;
+var likePublicPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var toLike, addedLike, newData, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 4, , 5]);
+                return [4 /*yield*/, playlistModel_1.default.findOne({
+                        _id: req.params.id,
+                        isPublic: true,
+                        likes: { $in: [req.user._id] },
+                    }).exec()];
+            case 1:
+                toLike = _a.sent();
+                if (!!toLike) return [3 /*break*/, 3];
+                return [4 /*yield*/, playlistModel_1.default.findOneAndUpdate({ _id: req.params.id, isPublic: true }, { $push: { likes: req.user._id } }, { new: true }).exec()];
+            case 2:
+                addedLike = _a.sent();
+                if (addedLike) {
+                    newData = {
+                        data: addedLike,
+                    };
+                    response.setSuccess(200, "Successful", newData);
+                    return [2 /*return*/, response.send(res)];
+                }
+                response.setError(400, "failed");
+                return [2 /*return*/, response.send(res)];
+            case 3:
+                response.setError(400, "you can not like a playlist more than once");
+                return [2 /*return*/, response.send(res)];
+            case 4:
+                err_1 = _a.sent();
+                response.setError(400, "failed");
+                return [2 /*return*/, response.send(res)];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };
+exports.likePublicPost = likePublicPost;

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-console */
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 

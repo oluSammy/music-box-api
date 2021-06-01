@@ -35,6 +35,7 @@ module.exports = {
     "prefer-template": "off",
     "import/prefer-default-export": "off",
     "no-useless-escape": "off",
+    "@typescript-eslint/no-explicit-any": "off",
   },
   settings: {
     "import/resolver": {

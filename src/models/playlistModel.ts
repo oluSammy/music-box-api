@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import Playlist from "../types/playlist";
+import { TPlaylist } from "../types/types";
 
-const playlistSchema = new Schema<Playlist>(
+const playlistSchema = new Schema<TPlaylist>(
   {
     owner_id: {
       type: Schema.Types.ObjectId,
@@ -37,4 +37,4 @@ const playlistSchema = new Schema<Playlist>(
   { timestamps: true }
 );
 
-export default model<Playlist>("playlist", playlistSchema);
+export default model<TPlaylist>("Playlist", playlistSchema);

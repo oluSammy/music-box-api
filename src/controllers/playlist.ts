@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Request, Response } from "express";
-import Playlist from "../models/playlist";
-import TPlaylist from "../types/playlist";
+import Playlist from "../models/playlistModel";
 import ResponseClass from "../utils/response";
+import { TPlaylist } from "../types/types";
 
 const response = new ResponseClass();
 
@@ -42,13 +42,13 @@ export const getPlaylist = async (
   try {
     const playlistId = req.params.id;
     const currentUser = req.user!.id;
+    console.log(currentUser);
     const playlist = await Playlist.findById({ _id: playlistId }).lean().exec();
 
     if (playlist) {
-      console.log(playlist.owner_id);
       if (
         playlist.isPublic ||
-        (currentUser && playlist.owner_id === currentUser)
+        (currentUser && playlist.owner_id == currentUser)
       ) {
         response.setSuccess(200, "Successful!", { payload: playlist.tracks });
         return response.send(res);
@@ -180,6 +180,41 @@ export const removePlaylist = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     response.setError(400, "Error removing playlist");
+    return response.send(res);
+  }
+
+}
+
+export const likePublicPost = async (
+  req: Request | any,
+  res: Response
+): Promise<Response> => {
+  try {
+    const toLike = await Playlist.findOne({
+      _id: req.params.id,
+      isPublic: true,
+      likes: { $in: [req.user._id] },
+    }).exec();
+    if (!toLike) {
+      const addedLike = await Playlist.findOneAndUpdate(
+        { _id: req.params.id, isPublic: true },
+        { $push: { likes: req.user._id } },
+        { new: true }
+      ).exec();
+      if (addedLike) {
+        const newData = {
+          data: addedLike,
+        };
+        response.setSuccess(200, "Successful", newData);
+        return response.send(res);
+      }
+      response.setError(400, "failed");
+      return response.send(res);
+    }
+    response.setError(400, "you can not like a playlist more than once");
+    return response.send(res);
+  } catch (err) {
+    response.setError(400, "failed");
     return response.send(res);
   }
 };

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import mongoose from "mongoose";
 
 const message =
@@ -6,7 +5,7 @@ const message =
     ? "Successfully connected to MongoDB Atlas!"
     : "Successfully connected to MongoDB Local!";
 
-const connectDB = (): void => {
+const connectDB = () => {
   const url: string =
     process.env.NODE_ENV === "production"
       ? (process.env.DATABASE_URL as string)

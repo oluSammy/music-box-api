@@ -104,6 +104,10 @@ var googleAuthController = function (req, res) { return __awaiter(void 0, void 0
                 responseStatus.setSuccess(201, "successful", data_1);
                 return [2 /*return*/, responseStatus.send(res)];
             case 4:
+                if (user.provider === "facebook") {
+                    responseStatus.setError(400, "you already have an account with facebook, please login with facebook");
+                    return [2 /*return*/, responseStatus.send(res)];
+                }
                 token = auth_1.generateToken(user._id);
                 data = {
                     token: token,
@@ -113,10 +117,8 @@ var googleAuthController = function (req, res) { return __awaiter(void 0, void 0
                 return [2 /*return*/, responseStatus.send(res)];
             case 5:
                 e_1 = _a.sent();
-                return [2 /*return*/, res.status(500).json({
-                        status: "fail",
-                        message: "an error occurred",
-                    })];
+                responseStatus.setError(500, "an error occurred");
+                return [2 /*return*/, responseStatus.send(res)];
             case 6: return [2 /*return*/];
         }
     });
@@ -160,6 +162,10 @@ var fbAuthController = function (req, res) { return __awaiter(void 0, void 0, vo
                 responseStatus.setSuccess(201, "successful", data_2);
                 return [2 /*return*/, responseStatus.send(res)];
             case 4:
+                if (user.provider === "google") {
+                    responseStatus.setError(400, "you already have an account with google, please login with google");
+                    return [2 /*return*/, responseStatus.send(res)];
+                }
                 token = auth_1.generateToken(user._id);
                 data = {
                     token: token,
@@ -169,10 +175,8 @@ var fbAuthController = function (req, res) { return __awaiter(void 0, void 0, vo
                 return [2 /*return*/, responseStatus.send(res)];
             case 5:
                 e_2 = _a.sent();
-                return [2 /*return*/, res.status(500).json({
-                        status: "fail",
-                        message: "an error occurred",
-                    })];
+                responseStatus.setError(500, "an error occurred");
+                return [2 /*return*/, responseStatus.send(res)];
             case 6: return [2 /*return*/];
         }
     });

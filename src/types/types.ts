@@ -1,13 +1,14 @@
 export interface IUser {
+  user: any;
   email: string;
   password: string;
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
   gender: string;
+  provider: string;
   token?: string;
   last_login?: string;
-  provider: string;
 }
 
 export interface Token {
@@ -20,6 +21,14 @@ export interface REQUESTUSER {
   id?: string;
   token?: string;
 }
+export interface TPlaylist {
+  name: string;
+  genre_id: string;
+  tracks: string[];
+  isPublic: boolean;
+  likes?: string[];
+  owner_id: string;
+}
 
 export interface GENRE {
   id: number;
@@ -30,15 +39,6 @@ export interface GENRE {
   picture_big: string;
   picture_xl: string;
   type: string;
-}
-
-export interface Playlist {
-  name: string;
-  genre_id: string;
-  tracks: string[];
-  isPublic: boolean;
-  likes: string[];
-  owner_id: string;
 }
 
 export type ResponseData = Record<string, any> | Record<string, any>[];

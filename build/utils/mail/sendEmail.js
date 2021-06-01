@@ -35,48 +35,49 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUser = void 0;
-function loginUser(req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var _a, email, password, user, _b, error_1;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
-                case 0:
-                    _c.trys.push([0, 4, , 5]);
-                    _a = req.body, email = _a.email, password = _a.password;
-                    return [4 /*yield*/, UserModelDB.findOne({ email: email })];
-                case 1:
-                    user = _c.sent();
-                    _b = user;
-                    if (!_b) return [3 /*break*/, 3];
-                    return [4 /*yield*/, user.isPassowrdMatch(password)];
-                case 2:
-                    _b = (_c.sent());
-                    _c.label = 3;
-                case 3:
-                    if (_b) {
-                        res.status(200).json({
-                            status: 'success',
-                            data: {
-                                _id: user._id,
-                                firstName: user.firstName,
-                                lastName: user.lastName,
-                                password: password,
-                                gender: user.gender,
-                                dateOfBirth: user.dateOfBirth,
-                                token: generateToken(user._id)
-                            }
-                        });
+var nodemailer_1 = __importDefault(require("nodemailer"));
+var handlebars_1 = __importDefault(require("handlebars"));
+var fs_1 = __importDefault(require("fs"));
+var path_1 = __importDefault(require("path"));
+var sendEmail = function (email, subject, payload, template
+// eslint-disable-next-line consistent-return
+) { return __awaiter(void 0, void 0, void 0, function () {
+    var transporter, templateSource, compiledTemplate_1, options;
+    return __generator(this, function (_a) {
+        try {
+            transporter = nodemailer_1.default.createTransport({
+                service: "hotmail",
+                auth: {
+                    user: process.env.MAIL_USER,
+                    pass: process.env.MAIL_PASS
+                }
+            });
+            templateSource = fs_1.default.readFileSync(path_1.default.join(__dirname, "../../../templates/", template), "utf8");
+            compiledTemplate_1 = handlebars_1.default.compile(templateSource);
+            options = function () {
+                return {
+                    from: "MUSIC BOX <musicboxb@outlook.com>",
+                    to: email,
+                    subject: subject,
+                    html: compiledTemplate_1(payload),
+                };
+            };
+            // Send email
+            return [2 /*return*/, transporter.sendMail(options(), function (error, info) {
+                    if (error) {
+                        return error;
                     }
-                    return [3 /*break*/, 5];
-                case 4:
-                    error_1 = _c.sent();
-                    res.status(400);
-                    throw new Error('Invalid Credentials');
-                case 5: return [2 /*return*/];
-            }
-        });
+                    return { info: info };
+                })];
+        }
+        catch (error) {
+            return [2 /*return*/, error];
+        }
+        return [2 /*return*/];
     });
-}
-exports.loginUser = loginUser;
+}); };
+exports.default = sendEmail;

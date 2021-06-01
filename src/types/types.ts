@@ -11,6 +11,12 @@ export interface IUser {
   last_login?: string;
 }
 
+export interface Token {
+  token: string;
+  userId: string;
+  createdAt: Date;
+}
+
 export interface REQUESTUSER {
   id?: string;
   token?: string;

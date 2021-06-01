@@ -1,4 +1,5 @@
 import express from "express";
+import passwordResetRouter from "./passwordResetRoutes";
 import { createPlaylist, likePublicPost } from "../controllers/playlist";
 import { loginUser, registerUser } from "../controllers/userAuth";
 import verifyToken from "../middleware/auth";
@@ -9,10 +10,11 @@ import { viewProfile } from "../controllers/viewProfile";
 const router = express.Router();
 
 // route for users
-
 router.get("/", (req, res) => {
   res.send("users route");
 });
+
+router.use("/", passwordResetRouter);
 
 // controller route to change user password
 router.put("/change-password/:id", verifyToken, changePassword);

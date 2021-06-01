@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
+var passwordResetRoutes_1 = __importDefault(require("./passwordResetRoutes"));
 var userAuth_1 = require("../controllers/userAuth");
 var auth_1 = __importDefault(require("../middleware/auth"));
 var users_1 = require("../controllers/users");
@@ -14,6 +15,7 @@ var router = express_1.default.Router();
 router.get("/", function (req, res) {
     res.send("users route");
 });
+router.use("/", passwordResetRoutes_1.default);
 // controller route to change user password
 router.put("/change-password/:id", auth_1.default, users_1.changePassword);
 router.get("/profile/:id", auth_1.default, viewProfile_1.viewProfile);

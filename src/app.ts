@@ -67,5 +67,12 @@ app.use((err: HttpError, req: Request, res: Response) => {
   res.status(err.status || 500);
   res.render("error");
 });
-
+// sendEmail(
+//   "emmanuelhemarxyll@gmail.com",
+//   "Test Email",
+//   { name: "Emmanuel", link: "foobar.com" },
+//   "requestMail.hbs"
+// )
+//   .then((res) => console.log("res", res))
+//   .catch((err) => console.log(err));
 export default app;

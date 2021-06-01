@@ -39,45 +39,63 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.likePublicPost = void 0;
-var playlistModel_1 = require("../model/playlistModel");
+exports.resetPasswordController = exports.requestPasswordResetController = void 0;
+var resetPassword_service_1 = require("../services/resetPassword.service");
 var response_1 = __importDefault(require("../utils/response"));
-var responseStatus = new response_1.default();
-var likePublicPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var toLike, addedLike, newData, err_1;
+var passwordValidate_1 = require("../utils/passwordValidate");
+var response = new response_1.default();
+var requestPasswordResetController = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var link, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 4, , 5]);
-                return [4 /*yield*/, playlistModel_1.PlaylistModel.findOne({
-                        _id: req.params.id,
-                        isPublic: true,
-                        likes: { $in: [req.user._id] },
-                    }).exec()];
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, resetPassword_service_1.requestPasswordReset(req.body.email)];
             case 1:
-                toLike = _a.sent();
-                if (!!toLike) return [3 /*break*/, 3];
-                return [4 /*yield*/, playlistModel_1.PlaylistModel.findOneAndUpdate({ _id: req.params.id, isPublic: true }, { $push: { likes: req.user._id } }, { new: true }).exec()];
-            case 2:
-                addedLike = _a.sent();
-                if (addedLike) {
-                    newData = {
-                        data: addedLike,
-                    };
-                    responseStatus.setSuccess(200, "Successful", newData);
-                    return [2 /*return*/, responseStatus.send(res)];
+                link = _a.sent();
+                if (!link) {
+                    response.setError(400, "password reset request failed");
+                    return [2 /*return*/, response.send(res)];
                 }
-                responseStatus.setError(400, "failed");
-                return [2 /*return*/, responseStatus.send(res)];
-            case 3:
-                responseStatus.setError(400, "you can not like a playlist more than once");
-                return [2 /*return*/, responseStatus.send(res)];
-            case 4:
-                err_1 = _a.sent();
-                responseStatus.setError(400, "failed");
-                return [2 /*return*/, responseStatus.send(res)];
-            case 5: return [2 /*return*/];
+                response.setSuccess(200, "password reset request successful", { link: link });
+                return [2 /*return*/, response.send(res)];
+            case 2:
+                error_1 = _a.sent();
+                response.setError(400, "password reset request failed");
+                return [2 /*return*/, response.send(res)];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
-exports.likePublicPost = likePublicPost;
+exports.requestPasswordResetController = requestPasswordResetController;
+var resetPasswordController = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var error, resp, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                error = passwordValidate_1.validateUserPassword({ password: req.body.password }).error;
+                if (error) {
+                    response.setError(400, "Invalid password format");
+                    return [2 /*return*/, response.send(res)];
+                }
+                return [4 /*yield*/, resetPassword_service_1.resetPassword(req.body.id, req.body.password, req.body.token)];
+            case 1:
+                resp = _a.sent();
+                if (!resp) {
+                    response.setError(400, "password reset failed");
+                    return [2 /*return*/, response.send(res)];
+                }
+                response.setSuccess(200, "password has been reset successfully", {
+                    status: "successful",
+                });
+                return [2 /*return*/, response.send(res)];
+            case 2:
+                error_2 = _a.sent();
+                response.setError(400, "password reset failed");
+                return [2 /*return*/, response.send(res)];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.resetPasswordController = resetPasswordController;

@@ -4,10 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var users_1 = __importDefault(require("./users"));
+var playlist_1 = __importDefault(require("./playlist"));
 var router = express_1.default.Router();
-router.get('/', function (req, res) {
+router.get("/", function (_req, res) {
     res.send("music-box server is live");
 });
-router.use('/users', users_1.default);
+// Playlist Route
+router.use("/playlist", playlist_1.default);
 exports.default = router;

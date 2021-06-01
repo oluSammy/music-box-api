@@ -40,6 +40,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.dbDisconnect = exports.dbConnect = void 0;
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-console */
 var mongoose_1 = __importDefault(require("mongoose"));
 var mongodb_memory_server_1 = require("mongodb-memory-server");
 var mongoServer = new mongodb_memory_server_1.MongoMemoryServer();
@@ -56,9 +59,10 @@ var dbConnect = function () { return __awaiter(void 0, void 0, void 0, function 
                     useUnifiedTopology: true,
                     useFindAndModify: false,
                 };
-                mongoose_1.default.connect(uri, mongooseOpts)
-                    .then(function () { return console.log('info', 'connected to memory-server'); })
-                    .catch(function () { return console.log('error', 'could not connect'); });
+                mongoose_1.default
+                    .connect(uri, mongooseOpts)
+                    .then(function () { return console.log("info", "connected to memory-server"); })
+                    .catch(function () { return console.log("error", "could not connect"); });
                 return [2 /*return*/];
         }
     });

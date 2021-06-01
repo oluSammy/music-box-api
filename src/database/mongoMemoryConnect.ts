@@ -1,5 +1,8 @@
-import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-console */
+import mongoose from "mongoose";
+import { MongoMemoryServer } from "mongodb-memory-server";
 
 const mongoServer = new MongoMemoryServer();
 
@@ -13,9 +16,10 @@ export const dbConnect = async () => {
     useFindAndModify: false,
   };
 
-  mongoose.connect(uri, mongooseOpts)
-    .then(() => console.log('info', 'connected to memory-server'))
-    .catch(() => console.log('error', 'could not connect'));
+  mongoose
+    .connect(uri, mongooseOpts)
+    .then(() => console.log("info", "connected to memory-server"))
+    .catch(() => console.log("error", "could not connect"));
 };
 
 export const dbDisconnect = async () => {

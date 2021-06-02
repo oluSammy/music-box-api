@@ -24,10 +24,10 @@ export interface REQUESTUSER {
 export interface TPlaylist {
   name: string;
   genre_id: string;
-  tracks: string[];
+  tracks?: string[];
   isPublic: boolean;
   likes?: string[];
-  owner_id: string;
+  owner_id?: string;
 }
 
 export interface GENRE {

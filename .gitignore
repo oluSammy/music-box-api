@@ -102,5 +102,10 @@ dist
 
 # TernJS port file
 .tern-port
+<<<<<<< HEAD
+.fake
+.ionide
+=======
 
 build/
+>>>>>>> d0700b3a0645ad65a62053c402bd15402ddd6d0d

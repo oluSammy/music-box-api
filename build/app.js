@@ -17,6 +17,15 @@ var mongoMemoryConnect_1 = require("./database/mongoMemoryConnect");
 var passport_2 = require("./controllers/passport");
 var express_session_1 = __importDefault(require("express-session"));
 dotenv_1.default.config();
+//= ======== DB Connect ===========
+if (process.env.NODE_ENV === "test") {
+    mongoMemoryConnect_1.dbConnect();
+}
+else {
+    mongoConnect_1.default();
+}
+//= ==============================
+//= ========= Express Config ===============
 var app = express_1.default();
 app.use(express_1.default.static(path_1.default.join(__dirname, "../", "public")));
 // view engine setup
@@ -58,6 +67,10 @@ app.use(function (err, req, res) {
     // render the error page
     res.status(err.status || 500);
     res.render("error");
+});
+//= =======================================
+app.get("/", function (_req, res) {
+    res.redirect("/api/v1/music-box-api");
 });
 // sendEmail(
 //   "emmanuelhemarxyll@gmail.com",

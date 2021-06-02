@@ -14,6 +14,15 @@ import session from "express-session";
 
 dotenv.config();
 
+//= ======== DB Connect ===========
+if (process.env.NODE_ENV === "test") {
+  dbConnect();
+} else {
+  connectDB();
+}
+//= ==============================
+
+//= ========= Express Config ===============
 const app = express();
 
 app.use(express.static(path.join(__dirname, "../", "public")));
@@ -66,6 +75,11 @@ app.use((err: HttpError, req: Request, res: Response) => {
   // render the error page
   res.status(err.status || 500);
   res.render("error");
+});
+//= =======================================
+
+app.get("/", (_req: Request, res: Response) => {
+  res.redirect("/api/v1/music-box-api");
 });
 // sendEmail(
 //   "emmanuelhemarxyll@gmail.com",

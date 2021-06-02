@@ -4,12 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
+var playlist_1 = __importDefault(require("./playlist"));
 var users_1 = __importDefault(require("./users"));
 var genre_1 = __importDefault(require("./genre"));
 var googleAuth_1 = __importDefault(require("./googleAuth"));
 var fbAuth_1 = __importDefault(require("./fbAuth"));
-var playlist_1 = __importDefault(require("./playlist"));
 var router = express_1.default.Router();
+// Playlist Route
+router.use("/playlist", playlist_1.default);
 router.get("/", function (req, res) {
     res.send("music-box server is live");
 });
@@ -18,7 +20,6 @@ router.use("/users", users_1.default);
 // controller for genre route
 router.use("/genres", genre_1.default);
 // controller for playlist
-router.use("/playlist", playlist_1.default);
 // google authentication route
 // http://localhost:3000/api/v1/music-box-api/auth/google
 router.use("/auth", googleAuth_1.default);

@@ -39,43 +39,228 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.likePublicPost = exports.createPlaylist = void 0;
-var playlistModel_1 = require("../models/playlistModel");
+exports.likePublicPost = exports.removePlaylist = exports.removeFromPlaylist = exports.addToPlaylist = exports.createPlaylist = exports.getPlaylist = exports.getPublicPlaylists = void 0;
+var playlistModel_1 = __importDefault(require("../models/playlistModel"));
 var response_1 = __importDefault(require("../utils/response"));
-var responseStatus = new response_1.default();
+var response = new response_1.default();
+var getPublicPlaylists = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var currentUser, publicPlaylists, error_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                currentUser = req.user.id;
+                if (!currentUser) {
+                    response.setError(401, "Unauthorized access");
+                    return [2 /*return*/, response.send(res)];
+                }
+                return [4 /*yield*/, playlistModel_1.default.find({ isPublic: true })
+                        .lean()
+                        .exec()];
+            case 1:
+                publicPlaylists = _a.sent();
+                if (publicPlaylists) {
+                    response.setSuccess(200, "Successful!", { payload: publicPlaylists });
+                    return [2 /*return*/, response.send(res)];
+                }
+                response.setError(404, "No pulic playlist");
+                return [2 /*return*/, response.send(res)];
+            case 2:
+                error_1 = _a.sent();
+                console.error(error_1.message);
+                response.setError(404, "Invalid request");
+                return [2 /*return*/, response.send(res)];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.getPublicPlaylists = getPublicPlaylists;
+var getPlaylist = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var playlistId, currentUser, playlist, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                playlistId = req.params.id;
+                currentUser = req.user.id;
+                console.log(currentUser);
+                return [4 /*yield*/, playlistModel_1.default.findById({ _id: playlistId }).lean().exec()];
+            case 1:
+                playlist = _a.sent();
+                if (playlist) {
+                    if (playlist.isPublic ||
+                        (currentUser && playlist.owner_id == currentUser)) {
+                        response.setSuccess(200, "Successful!", { payload: playlist.tracks });
+                        return [2 /*return*/, response.send(res)];
+                    }
+                    response.setError(401, "Private playlist");
+                    return [2 /*return*/, response.send(res)];
+                }
+                response.setError(404, "Playlist not found");
+                return [2 /*return*/, response.send(res)];
+            case 2:
+                error_2 = _a.sent();
+                console.error(error_2);
+                response.setError(400, "Invalid request");
+                return [2 /*return*/, response.send(res)];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.getPlaylist = getPlaylist;
 var createPlaylist = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var playlist, newPlaylist, error_1;
+    var playlist, newPlaylist, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 playlist = req.body;
                 playlist.owner_id = req.user.id;
-                return [4 /*yield*/, playlistModel_1.PlaylistModel.create(playlist)];
+                return [4 /*yield*/, playlistModel_1.default.create(playlist)];
             case 1:
                 newPlaylist = _a.sent();
                 if (newPlaylist) {
-                    responseStatus.setSuccess(201, "Successful!", { payload: newPlaylist });
-                    return [2 /*return*/, responseStatus.send(res)];
+                    response.setSuccess(201, "Successful!", { payload: newPlaylist });
+                    return [2 /*return*/, response.send(res)];
                 }
-                responseStatus.setError(400, "Invalid input data");
-                return [2 /*return*/, responseStatus.send(res)];
+                response.setError(400, "Invalid input data");
+                return [2 /*return*/, response.send(res)];
             case 2:
-                error_1 = _a.sent();
-                responseStatus.setError(400, "Error creating playlist");
-                return [2 /*return*/, responseStatus.send(res)];
+                error_3 = _a.sent();
+                if (error_3.message.split(" ").includes("duplicate")) {
+                    response.setError(400, error_3.keyValue.name + " already exists");
+                    return [2 /*return*/, response.send(res)];
+                }
+                response.setError(400, "Error creating playlist");
+                return [2 /*return*/, response.send(res)];
             case 3: return [2 /*return*/];
         }
     });
 }); };
 exports.createPlaylist = createPlaylist;
+var addToPlaylist = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var playlistId, newTrack_1, currentUser, playlist, duplicate, saved, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 4, , 5]);
+                playlistId = req.params.id;
+                newTrack_1 = req.body.track;
+                currentUser = req.user.id;
+                return [4 /*yield*/, playlistModel_1.default.findOne({
+                        _id: playlistId,
+                        owner_id: currentUser,
+                    }).exec()];
+            case 1:
+                playlist = _a.sent();
+                if (!(playlist && playlist.tracks)) return [3 /*break*/, 3];
+                duplicate = playlist.tracks.find(function (track) { return track === newTrack_1; });
+                if (duplicate) {
+                    response.setError(400, "Track already exists");
+                    return [2 /*return*/, response.send(res)];
+                }
+                playlist.tracks.push(newTrack_1);
+                return [4 /*yield*/, playlist.save()];
+            case 2:
+                saved = _a.sent();
+                if (saved) {
+                    response.setSuccess(201, "Successful!", { payload: saved });
+                    return [2 /*return*/, response.send(res)];
+                }
+                _a.label = 3;
+            case 3:
+                response.setError(404, "Playlist not found");
+                return [2 /*return*/, response.send(res)];
+            case 4:
+                error_4 = _a.sent();
+                console.error(error_4.message);
+                response.setError(400, "Error adding song to playlist");
+                return [2 /*return*/, response.send(res)];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };
+exports.addToPlaylist = addToPlaylist;
+var removeFromPlaylist = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var playlistId, unwantedTrack_1, currentUser, playlist, index, saved, error_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 4, , 5]);
+                playlistId = req.params.id;
+                unwantedTrack_1 = req.body.track;
+                currentUser = req.user.id;
+                return [4 /*yield*/, playlistModel_1.default.findById({
+                        _id: playlistId,
+                        owner_id: currentUser,
+                    }).exec()];
+            case 1:
+                playlist = _a.sent();
+                if (!(playlist && playlist.tracks)) return [3 /*break*/, 3];
+                index = playlist.tracks.findIndex(function (track) { return track === unwantedTrack_1; });
+                if (index === -1) {
+                    response.setError(404, "Track not found");
+                    return [2 /*return*/, response.send(res)];
+                }
+                playlist.tracks.splice(index, 1);
+                return [4 /*yield*/, playlist.save()];
+            case 2:
+                saved = _a.sent();
+                if (saved) {
+                    response.setSuccess(201, "Successfully removed!", { payload: saved });
+                    return [2 /*return*/, response.send(res)];
+                }
+                _a.label = 3;
+            case 3:
+                response.setError(404, "Playlist not found");
+                return [2 /*return*/, response.send(res)];
+            case 4:
+                error_5 = _a.sent();
+                console.error(error_5);
+                response.setError(400, "Error removing song to playlist");
+                return [2 /*return*/, response.send(res)];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };
+exports.removeFromPlaylist = removeFromPlaylist;
+var removePlaylist = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var playlistId, currentUser, deleted, error_6;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                playlistId = req.params.id;
+                currentUser = req.user.id;
+                return [4 /*yield*/, playlistModel_1.default.findOneAndRemove({
+                        _id: playlistId,
+                        owner_id: currentUser,
+                    }).exec()];
+            case 1:
+                deleted = _a.sent();
+                if (deleted) {
+                    response.setSuccess(201, "Successfully removed!", { payload: {} });
+                    return [2 /*return*/, response.send(res)];
+                }
+                response.setError(404, "Playlist not found");
+                return [2 /*return*/, response.send(res)];
+            case 2:
+                error_6 = _a.sent();
+                console.error(error_6);
+                response.setError(400, "Error removing playlist");
+                return [2 /*return*/, response.send(res)];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.removePlaylist = removePlaylist;
 var likePublicPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var toLike, addedLike, newData, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 4, , 5]);
-                return [4 /*yield*/, playlistModel_1.PlaylistModel.findOne({
+                return [4 /*yield*/, playlistModel_1.default.findOne({
                         _id: req.params.id,
                         isPublic: true,
                         likes: { $in: [req.user._id] },
@@ -83,25 +268,25 @@ var likePublicPost = function (req, res) { return __awaiter(void 0, void 0, void
             case 1:
                 toLike = _a.sent();
                 if (!!toLike) return [3 /*break*/, 3];
-                return [4 /*yield*/, playlistModel_1.PlaylistModel.findOneAndUpdate({ _id: req.params.id, isPublic: true }, { $push: { likes: req.user._id } }, { new: true }).exec()];
+                return [4 /*yield*/, playlistModel_1.default.findOneAndUpdate({ _id: req.params.id, isPublic: true }, { $push: { likes: req.user._id } }, { new: true }).exec()];
             case 2:
                 addedLike = _a.sent();
                 if (addedLike) {
                     newData = {
                         data: addedLike,
                     };
-                    responseStatus.setSuccess(200, "Successful", newData);
-                    return [2 /*return*/, responseStatus.send(res)];
+                    response.setSuccess(200, "Successful", newData);
+                    return [2 /*return*/, response.send(res)];
                 }
-                responseStatus.setError(400, "failed");
-                return [2 /*return*/, responseStatus.send(res)];
+                response.setError(400, "failed");
+                return [2 /*return*/, response.send(res)];
             case 3:
-                responseStatus.setError(400, "you can not like a playlist more than once");
-                return [2 /*return*/, responseStatus.send(res)];
+                response.setError(400, "you can not like a playlist more than once");
+                return [2 /*return*/, response.send(res)];
             case 4:
                 err_1 = _a.sent();
-                responseStatus.setError(400, "failed");
-                return [2 /*return*/, responseStatus.send(res)];
+                response.setError(400, "failed");
+                return [2 /*return*/, response.send(res)];
             case 5: return [2 /*return*/];
         }
     });

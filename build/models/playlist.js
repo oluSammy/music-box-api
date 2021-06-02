@@ -33,4 +33,4 @@ var playlistSchema = new mongoose_1.Schema({
         },
     ],
 }, { timestamps: true });
-exports.default = mongoose_1.model("Playlist", playlistSchema);
+exports.default = mongoose_1.model("playlist", playlistSchema);

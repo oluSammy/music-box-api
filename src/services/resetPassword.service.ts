@@ -36,7 +36,7 @@ export const requestPasswordReset = async (email: string): Promise<any> => {
   sendEmail(
     user.email,
     "Password Reset",
-    { name: user.firstName, newToken },
+    { name: user.firstName, link },
     "requestMail.hbs"
   );
   return { link };

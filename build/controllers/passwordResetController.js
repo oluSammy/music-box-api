@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -50,18 +61,18 @@ var requestPasswordResetController = function (req, res) { return __awaiter(void
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, resetPassword_service_1.requestPasswordReset(req.body.email)];
+                return [4 /*yield*/, resetPassword_service_1.requestPasswordReset(req.body.email.toLowerCase())];
             case 1:
                 link = _a.sent();
                 if (!link) {
-                    response.setError(400, "password reset request failed");
+                    response.setError(400, link);
                     return [2 /*return*/, response.send(res)];
                 }
-                response.setSuccess(200, "password reset request successful", { link: link });
+                response.setSuccess(200, "password reset request successful", __assign({}, link));
                 return [2 /*return*/, response.send(res)];
             case 2:
                 error_1 = _a.sent();
-                response.setError(400, "password reset request failed");
+                response.setError(400, error_1.message);
                 return [2 /*return*/, response.send(res)];
             case 3: return [2 /*return*/];
         }
@@ -69,32 +80,37 @@ var requestPasswordResetController = function (req, res) { return __awaiter(void
 }); };
 exports.requestPasswordResetController = requestPasswordResetController;
 var resetPasswordController = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var error, resp, error_2;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var error, _a, id, token, resp, error_2;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
+                _b.trys.push([0, 3, , 4]);
                 error = passwordValidate_1.validateUserPassword({ password: req.body.password }).error;
                 if (error) {
                     response.setError(400, "Invalid password format");
                     return [2 /*return*/, response.send(res)];
                 }
-                return [4 /*yield*/, resetPassword_service_1.resetPassword(req.body.id, req.body.password, req.body.token)];
+                _a = req.query, id = _a.id, token = _a.token;
+                if (!(typeof id === "string" && typeof token === "string")) return [3 /*break*/, 2];
+                return [4 /*yield*/, resetPassword_service_1.resetPassword(id, req.body.password, token)];
             case 1:
-                resp = _a.sent();
+                resp = _b.sent();
                 if (!resp) {
-                    response.setError(400, "password reset failed");
+                    response.setError(400, resp);
                     return [2 /*return*/, response.send(res)];
                 }
-                response.setSuccess(200, "password has been reset successfully", {
+                response.setSuccess(200, resp, {
                     status: "successful",
                 });
                 return [2 /*return*/, response.send(res)];
             case 2:
-                error_2 = _a.sent();
+                response.setError(400, "Error parsing query.");
+                return [2 /*return*/, response.send(res)];
+            case 3:
+                error_2 = _b.sent();
                 response.setError(400, "password reset failed");
                 return [2 /*return*/, response.send(res)];
-            case 3: return [2 /*return*/];
+            case 4: return [2 /*return*/];
         }
     });
 }); };

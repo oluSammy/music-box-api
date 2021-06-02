@@ -4,7 +4,7 @@ import { UserModel } from "../models/userModel";
 import Token from "../models/token.model";
 import sendEmail from "../utils/mail/sendEmail";
 
-export const requestPasswordReset = async (email: string): Promise<unknown> => {
+export const requestPasswordReset = async (email: string): Promise<any> => {
   // Check if the user exists
   const user = await UserModel.findOne({ email });
   if (!user) throw new Error("User with this email does not exist");
@@ -27,22 +27,26 @@ export const requestPasswordReset = async (email: string): Promise<unknown> => {
     createdAt: Date.now(),
   }).save();
 
-  // ClientURL to be added later
-  const link = "clientUrl/resetPassword?token=newToken&id=user._id";
+  /**
+   * Link to be implemented by frontend
+   * ClientURL to be frontend route
+   */
+  const link = `${process.env.CLIENT_URL}/resetPassword?token=${newToken}&id=${user._id}`;
+
   sendEmail(
     user.email,
     "Password Reset",
     { name: user.firstName, newToken },
     "requestMail.hbs"
   );
-  return { link, newToken };
+  return { link };
 };
 
 export const resetPassword = async (
   id: string,
   password: string,
   token: string
-): Promise<unknown> => {
+): Promise<any> => {
   // check if token exists and is valid
   const userToken = await Token.findOne({ userId: id });
   const validateToken = await bcrypt.compare(token, userToken.token);
@@ -70,5 +74,5 @@ export const resetPassword = async (
 
   // Deleted created token once password has been reset
   await userToken.deleteOne();
-  return true;
+  return "Password has been reset successfully";
 };

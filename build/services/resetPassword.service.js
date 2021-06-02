@@ -76,9 +76,9 @@ var requestPasswordReset = function (email) { return __awaiter(void 0, void 0, v
             case 6:
                 // save the new token
                 _a.sent();
-                link = "clientUrl/resetPassword?token=newToken&id=user._id";
+                link = process.env.CLIENT_URL + "/resetPassword?token=" + newToken + "&id=" + user._id;
                 sendEmail_1.default(user.email, "Password Reset", { name: user.firstName, newToken: newToken }, "requestMail.hbs");
-                return [2 /*return*/, { link: link, newToken: newToken }];
+                return [2 /*return*/, { link: link }];
         }
     });
 }); };
@@ -114,7 +114,7 @@ var resetPassword = function (id, password, token) { return __awaiter(void 0, vo
             case 6:
                 // Deleted created token once password has been reset
                 _a.sent();
-                return [2 /*return*/, true];
+                return [2 /*return*/, "Password has been reset successfully"];
         }
     });
 }); };

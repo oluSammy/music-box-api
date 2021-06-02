@@ -48,7 +48,7 @@ export const getPlaylist = async (
     if (playlist) {
       if (
         playlist.isPublic ||
-        (currentUser && playlist.owner_id == currentUser)
+        (currentUser && playlist.owner_id === currentUser)
       ) {
         response.setSuccess(200, "Successful!", { payload: playlist.tracks });
         return response.send(res);
@@ -182,8 +182,7 @@ export const removePlaylist = async (req: Request, res: Response) => {
     response.setError(400, "Error removing playlist");
     return response.send(res);
   }
-
-}
+};
 
 export const likePublicPost = async (
   req: Request | any,

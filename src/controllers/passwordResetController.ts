@@ -13,15 +13,15 @@ export const requestPasswordResetController = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const link = await requestPasswordReset(req.body.email);
+    const link = await requestPasswordReset(req.body.email.toLowerCase());
     if (!link) {
-      response.setError(400, "password reset request failed");
+      response.setError(400, link);
       return response.send(res);
     }
-    response.setSuccess(200, "password reset request successful", { link });
+    response.setSuccess(200, "password reset request successful", { ...link });
     return response.send(res);
   } catch (error) {
-    response.setError(400, "password reset request failed");
+    response.setError(400, error.message);
     return response.send(res);
   }
 };
@@ -31,25 +31,24 @@ export const resetPasswordController = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const { error } = validateUserPassword({ password: req.body.password});
-    if(error) {
+    const { error } = validateUserPassword({ password: req.body.password });
+    if (error) {
       response.setError(400, "Invalid password format");
       return response.send(res);
     }
-    const resp = await resetPassword(
-      req.body.id,
-      req.body.password,
-      req.body.token
-    );
-
-
-    if (!resp) {
-      response.setError(400, "password reset failed");
+    const { id, token } = req.query;
+    if (typeof id === "string" && typeof token === "string") {
+      const resp = await resetPassword(id, req.body.password, token);
+      if (!resp) {
+        response.setError(400, resp);
+        return response.send(res);
+      }
+      response.setSuccess(200, resp, {
+        status: "successful",
+      });
       return response.send(res);
     }
-    response.setSuccess(200, "password has been reset successfully", {
-      status: "successful",
-    });
+    response.setError(400, "Error parsing query.");
     return response.send(res);
   } catch (error) {
     response.setError(400, "password reset failed");

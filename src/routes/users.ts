@@ -1,6 +1,5 @@
 import express from "express";
 import passwordResetRouter from "./passwordResetRoutes";
-import { createPlaylist, likePublicPost } from "../controllers/playlist";
 import { loginUser, registerUser } from "../controllers/userAuth";
 import verifyToken from "../middleware/auth";
 import { changePassword } from "../controllers/users";

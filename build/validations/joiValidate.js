@@ -20,8 +20,8 @@ var validateUser = function (obj) {
         lastName: joi_1.default.string().min(3).max(30).required(),
         dateOfBirth: joi
             .date()
-            .format(["YYYY/MM/DD", "DD-MM-YYYY"])
-            .error(new Error("Date format 'YYYY / MM / DD' or 'DD - MM - YYYY' "))
+            .format(["YYYY/MM/DD", "YYYY-MM-DD"])
+            .error(new Error("Invalid date. Date format 'YYYY/MM/DD', 'YYYY-MM-DD' "))
             .required(),
         gender: joi_1.default.any()
             .valid("M", "Male", "Female", "F")

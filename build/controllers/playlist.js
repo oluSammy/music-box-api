@@ -89,7 +89,7 @@ var getPlaylist = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 playlist = _a.sent();
                 if (playlist) {
                     if (playlist.isPublic ||
-                        (currentUser && playlist.owner_id === currentUser)) {
+                        (currentUser && playlist.owner_id == currentUser)) {
                         response.setSuccess(200, "Successful!", { payload: playlist.tracks });
                         return [2 /*return*/, response.send(res)];
                     }

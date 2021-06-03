@@ -56,19 +56,19 @@ var response_1 = __importDefault(require("../utils/response"));
 var passwordValidate_1 = require("../utils/passwordValidate");
 var response = new response_1.default();
 var requestPasswordResetController = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var link, error_1;
+    var resp, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 return [4 /*yield*/, resetPassword_service_1.requestPasswordReset(req.body.email.toLowerCase())];
             case 1:
-                link = _a.sent();
-                if (!link) {
-                    response.setError(400, link);
+                resp = _a.sent();
+                if (!resp) {
+                    response.setError(400, resp);
                     return [2 /*return*/, response.send(res)];
                 }
-                response.setSuccess(200, "password reset request successful", __assign({}, link));
+                response.setSuccess(200, "password reset request successful", __assign({}, resp));
                 return [2 /*return*/, response.send(res)];
             case 2:
                 error_1 = _a.sent();
@@ -80,21 +80,22 @@ var requestPasswordResetController = function (req, res) { return __awaiter(void
 }); };
 exports.requestPasswordResetController = requestPasswordResetController;
 var resetPasswordController = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var error, _a, id, token, resp, error_2;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var error, token, resp, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                _b.trys.push([0, 3, , 4]);
+                _a.trys.push([0, 3, , 4]);
                 error = passwordValidate_1.validateUserPassword({ password: req.body.password }).error;
                 if (error) {
                     response.setError(400, "Invalid password format");
                     return [2 /*return*/, response.send(res)];
                 }
-                _a = req.query, id = _a.id, token = _a.token;
-                if (!(typeof id === "string" && typeof token === "string")) return [3 /*break*/, 2];
-                return [4 /*yield*/, resetPassword_service_1.resetPassword(id, req.body.password, token)];
+                if (!(req.headers.authorization &&
+                    req.headers.authorization.startsWith("Bearer"))) return [3 /*break*/, 2];
+                token = req.headers.authorization.split(" ")[1];
+                return [4 /*yield*/, resetPassword_service_1.resetPassword(req.body.password, token)];
             case 1:
-                resp = _b.sent();
+                resp = _a.sent();
                 if (!resp) {
                     response.setError(400, resp);
                     return [2 /*return*/, response.send(res)];
@@ -104,10 +105,10 @@ var resetPasswordController = function (req, res) { return __awaiter(void 0, voi
                 });
                 return [2 /*return*/, response.send(res)];
             case 2:
-                response.setError(400, "Error parsing query.");
+                response.setError(400, "Not authorized.");
                 return [2 /*return*/, response.send(res)];
             case 3:
-                error_2 = _b.sent();
+                error_2 = _a.sent();
                 response.setError(400, "password reset failed");
                 return [2 /*return*/, response.send(res)];
             case 4: return [2 /*return*/];

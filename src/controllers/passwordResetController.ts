@@ -36,9 +36,12 @@ export const resetPasswordController = async (
       response.setError(400, "Invalid password format");
       return response.send(res);
     }
-    const { id, token } = req.query;
-    if (typeof id === "string" && typeof token === "string") {
-      const resp = await resetPassword(id, req.body.password, token);
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      const token = req.headers.authorization.split(" ")[1];
+      const resp = await resetPassword(req.body.password, token);
       if (!resp) {
         response.setError(400, resp);
         return response.send(res);
@@ -48,7 +51,7 @@ export const resetPasswordController = async (
       });
       return response.send(res);
     }
-    response.setError(400, "Error parsing query.");
+    response.setError(400, "Not authorized.");
     return response.send(res);
   } catch (error) {
     response.setError(400, "password reset failed");

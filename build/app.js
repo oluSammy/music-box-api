@@ -42,12 +42,6 @@ app.use(express_session_1.default({
     resave: false,
     saveUninitialized: true,
 }));
-if (process.env.NODE_ENV === "test") {
-    mongoMemoryConnect_1.dbConnect();
-}
-else {
-    mongoConnect_1.default();
-}
 // middleware for social login
 passport_2.googleStrategy(passport_1.default);
 passport_2.facebookStrategy(passport_1.default);
@@ -68,16 +62,4 @@ app.use(function (err, req, res) {
     res.status(err.status || 500);
     res.render("error");
 });
-//= =======================================
-app.get("/", function (_req, res) {
-    res.redirect("/api/v1/music-box-api");
-});
-// sendEmail(
-//   "emmanuelhemarxyll@gmail.com",
-//   "Test Email",
-//   { name: "Emmanuel", link: "foobar.com" },
-//   "requestMail.hbs"
-// )
-//   .then((res) => console.log("res", res))
-//   .catch((err) => console.log(err));
 exports.default = app;

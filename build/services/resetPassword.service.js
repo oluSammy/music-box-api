@@ -41,12 +41,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resetPassword = exports.requestPasswordReset = void 0;
 var bcryptjs_1 = __importDefault(require("bcryptjs"));
-var crypto_1 = __importDefault(require("crypto"));
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var userModel_1 = require("../models/userModel");
-var token_model_1 = __importDefault(require("../models/token.model"));
 var sendEmail_1 = __importDefault(require("../utils/mail/sendEmail"));
 var requestPasswordReset = function (email) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, token, newToken, tokenHash, link;
+    var user, newToken, link;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, userModel_1.UserModel.findOne({ email: email })];
@@ -54,67 +53,44 @@ var requestPasswordReset = function (email) { return __awaiter(void 0, void 0, v
                 user = _a.sent();
                 if (!user)
                     throw new Error("User with this email does not exist");
-                return [4 /*yield*/, token_model_1.default.findOne({ userId: user._id })];
-            case 2:
-                token = _a.sent();
-                if (!token) return [3 /*break*/, 4];
-                return [4 /*yield*/, token_model_1.default.deleteOne()];
-            case 3:
-                _a.sent();
-                _a.label = 4;
-            case 4:
-                newToken = crypto_1.default.randomBytes(32).toString("hex");
-                return [4 /*yield*/, bcryptjs_1.default.hash(newToken, Number(process.env.BCRYPT_SALT))];
-            case 5:
-                tokenHash = _a.sent();
-                // save the new token
-                return [4 /*yield*/, new token_model_1.default({
-                        userId: user._id,
-                        token: tokenHash,
-                        createdAt: Date.now(),
-                    }).save()];
-            case 6:
-                // save the new token
-                _a.sent();
-                link = process.env.CLIENT_URL + "/resetPassword?token=" + newToken + "&id=" + user._id;
-                sendEmail_1.default(user.email, "Password Reset", { name: user.firstName, newToken: newToken }, "requestMail.hbs");
+                newToken = jsonwebtoken_1.default.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
+                    expiresIn: "1h",
+                });
+                link = process.env.CLIENT_URL + "/resetPassword?token=" + newToken;
+                sendEmail_1.default(user.email, "Password Reset", { name: user.firstName, link: link }, "requestMail.hbs");
                 return [2 /*return*/, { link: link }];
         }
     });
 }); };
 exports.requestPasswordReset = requestPasswordReset;
-var resetPassword = function (id, password, token) { return __awaiter(void 0, void 0, void 0, function () {
-    var userToken, validateToken, newPassword, user;
+var resetPassword = function (password, token) { return __awaiter(void 0, void 0, void 0, function () {
+    var decodedUser, isValid, newPassword, user, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, token_model_1.default.findOne({ userId: id })];
+            case 0:
+                _a.trys.push([0, 4, , 5]);
+                decodedUser = (jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY));
+                return [4 /*yield*/, userModel_1.UserModel.findById(decodedUser.id)];
             case 1:
-                userToken = _a.sent();
-                return [4 /*yield*/, bcryptjs_1.default.compare(token, userToken.token)];
-            case 2:
-                validateToken = _a.sent();
-                if (!userToken || !validateToken)
-                    throw new Error("Invalid or expired token");
+                isValid = _a.sent();
+                if (!isValid)
+                    throw new Error("User does not exist");
                 return [4 /*yield*/, bcryptjs_1.default.hash(password, 10)];
-            case 3:
+            case 2:
                 newPassword = _a.sent();
-                return [4 /*yield*/, userModel_1.UserModel.findByIdAndUpdate(id, {
+                return [4 /*yield*/, userModel_1.UserModel.findByIdAndUpdate(decodedUser.id, {
                         $set: {
                             password: newPassword,
                         },
                     }, { new: true })];
-            case 4:
-                _a.sent();
-                return [4 /*yield*/, userModel_1.UserModel.findOne({ _id: id })];
-            case 5:
+            case 3:
                 user = _a.sent();
                 sendEmail_1.default(user.email, "Password Reset Successfully", { name: user.firstName }, "resetSuccessMail.hbs");
-                // Deleted created token once password has been reset
-                return [4 /*yield*/, userToken.deleteOne()];
-            case 6:
-                // Deleted created token once password has been reset
-                _a.sent();
                 return [2 /*return*/, "Password has been reset successfully"];
+            case 4:
+                error_1 = _a.sent();
+                throw new Error("Invalid or expired token");
+            case 5: return [2 /*return*/];
         }
     });
 }); };

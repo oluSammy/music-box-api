@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -70,9 +71,8 @@ export const getPlaylist = async (
 export const createPlaylist = async (req: Request, res: Response) => {
   try {
     const playlist: TPlaylist = req.body;
-    playlist.owner_id = req.user!.id;
+    playlist.owner_id = req.user!.id as string;
     const newPlaylist = await Playlist.create(playlist);
-
     if (newPlaylist) {
       response.setSuccess(201, "Successful!", { payload: newPlaylist });
       return response.send(res);
@@ -92,9 +92,9 @@ export const createPlaylist = async (req: Request, res: Response) => {
 
 export const addToPlaylist = async (req: Request, res: Response) => {
   try {
-    const playlistId = req.params.id;
-    const newTrack: string = req.body.track;
-    const currentUser = req.user!.id;
+    const playlistId = req.params.id as string;
+    const newTrack: string = req.body.track as string;
+    const currentUser = req.user!.id as string;
     const playlist = await Playlist.findOne({
       _id: playlistId,
       owner_id: currentUser,
@@ -163,8 +163,8 @@ export const removeFromPlaylist = async (req: Request, res: Response) => {
 
 export const removePlaylist = async (req: Request, res: Response) => {
   try {
-    const playlistId = req.params.id;
-    const currentUser = req.user!.id;
+    const playlistId = req.params.id as string;
+    const currentUser = req.user!.id as string;
     const deleted = await Playlist.findOneAndRemove({
       _id: playlistId,
       owner_id: currentUser,
@@ -182,8 +182,7 @@ export const removePlaylist = async (req: Request, res: Response) => {
     response.setError(400, "Error removing playlist");
     return response.send(res);
   }
-
-}
+};
 
 export const likePublicPost = async (
   req: Request | any,

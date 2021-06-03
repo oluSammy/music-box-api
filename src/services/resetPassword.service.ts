@@ -1,74 +1,66 @@
 import bcrypt from "bcryptjs";
-import crypto from "crypto";
+import jwt from "jsonwebtoken";
 import { UserModel } from "../models/userModel";
-import Token from "../models/token.model";
 import sendEmail from "../utils/mail/sendEmail";
 
-export const requestPasswordReset = async (email: string): Promise<unknown> => {
+export const requestPasswordReset = async (email: string): Promise<any> => {
   // Check if the user exists
   const user = await UserModel.findOne({ email });
   if (!user) throw new Error("User with this email does not exist");
 
-  // Check if there is an existing token for that user and delete if there is
-  const token = await Token.findOne({ userId: user._id });
-  if (token) await Token.deleteOne();
-
-  // Generate a new random token with the crypto API and hash it
-  const newToken = crypto.randomBytes(32).toString("hex");
-  const tokenHash = await bcrypt.hash(
-    newToken,
-    Number(process.env.BCRYPT_SALT)
+  // Generate a new token with jwt
+  const newToken = jwt.sign(
+    { id: user._id },
+    process.env.JWT_SECRET_KEY as string,
+    {
+      expiresIn: "1h",
+    }
   );
 
-  // save the new token
-  await new Token({
-    userId: user._id,
-    token: tokenHash,
-    createdAt: Date.now(),
-  }).save();
+  /**
+   * Link to be implemented by frontend
+   * ClientURL to be frontend route
+   */
+  const link = `${process.env.CLIENT_URL}/resetPassword?token=${newToken}`;
 
-  // ClientURL to be added later
-  const link = "clientUrl/resetPassword?token=newToken&id=user._id";
   sendEmail(
     user.email,
     "Password Reset",
-    { name: user.firstName, newToken },
+    { name: user.firstName, link },
     "requestMail.hbs"
   );
-  return { link, newToken };
+  return { link };
 };
 
 export const resetPassword = async (
-  id: string,
   password: string,
   token: string
-): Promise<unknown> => {
-  // check if token exists and is valid
-  const userToken = await Token.findOne({ userId: id });
-  const validateToken = await bcrypt.compare(token, userToken.token);
-  if (!userToken || !validateToken) throw new Error("Invalid or expired token");
-  const newPassword = await bcrypt.hash(password, 10);
-  await UserModel.findByIdAndUpdate(
-    id,
-    {
-      $set: {
-        password: newPassword,
+): Promise<any> => {
+  try {
+    const decodedUser = <any>(
+      jwt.verify(token, process.env.JWT_SECRET_KEY as string)
+    );
+    const isValid = await UserModel.findById(decodedUser.id);
+    if (!isValid) throw new Error("User does not exist");
+    const newPassword = await bcrypt.hash(password, 10);
+    const user = await UserModel.findByIdAndUpdate(
+      decodedUser.id,
+      {
+        $set: {
+          password: newPassword,
+        },
       },
-    },
-    { new: true }
-  );
+      { new: true }
+    );
+    sendEmail(
+      user.email,
+      "Password Reset Successfully",
+      { name: user.firstName },
+      "resetSuccessMail.hbs"
+    );
 
-  // Notify user of successful change
-
-  const user = await UserModel.findOne({ _id: id });
-  sendEmail(
-    user.email,
-    "Password Reset Successfully",
-    { name: user.firstName },
-    "resetSuccessMail.hbs"
-  );
-
-  // Deleted created token once password has been reset
-  await userToken.deleteOne();
-  return true;
+    return "Password has been reset successfully";
+  } catch (error) {
+    throw new Error("Invalid or expired token");
+  }
 };

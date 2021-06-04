@@ -48,22 +48,22 @@ var viewProfile = function (req, res) { return __awaiter(void 0, void 0, void 0,
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 3, , 4]);
+                _a.trys.push([0, 2, , 3]);
                 id = req.params.id;
-                if (!id) return [3 /*break*/, 2];
                 return [4 /*yield*/, userModel_1.UserModel.findById(id)];
             case 1:
                 viewUserProfile = _a.sent();
-                responseStatus.setSuccess(200, "success", viewUserProfile);
-                return [2 /*return*/, responseStatus.send(res)];
-            case 2:
+                if (viewUserProfile) {
+                    responseStatus.setSuccess(200, "success", viewUserProfile);
+                    return [2 /*return*/, responseStatus.send(res)];
+                }
                 responseStatus.setError(404, "Cannot find user");
                 return [2 /*return*/, responseStatus.send(res)];
-            case 3:
+            case 2:
                 err_1 = _a.sent();
                 responseStatus.setError(404, "Cannot find user");
                 return [2 /*return*/, responseStatus.send(res)];
-            case 4: return [2 /*return*/];
+            case 3: return [2 /*return*/];
         }
     });
 }); };

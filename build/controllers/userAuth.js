@@ -83,7 +83,6 @@ var registerUser = function (req, res) {
                             lastName: lastName,
                             dateOfBirth: dateOfBirth,
                             gender: gender,
-                            last_login: "",
                         })];
                 case 2:
                     newUser = _b.sent();

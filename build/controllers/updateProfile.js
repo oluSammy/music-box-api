@@ -42,15 +42,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateProfile = void 0;
 var userModel_1 = require("../models/userModel");
 var response_1 = __importDefault(require("../utils/response"));
+var joiValidate_1 = require("../validations/joiValidate");
 var responseStatus = new response_1.default();
 var updateProfile = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, updateUserProfile, error_1;
+    var error, id, updateUserProfile, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 if (req.body.password) {
                     responseStatus.setError(404, "you cannot update password");
+                    return [2 /*return*/, responseStatus.send(res)];
+                }
+                error = joiValidate_1.validateUpdatedUser(req.body).error;
+                if (error) {
+                    responseStatus.setError(401, error.message);
                     return [2 /*return*/, responseStatus.send(res)];
                 }
                 id = req.params.id;

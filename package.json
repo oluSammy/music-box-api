@@ -41,10 +41,10 @@
     "session": "^0.1.0",
     "ts-jest": "^26.4.4",
     "ts-node": "^9.1.1",
+    "@joi/date": "^2.1.0",
     "mongodb-memory-server": "^6.9.6"
   },
   "devDependencies": {
-    "@joi/date": "^2.1.0",
     "@types/passport": "^1.0.6",
     "@types/express-handlebars": "^3.1.0",
     "@types/passport-facebook": "^2.1.10",

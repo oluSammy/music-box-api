@@ -31,7 +31,6 @@ export const registerUser = async function (
       lastName,
       dateOfBirth,
       gender,
-      last_login: "",
     });
     await newUser.save();
 

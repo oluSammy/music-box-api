@@ -56,9 +56,10 @@ var dbConnect = function () { return __awaiter(void 0, void 0, void 0, function 
                     useUnifiedTopology: true,
                     useFindAndModify: false,
                 };
-                mongoose_1.default.connect(uri, mongooseOpts)
-                    .then(function () { return console.log('info', 'connected to memory-server'); })
-                    .catch(function () { return console.log('error', 'could not connect'); });
+                mongoose_1.default
+                    .connect(uri, mongooseOpts)
+                    .then(function () { return console.log("info", "connected to memory-server"); })
+                    .catch(function () { return console.log("error", "could not connect"); });
                 return [2 /*return*/];
         }
     });

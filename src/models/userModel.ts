@@ -2,21 +2,25 @@ import { Schema, model } from "mongoose";
 import { IUser } from "../types/types";
 import bcrypt from "bcryptjs";
 
-const userSchema = new Schema<IUser>({
-  email: { type: String, require: true, unique: true },
-  firstName: { type: String, require: true },
-  lastName: { type: String, require: true },
-  dateOfBirth: { type: Date, require: true },
-  gender: { type: String, require: true },
-  last_login: { type: Date, default: Date.now() },
-  provider: {
-    type: String,
-    enum: ["local", "google", "facebook"],
+const userSchema = new Schema<IUser>(
+  {
+    email: { type: String, require: true, unique: true },
+    firstName: { type: String, require: true },
+    lastName: { type: String, require: true },
+    dateOfBirth: { type: Date, require: true },
+    gender: { type: String, require: true },
+    last_login: { type: Date, default: Date.now() },
+    provider: {
+      type: String,
+      enum: ["local", "google", "facebook"],
+      default: "local",
+    },
+    password: {
+      type: String,
+    },
   },
-  password: {
-    type: String,
-  },
-});
+  { timestamps: true }
+);
 // hash password
 userSchema.pre("save", async function (next) {
   try {
@@ -25,7 +29,6 @@ userSchema.pre("save", async function (next) {
     next();
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.log(error.message);
   }
 });
 // verify password

@@ -10,8 +10,6 @@ const router = express.Router();
 // Playlist Route
 router.use("/playlist", playlistRoute);
 
-
-
 router.get("/", (req: Request, res: Response) => {
   res.send("music-box server is live");
 });

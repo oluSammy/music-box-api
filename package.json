@@ -41,8 +41,8 @@
     "session": "^0.1.0",
     "ts-jest": "^26.4.4",
     "ts-node": "^9.1.1",
-    "mongodb-memory-server": "^6.9.6",
-    "@joi/date": "^2.1.0"
+    "@joi/date": "^2.1.0",
+    "mongodb-memory-server": "^6.9.6"
   },
   "devDependencies": {
     "@types/passport": "^1.0.6",

@@ -43,7 +43,6 @@ export const getPlaylist = async (
   try {
     const playlistId = req.params.id;
     const currentUser = req.user!.id;
-    console.log(currentUser);
     const playlist = await Playlist.findById({ _id: playlistId }).lean().exec();
 
     if (playlist) {

@@ -10,8 +10,9 @@ export const viewProfile = async (
 ): Promise<Response> => {
   try {
     const { id } = req.params;
-    if (id) {
-      const viewUserProfile = await UserModel.findById(id);
+    const viewUserProfile = await UserModel.findById(id);
+
+    if (viewUserProfile) {
       responseStatus.setSuccess(200, "success", viewUserProfile);
       return responseStatus.send(res);
     }

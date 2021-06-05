@@ -46,6 +46,12 @@ export const facebookStrategy = (passport: passport.PassportStatic) => {
 };
 
 export const googleAuthController = async (req: Request, res: Response) => {
+  // if user is not authenticated
+  if (!req.session.passport) {
+    responseStatus.setError(400, "bad request");
+    return responseStatus.send(res);
+  }
+
   const email = req.session.passport.user.emails[0].value;
   const firstName = req.session.passport.user.name.givenName;
   const lastName = req.session.passport.user.name.familyName;
@@ -54,6 +60,7 @@ export const googleAuthController = async (req: Request, res: Response) => {
     // find user by email;
     const user = await UserModel.findOne({ email });
 
+    // if no user, create new user
     if (!user) {
       const newUser = await UserModel.create({
         firstName,
@@ -72,6 +79,7 @@ export const googleAuthController = async (req: Request, res: Response) => {
       return responseStatus.send(res);
     }
 
+    // if provider is not google,
     if (user.provider === "facebook") {
       responseStatus.setError(
         400,
@@ -80,6 +88,13 @@ export const googleAuthController = async (req: Request, res: Response) => {
       return responseStatus.send(res);
     }
 
+    // if provider is not facebook,
+    if (user.provider === "local") {
+      responseStatus.setError(400, "login with your email and password");
+      return responseStatus.send(res);
+    }
+
+    // if user is a registered user
     const token = generateToken(user._id!);
 
     const data = {
@@ -104,6 +119,12 @@ passport.deserializeUser(function (profile: any, done) {
 });
 
 export const fbAuthController = async (req: Request, res: Response) => {
+  // if user is not authenticated
+  if (!req.session.passport) {
+    responseStatus.setError(400, "bad request");
+    return responseStatus.send(res);
+  }
+
   const email = req.session.passport.user.emails[0].value;
   const firstName = req.session.passport.user.displayName.split(" ")[0];
   const lastName = req.session.passport.user.displayName.split(" ")[1];

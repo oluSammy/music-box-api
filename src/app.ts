@@ -71,5 +71,4 @@ app.use((err: HttpError, req: Request, res: Response) => {
   res.render("error");
 });
 
-
 export default app;

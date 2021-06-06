@@ -4,6 +4,7 @@ import usersRoute from "./users";
 import genreRoutes from "./genre";
 import authRouter from "./googleAuth";
 import fbRouter from "./fbAuth";
+import historyRoute from "./history";
 
 const router = express.Router();
 
@@ -30,6 +31,7 @@ router.use("/auth", authRouter);
 // http://localhost:3000/api/v1/music-box-api/fb/facebook
 router.use("/fb", fbRouter);
 
-router.use("/users", usersRoute);
+// listening history route
+router.use("/history", historyRoute);
 
 export default router;

@@ -34,4 +34,15 @@ export interface GENRE {
   type: string;
 }
 
+export interface HISTORY {
+  userId: string;
+  history: {
+    id: number;
+    title: string;
+    album: string;
+    duration: string;
+    timeStamp: Date;
+  }[];
+}
+
 export type ResponseData = Record<string, any> | Record<string, any>[];

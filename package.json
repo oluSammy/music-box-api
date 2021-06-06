@@ -10,12 +10,13 @@
     "serve": "tsc && node ./bin/www",
     "compile": "tsc -p ./tsconfig.json",
     "test": "jest --runInBand",
-    "clean": "rm -rf dist && mkdir dist",
+    "clean": "rm -rf daist && mkdir dist",
     "heroku-postbuild": "yarn clean && yarn compile",
     "lint": "eslint . --ext ts",
     "lint:fix": "eslint . --ext ts --fix"
   },
   "dependencies": {
+    "@joi/date": "^2.1.0",
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
@@ -27,10 +28,12 @@
     "express-session": "^1.17.2",
     "handlebars": "^4.7.7",
     "http-errors": "~1.6.3",
+    "jest": "^27.0.4",
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "mailgun-js": "^0.22.0",
+    "mongodb-memory-server": "^6.9.6",
     "mongoose": "^5.12.9",
     "morgan": "~1.9.1",
     "multer": "^1.4.2",
@@ -40,10 +43,8 @@
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
     "session": "^0.1.0",
-    "ts-jest": "^26.4.4",
-    "ts-node": "^9.1.1",
-    "mongodb-memory-server": "^6.9.6",
-    "@joi/date": "^2.1.0"
+    "ts-jest": "^27.0.0-next.12",
+    "ts-node": "^9.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

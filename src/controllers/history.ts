@@ -13,6 +13,7 @@ interface Track {
   title: string;
   album: string;
   duration: string;
+  link: string;
   timeStamp: Date;
 }
 
@@ -58,7 +59,7 @@ export const addSongToHistory = async (
         id: songId,
         timestamp: Date.now(),
       };
-      // if user doesn't have a history document, a nw one is created
+      // if user doesn't have a history document, a new one is created
       if (!history) {
         const resp = await historyModel.create({
           user_id,

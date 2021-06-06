@@ -6,6 +6,7 @@ const trackSchema = new Schema({
   title: { type: String, required: true },
   album: { type: String, required: true },
   duration: { type: String, required: true },
+  link: { type: String, required: true },
   timestamp: { type: Date, default: Date.now() },
 });
 const historySchema = new Schema<HISTORY>({

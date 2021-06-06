@@ -11,9 +11,10 @@ export const fetchTrack = async (
       title,
       duration,
       album: { title: album },
+      link,
     } = data;
 
-    return { title, duration, album };
+    return { title, duration, album, link };
   } catch ({ message }) {
     throw new Error(message);
   }

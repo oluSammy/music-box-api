@@ -11,7 +11,7 @@ const router = Router();
 router.get("/getHistory", verifyToken, getListeningHistory);
 
 // Add song to or update user's listening history
-router.post("/updateHistory/:id", verifyToken, addSongToHistory);
+router.put("/updateHistory/:id", verifyToken, addSongToHistory);
 
 // Remove a song from listening history
 router.delete("/removeHistory/:id", verifyToken, removeSongFromHistory);

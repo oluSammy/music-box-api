@@ -7,7 +7,7 @@ const message =
 
 const connectDB = () => {
   const url: string =
-    process.env.NODE_ENV === "production"
+    process.env.NODE_ENV !== "production"
       ? (process.env.DATABASE_URL as string)
       : "mongodb://127.0.0.1:27017/music-box";
   mongoose

@@ -34,4 +34,22 @@ export interface GENRE {
   type: string;
 }
 
+export interface Album {
+  id: number;
+  title: string;
+  cover: string;
+  cover_small: string;
+  cover_medium: string;
+  cover_big: string;
+  genre_id: string;
+  artist: string;
+  duration: number;
+  nb_tracks: number;
+  tracks: string[];
+  contributors: string[];
+  likes?: string[];
+  listened?: string[];
+  likeCount?: number;
+  listeningCount?: number;
+}
 export type ResponseData = Record<string, any> | Record<string, any>[];

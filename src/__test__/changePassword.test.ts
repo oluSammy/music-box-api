@@ -27,7 +27,7 @@ describe("test relating to user signup", () => {
       password: "12345",
     });
     currentUser.token = res.body.token;
-    expect(res.status).toBe(201);
+    expect(res.status).toBe(200);
     expect(res.body.data).toHaveProperty("token");
     expect(res.body.data.email).toBe("emeka@gmail.com");
     currentUser.token = res.body.data.token;
@@ -52,7 +52,7 @@ describe("test relating to user signup", () => {
       password: "123456",
     });
     currentUser.token = res.body.token;
-    expect(res.status).toBe(201);
+    expect(res.status).toBe(200);
     expect(res.body.data).toHaveProperty("token");
     expect(res.body.data.email).toBe("emeka@gmail.com");
     currentUser.token = res.body.data.token;

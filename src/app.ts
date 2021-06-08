@@ -1,5 +1,5 @@
 import createError, { HttpError } from "http-errors";
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import path from "path";
 import logger from "morgan";
@@ -20,19 +20,21 @@ if (process.env.NODE_ENV === "test") {
 } else {
   connectDB();
 }
-//= ==============================
 
 //= ========= Express Config ===============
 const app = express();
 
+// Static-Asset Rendering
 app.use(express.static(path.join(__dirname, "../", "public")));
-// view engine setup
 
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+//= = Root Route ==============
+app.use("/api/v1/music-box-api", indexRouter);
 
 // passport middleware
 app.use(passport.initialize());
@@ -49,14 +51,8 @@ app.use(
 googleStrategy(passport);
 facebookStrategy(passport);
 
-app.get("/", (req, res) => {
-  res.redirect("/api/v1/music-box-api");
-});
-
-app.use("/api/v1/music-box-api", indexRouter);
-
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
+app.use((_req: Request, _res: Response, next: NextFunction) => {
   next(createError(404));
 });
 
@@ -69,6 +65,10 @@ app.use((err: HttpError, req: Request, res: Response) => {
   // render the error page
   res.status(err.status || 500);
   res.render("error");
+});
+
+app.get("/", (_req: Request, res: Response) => {
+  res.redirect("/api/v1/music-box-api");
 });
 
 export default app;

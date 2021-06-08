@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable eqeqeq */
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
@@ -5,13 +6,13 @@
 import { Request, Response } from "express";
 import Playlist from "../models/playlistModel";
 import ResponseClass from "../utils/response";
-import { TPlaylist } from "../types/types";
+import { IPlaylist } from "../types/types";
 
 const response = new ResponseClass();
 
 export const getPublicPlaylists = async (req: Request, res: Response) => {
   try {
-    const currentUser = req.user!.id;
+    const { id: currentUser } = req.user as Record<string, any>;
 
     if (!currentUser) {
       response.setError(401, "Unauthorized access");
@@ -42,13 +43,13 @@ export const getPlaylist = async (
 ): Promise<Response> => {
   try {
     const playlistId = req.params.id;
-    const currentUser = req.user!.id;
+    const { id: currentUser } = req.user as Record<string, any>;
     const playlist = await Playlist.findById({ _id: playlistId }).lean().exec();
 
     if (playlist) {
       if (
         playlist.isPublic ||
-        (currentUser && playlist.owner_id == currentUser)
+        (currentUser && playlist.ownerId == currentUser)
       ) {
         response.setSuccess(200, "Successful!", { payload: playlist.tracks });
         return response.send(res);
@@ -69,17 +70,22 @@ export const getPlaylist = async (
 
 export const createPlaylist = async (req: Request, res: Response) => {
   try {
-    const playlist: TPlaylist = req.body;
-    playlist.owner_id = req.user!.id as string;
+    const playlist: IPlaylist = req.body;
+    const { id: currentUser } = req.user as Record<string, any>;
+    playlist.ownerId = currentUser;
     const newPlaylist = await Playlist.create(playlist);
+
     if (newPlaylist) {
-      response.setSuccess(201, "Successful!", { payload: newPlaylist });
+      response.setSuccess(201, "Successful!", {
+        payload: newPlaylist.toJSON(),
+      });
       return response.send(res);
     }
 
     response.setError(400, "Invalid input data");
     return response.send(res);
   } catch (error) {
+    console.error(error);
     if (error.message.split(" ").includes("duplicate")) {
       response.setError(400, `${error.keyValue.name} already exists`);
       return response.send(res);
@@ -91,22 +97,27 @@ export const createPlaylist = async (req: Request, res: Response) => {
 
 export const addToPlaylist = async (req: Request, res: Response) => {
   try {
-    const playlistId = req.params.id as string;
-    const newTrack: string = req.body.track as string;
-    const currentUser = req.user!.id as string;
+    const { id: playlistId } = req.params;
+    console.log(playlistId);
+    const { id: trackId, title } = req.body as Record<string, any>;
+    const { id: currentUser } = req.user as Record<string, any>;
+    console.log(currentUser);
     const playlist = await Playlist.findOne({
       _id: playlistId,
-      owner_id: currentUser,
+      ownerId: currentUser,
     }).exec();
 
     if (playlist && playlist.tracks) {
-      const duplicate = playlist.tracks.find((track) => track === newTrack);
+      const duplicate = playlist.tracks.find(
+        (track) => track.trackId === trackId
+      );
+
       if (duplicate) {
         response.setError(400, "Track already exists");
         return response.send(res);
       }
 
-      playlist.tracks.push(newTrack);
+      playlist.tracks.push({ trackId, title });
       const saved = await playlist.save();
 
       if (saved) {
@@ -114,7 +125,8 @@ export const addToPlaylist = async (req: Request, res: Response) => {
         return response.send(res);
       }
     }
-    response.setError(404, "Playlist not found");
+
+    response.setError(400, "User can't carry out operation");
     return response.send(res);
   } catch (error) {
     console.error(error.message);
@@ -125,18 +137,19 @@ export const addToPlaylist = async (req: Request, res: Response) => {
 
 export const removeFromPlaylist = async (req: Request, res: Response) => {
   try {
-    const playlistId = req.params.id;
-    const unwantedTrack: string = req.body.track;
-    const currentUser = req.user!.id;
+    const { id: playlistId } = req.params;
+    const { id: trackId } = req.body as Record<string, any>;
+    const { id: currentUser } = req.user as Record<string, any>;
     const playlist = await Playlist.findById({
       _id: playlistId,
-      owner_id: currentUser,
+      ownerId: currentUser,
     }).exec();
 
     if (playlist && playlist.tracks) {
       const index = playlist.tracks.findIndex(
-        (track) => track === unwantedTrack
+        (track) => track.trackId === trackId
       );
+
       if (index === -1) {
         response.setError(404, "Track not found");
         return response.send(res);
@@ -151,22 +164,22 @@ export const removeFromPlaylist = async (req: Request, res: Response) => {
       }
     }
 
-    response.setError(404, "Playlist not found");
+    response.setError(400, "User can't carry out operation");
     return response.send(res);
   } catch (error) {
     console.error(error);
-    response.setError(400, "Error removing song to playlist");
+    response.setError(400, "Error removing song from playlist");
     return response.send(res);
   }
 };
 
 export const removePlaylist = async (req: Request, res: Response) => {
   try {
-    const playlistId = req.params.id as string;
-    const currentUser = req.user!.id as string;
+    const { id: playlistId } = req.params;
+    const { id: currentUser } = req.user as Record<string, any>;
     const deleted = await Playlist.findOneAndRemove({
       _id: playlistId,
-      owner_id: currentUser,
+      ownerId: currentUser,
     }).exec();
 
     if (deleted) {
@@ -174,7 +187,7 @@ export const removePlaylist = async (req: Request, res: Response) => {
       return response.send(res);
     }
 
-    response.setError(404, "Playlist not found");
+    response.setError(400, "User can't carry out operation");
     return response.send(res);
   } catch (error) {
     console.error(error);
@@ -188,15 +201,16 @@ export const likePublicPost = async (
   res: Response
 ): Promise<Response> => {
   try {
+    const { id } = req.user as Record<string, any>;
     const toLike = await Playlist.findOne({
       _id: req.params.id,
       isPublic: true,
-      likes: { $in: [req.user._id] },
+      likes: { $in: [id] },
     }).exec();
     if (!toLike) {
       const addedLike = await Playlist.findOneAndUpdate(
         { _id: req.params.id, isPublic: true },
-        { $push: { likes: req.user._id } },
+        { $push: { likes: id } },
         { new: true }
       ).exec();
       if (addedLike) {
@@ -213,6 +227,60 @@ export const likePublicPost = async (
     return response.send(res);
   } catch (err) {
     response.setError(400, "failed");
+    return response.send(res);
+  }
+};
+
+export const mostPlayedPlaylist = async (req: Request, res: Response) => {
+  try {
+    const { id: currentUser } = req.user as Record<string, any>;
+
+    if (!currentUser) {
+      response.setError(400, "Unauthorized access");
+      return response.send(res);
+    }
+
+    const mostPlayed = await Playlist.find({ isPublic: true })
+      .sort({ listeningCount: -1 })
+      .limit(5)
+      .lean()
+      .exec();
+
+    return mostPlayed;
+  } catch (err) {
+    console.error(err.message);
+    response.setError(400, "Error occured during query");
+    return response.send(res);
+  }
+};
+
+export const getLikedPlaylistsByUser = async (req: Request, res: Response) => {
+  try {
+    const { id: currentUser } = req.user as Record<string, any>;
+    const playlists = await Playlist.find({ isPublic: true }).lean().exec();
+
+    if (playlists && playlists.length) {
+      const userPlaylists = playlists.filter((playlist) => {
+        return (
+          playlist.likes &&
+          playlist.likes.some((like: string) => like == currentUser)
+        );
+      });
+
+      if (userPlaylists.length) {
+        response.setSuccess(201, "Successfully!", { payload: userPlaylists });
+        return response.send(res);
+      }
+
+      response.setError(404, "User liked no playlist");
+      return response.send(res);
+    }
+
+    response.setError(404, "No public playlist");
+    return response.send(res);
+  } catch (err) {
+    console.error(err.message);
+    response.setError(400, "Error occured during query");
     return response.send(res);
   }
 };

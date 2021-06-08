@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
+import { IArtist } from "../types/types";
 
-const genreSchema = new Schema(
+const artistSchema = new Schema<IArtist>(
   {
     id: {
       type: Number,
@@ -8,6 +9,21 @@ const genreSchema = new Schema(
     },
     name: {
       type: String,
+      required: true,
+    },
+    share: {
+      type: String,
+    },
+    likedBy: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+        required: true,
+      },
+    ],
+    listeningCount: {
+      type: Number,
+      default: 0,
       required: true,
     },
     picture: {
@@ -30,6 +46,18 @@ const genreSchema = new Schema(
       type: String,
       required: true,
     },
+    nb_album: {
+      type: Number,
+    },
+    nb_fan: {
+      type: Number,
+    },
+    radio: {
+      type: Boolean,
+    },
+    tracklist: {
+      type: String,
+    },
     type: {
       type: String,
       required: true,
@@ -40,11 +68,4 @@ const genreSchema = new Schema(
   }
 );
 
-// create relationship between genre and playlist
-genreSchema.virtual("playlist", {
-  ref: "Playlist",
-  localField: "_id",
-  foreignField: "ownerId",
-});
-
-export const genreModel = model("Genre", genreSchema);
+export default model("Artist", artistSchema);

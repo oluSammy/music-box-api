@@ -37,4 +37,21 @@ const playlistSchema = new Schema<TPlaylist>(
   { timestamps: true }
 );
 
+playlistSchema.pre("find", async function (next) {
+  try {
+    this.populate({ path: "genre_id", select: "name" });
+    next();
+  } catch (error) {
+    // eslint-disable-next-line no-console
+  }
+});
+
+playlistSchema.virtual("Recently_played", {
+  ref: "Recent_play",
+  localField: "_id",
+  foreignField: "directory_info",
+  justOne: false,
+  match: { isActive: false },
+});
+
 export default model<TPlaylist>("Playlist", playlistSchema);

@@ -25,12 +25,12 @@ export const searchAlbum = async (
         cover_medium,
         cover_big,
         cover_xl,
+        artist,
         genre_id,
         contributors,
         duration,
         nb_tracks,
       } = albumDetails;
-      const { artist } = albumDetails;
       const tracks = albumDetails.tracks.data;
       const data = {
         id,
@@ -70,7 +70,7 @@ export const searchAlbum = async (
     response.setSuccess(200, "Successful", result);
     return response.send(res);
   } catch (error) {
-    response.setError(400, "failed");
+    response.setError(400, "failed, Can not find result");
     return response.send(res);
   }
 };
@@ -107,7 +107,7 @@ export const likedAlbum = async (
     response.setSuccess(200, "Successful", removedLike);
     return response.send(res);
   } catch (err) {
-    response.setError(400, "failed");
+    response.setError(400, "failed to like an album");
     return response.send(res);
   }
 };
@@ -127,7 +127,7 @@ export const listenedAlbumCount = async (
     response.setSuccess(200, "Successful", album);
     return response.send(res);
   } catch (error) {
-    response.setError(400, "failed");
+    response.setError(400, "failed to count listeningCount");
     return response.send(res);
   }
 };

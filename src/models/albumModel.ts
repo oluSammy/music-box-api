@@ -108,4 +108,4 @@ albumSchema.virtual("Recently_played", {
   justOne: false,
   match: { isActive: false },
 });
-export const AlbumModel = model<Album>("Album", albumSchema);
+export const AlbumModel = model("Album", albumSchema);

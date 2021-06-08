@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const message =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_ENV !== "production"
     ? "Successfully connected to MongoDB Atlas!"
     : "Successfully connected to MongoDB Local!";
 

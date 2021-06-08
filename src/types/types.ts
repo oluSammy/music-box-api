@@ -11,6 +11,7 @@ export interface IUser {
   last_login?: string;
 }
 export interface REQUESTUSER {
+  _id: string;
   id?: string;
   token?: string;
 }
@@ -31,6 +32,25 @@ export interface GENRE {
   picture_medium: string;
   picture_big: string;
   picture_xl: string;
+  type: string;
+}
+
+export interface IArtist {
+  id: number;
+  name: string;
+  share: string;
+  likedBy: string[];
+  likedCount: number;
+  listeningCount: number;
+  picture: string;
+  picture_small: string;
+  picture_medium: string;
+  picture_big: string;
+  picture_xl: string;
+  nb_album: number;
+  nb_fan: number;
+  radio: boolean;
+  tracklist: string;
   type: string;
 }
 

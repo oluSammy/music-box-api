@@ -4,6 +4,7 @@ import usersRoute from "./users";
 import genreRoutes from "./genre";
 import authRouter from "./googleAuth";
 import fbRouter from "./fbAuth";
+import artistRoute from "./artist";
 
 const router = express.Router();
 
@@ -19,6 +20,9 @@ router.use("/users", usersRoute);
 
 // controller for genre route
 router.use("/genres", genreRoutes);
+
+// controller for artist route
+router.use("/artists", artistRoute);
 
 // controller for playlist
 

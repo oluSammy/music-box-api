@@ -17,10 +17,15 @@ const artistSchema = new Schema<IArtist>(
     likedBy: [
       {
         type: Schema.Types.ObjectId,
-        ref: "user",
+        ref: "User",
         required: true,
       },
     ],
+    likedCount: {
+      type: Number,
+      default: 0,
+      required: true,
+    },
     listeningCount: {
       type: Number,
       default: 0,

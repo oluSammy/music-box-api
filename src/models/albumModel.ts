@@ -1,6 +1,34 @@
 import { Schema, model } from "mongoose";
 import { Album } from "../types/types";
 
+const trackSchema = new Schema({
+  id: {
+    type: Number,
+    required: true,
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  preview: {
+    type: String,
+  },
+  md5_image: {
+    type: String,
+  },
+  duration: {
+    type: String,
+  },
+  artist: {
+    id: String,
+    name: String,
+  },
+});
+const contributorSchema = new Schema({
+  name: {
+    type: String,
+  },
+});
 const albumSchema = new Schema<Album>(
   {
     id: {
@@ -46,22 +74,20 @@ const albumSchema = new Schema<Album>(
     nb_tracks: {
       type: Number,
     },
-    tracklist: {
-      type: String,
-      required: true,
-    },
+    tracks: { type: [trackSchema] },
+    contributors: { type: [contributorSchema] },
     likes: [
       {
         type: Schema.Types.ObjectId,
+        required: true,
         ref: "User",
-        unique: true,
       },
     ],
     listened: [
       {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "user",
+        ref: "User",
       },
     ],
     likeCount: {

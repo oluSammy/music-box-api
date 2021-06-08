@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 export interface IUser {
   user: any;
   email: string;
@@ -13,6 +11,7 @@ export interface IUser {
   last_login?: string;
 }
 export interface REQUESTUSER {
+  _id: string;
   id?: string;
   token?: string;
 }
@@ -36,18 +35,11 @@ export interface GENRE {
   type: string;
 }
 
-// export interface RECENTLY_PLAYED {
-//   player_id: string;
-//   directory_id: string;
-//   directory_info: Record<string, any>[];
-//   directory_type: string;
-// }
-
 export interface RECENTLY_PLAYED {
-  userId: string;
-  playlist: mongoose.Types.ObjectId;
-  album: string;
-  artist: string;
+  player_id: string;
+  directory_id: string;
+  directory_info: string;
+  directory_type: string;
 }
 
 export interface IArtist {
@@ -55,6 +47,7 @@ export interface IArtist {
   name: string;
   share: string;
   likedBy: string[];
+  likedCount: number;
   listeningCount: number;
   picture: string;
   picture_small: string;
@@ -78,10 +71,13 @@ export interface Album {
   genre_id: string;
   artist: string;
   tracklist: string;
+  duration: number;
+  nb_tracks: number;
+  tracks: string[];
+  contributors: string[];
   likes?: string[];
   listened?: string[];
   likeCount?: number;
   listeningCount?: number;
 }
-
 export type ResponseData = Record<string, any> | Record<string, any>[];

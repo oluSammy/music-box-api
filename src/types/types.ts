@@ -35,6 +35,13 @@ export interface GENRE {
   type: string;
 }
 
+export interface RECENTLY_PLAYED {
+  player_id: string;
+  directory_id: string;
+  directory_info: string;
+  directory_type: string;
+}
+
 export interface IArtist {
   id: number;
   name: string;
@@ -63,6 +70,7 @@ export interface Album {
   cover_big: string;
   genre_id: string;
   artist: string;
+  tracklist: string;
   duration: number;
   nb_tracks: number;
   tracks: string[];

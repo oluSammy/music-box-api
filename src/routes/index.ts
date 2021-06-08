@@ -5,12 +5,10 @@ import genreRoutes from "./genre";
 import albumRoutes from "./album";
 import authRouter from "./googleAuth";
 import fbRouter from "./fbAuth";
+import recentlyPlayedRoutes from "./recentlyPlayed";
 import artistRoute from "./artist";
 
 const router = express.Router();
-
-// Playlist Route
-router.use("/playlist", playlistRoute);
 
 router.get("/", (req: Request, res: Response) => {
   res.send("music-box server is live");
@@ -22,6 +20,8 @@ router.use("/users", usersRoute);
 // controller for genre route
 router.use("/genres", genreRoutes);
 
+// Playlist Route
+router.use("/playlist", playlistRoute);
 // controller for artist route
 router.use("/artists", artistRoute);
 
@@ -37,6 +37,7 @@ router.use("/auth", authRouter);
 // http://localhost:3000/api/v1/music-box-api/fb/facebook
 router.use("/fb", fbRouter);
 
-router.use("/users", usersRoute);
+// controller for recently played music
+router.use("/recently-played", recentlyPlayedRoutes);
 
 export default router;

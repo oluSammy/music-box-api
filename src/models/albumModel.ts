@@ -92,12 +92,20 @@ const albumSchema = new Schema<Album>(
     ],
     likeCount: {
       type: Number,
+      default: 0,
     },
     listeningCount: {
       type: Number,
+      default: 0,
     },
   },
   { timestamps: true }
 );
-
-export const AlbumModel = model("Album", albumSchema);
+albumSchema.virtual("Recently_played", {
+  ref: "Recent_play",
+  localField: "_id",
+  foreignField: "directory_info",
+  justOne: false,
+  match: { isActive: false },
+});
+export const AlbumModel = model<Album>("Album", albumSchema);

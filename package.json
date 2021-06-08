@@ -29,6 +29,7 @@
     "express-session": "^1.17.2",
     "handlebars": "^4.7.7",
     "http-errors": "~1.6.3",
+    "jest": "^27.0.0-next.11",
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "mailgun-js": "^0.22.0",
@@ -42,8 +43,9 @@
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
     "session": "^0.1.0",
-    "ts-jest": "^26.4.4",
-    "ts-node": "^9.1.1"
+    "supertest": "^6.1.3",
+    "ts-jest": "^27.0.0-next.12",
+    "ts-node": "^10.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -83,7 +85,6 @@
     "eslint-plugin-prettier": "^3.4.0",
     "nodemon": "^2.0.7",
     "prettier": "^2.3.0",
-    "supertest": "^6.1.3",
     "typescript": "^4.3.2"
   },
   "jest": {

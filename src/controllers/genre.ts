@@ -2,7 +2,6 @@ import { Response, Request } from "express";
 import { fetchGenres, fetchOne } from "../services/genres";
 import { genreModel } from "../models/genreModel";
 import playlistModel from "../models/playlistModel";
-
 import ResponseStatus from "../utils/response";
 import axios from "axios";
 

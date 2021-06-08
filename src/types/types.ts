@@ -36,13 +36,6 @@ export interface GENRE {
   type: string;
 }
 
-// export interface RECENTLY_PLAYED {
-//   player_id: string;
-//   directory_id: string;
-//   directory_info: Record<string, any>[];
-//   directory_type: string;
-// }
-
 export interface RECENTLY_PLAYED {
   userId: string;
   playlist: mongoose.Types.ObjectId;

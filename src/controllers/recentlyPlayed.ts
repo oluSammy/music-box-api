@@ -6,15 +6,6 @@ import { RECENTLY_PLAYED } from "../types/types";
 
 const responseStatus = new ResponseStatus();
 
-// const formatAndSort = (data: Record<string, any>[]): Record<string, any>[] => {
-//   const newData = data.sort((a, b) => {
-//     const ab = new Date(a.updatedAt) as any;
-//     const ba = new Date(b.updatedAt) as any;
-//     return ab - ba;
-//   });
-//   return newData;
-// };
-
 export async function saveRecentlyPlayed(
   req: Request,
   res: Response

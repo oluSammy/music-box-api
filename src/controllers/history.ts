@@ -108,8 +108,8 @@ export const addSongToHistory = async (
     }
     response.setError(400, "Track not found");
     return response.send(res);
-  } catch (e) {
-    response.setError(400, e.message);
+  } catch ({ message }) {
+    response.setError(400, message);
     return response.send(res);
   }
 };

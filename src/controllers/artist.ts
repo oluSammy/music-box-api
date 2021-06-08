@@ -25,7 +25,7 @@ export const addArtistById = async (req: Request, res: Response) => {
     );
     return responseStatus.send(res);
   } catch (error) {
-    responseStatus.setError(400, "User does not exist");
+    responseStatus.setError(400, "Artist does not exist");
     return responseStatus.send(res);
   }
 };
@@ -64,7 +64,7 @@ export const likeArtist = async (req: Request, res: Response) => {
     responseStatus.setSuccess(201, "successful", updateArtistProfile);
     return responseStatus.send(res);
   } catch (err) {
-    responseStatus.setError(400, "Failed");
+    responseStatus.setError(400, "Artist does not exist");
     return responseStatus.send(res);
   }
 };
@@ -79,7 +79,7 @@ export const listeningCount = async (req: Request, res: Response) => {
     responseStatus.setSuccess(201, "successful", updateListeningCount);
     return responseStatus.send(res);
   } catch (err) {
-    responseStatus.setError(400, "Failed");
+    responseStatus.setError(400, "Artist does not exist");
     return responseStatus.send(res);
   }
 };

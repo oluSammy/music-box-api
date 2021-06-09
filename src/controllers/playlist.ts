@@ -30,7 +30,6 @@ export const getPublicPlaylists = async (req: Request, res: Response) => {
     response.setError(404, "No pulic playlist");
     return response.send(res);
   } catch (error) {
-    console.error(error.message);
     response.setError(404, "Invalid request");
     return response.send(res);
   }
@@ -61,7 +60,6 @@ export const getPlaylist = async (
     response.setError(404, "Playlist not found");
     return response.send(res);
   } catch (error) {
-    console.error(error);
     response.setError(400, "Invalid request");
     return response.send(res);
   }
@@ -71,7 +69,6 @@ export const createPlaylist = async (req: Request, res: Response) => {
   try {
     const playlist: IPlaylist = req.body;
     playlist.ownerId = req.user!.id as string;
-    console.log(playlist);
     const newPlaylist = await Playlist.create(playlist);
     if (newPlaylist) {
       response.setSuccess(201, "Successful!", { payload: newPlaylist });
@@ -120,7 +117,6 @@ export const addToPlaylist = async (req: Request, res: Response) => {
     response.setError(404, "Playlist not found");
     return response.send(res);
   } catch (error) {
-    console.error(error.message);
     response.setError(400, "Error adding song to playlist");
     return response.send(res);
   }
@@ -157,7 +153,6 @@ export const removeFromPlaylist = async (req: Request, res: Response) => {
     response.setError(404, "Playlist not found");
     return response.send(res);
   } catch (error) {
-    console.error(error);
     response.setError(400, "Error removing song to playlist");
     return response.send(res);
   }
@@ -180,7 +175,6 @@ export const removePlaylist = async (req: Request, res: Response) => {
     response.setError(404, "Playlist not found");
     return response.send(res);
   } catch (error) {
-    console.error(error);
     response.setError(400, "Error removing playlist");
     return response.send(res);
   }

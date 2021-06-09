@@ -1,5 +1,4 @@
 import axios, { AxiosResponse, AxiosTransformer } from "axios";
-
 // fetch genres from deezer using axios call
 export const fetchGenres = async (): Promise<AxiosResponse<any>> => {
   const url = process.env.GENRE_URL as string;
@@ -23,15 +22,12 @@ export const fetchAllQuery = async (
   search: string
 ): Promise<AxiosTransformer[]> => {
   const albumUrl = process.env.SEARCH_ALBUM_URL;
-  const playlistUrl = process.env.SEARCH_PLAYLIST_URL;
   const artistUrl = process.env.SEARCH_ARTIST_URL;
   try {
     const responseAlbum = await axios.get(`${albumUrl}${search}`);
-    const responsePlaylist = await axios.get(`${playlistUrl}${search}`);
     const responseArtist = await axios.get(`${artistUrl}${search}`);
     const responseResult = Promise.all([
       responseAlbum.data,
-      responsePlaylist.data,
       responseArtist.data,
     ]);
     return responseResult;

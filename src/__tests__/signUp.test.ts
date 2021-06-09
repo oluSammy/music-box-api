@@ -23,7 +23,6 @@ describe("User  Register ANd Authentication", () => {
     const res = await supertest(app).post(`${url}users/register`).send(logUser);
     userData.id = res.body.data.data._id;
     userData.token = res.body.data.token;
-    // id = res.body.data._id;
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty("data");
     expect(res.body.data).toHaveProperty("token");

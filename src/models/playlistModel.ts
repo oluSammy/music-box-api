@@ -1,9 +1,9 @@
 import { Schema, model } from "mongoose";
-import { TPlaylist } from "../types/types";
+import { IPlaylist } from "../types/types";
 
-const playlistSchema = new Schema<TPlaylist>(
+const playlistSchema = new Schema<IPlaylist>(
   {
-    owner_id: {
+    ownerId: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: "User",
@@ -18,11 +18,11 @@ const playlistSchema = new Schema<TPlaylist>(
     },
     tracks: [
       {
-        type: String,
-        unique: true,
+        trackId: Number,
+        title: String,
       },
     ],
-    genre_id: {
+    genreId: {
       type: Schema.Types.ObjectId,
       ref: "Genre",
     },
@@ -30,12 +30,20 @@ const playlistSchema = new Schema<TPlaylist>(
       {
         type: Schema.Types.ObjectId,
         ref: "User",
-        unique: true,
       },
     ],
+    listeningCount: {
+      type: Number,
+      default: 0,
+    },
+    likesCount: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
+export default model<IPlaylist>("Playlist", playlistSchema);
 
 playlistSchema.pre("find", async function (next) {
   try {
@@ -53,5 +61,3 @@ playlistSchema.virtual("Recently_played", {
   justOne: false,
   match: { isActive: false },
 });
-
-export default model<TPlaylist>("Playlist", playlistSchema);

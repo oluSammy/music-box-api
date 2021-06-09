@@ -61,7 +61,7 @@ export async function loginUser(
         gender: user.gender,
         dateOfBirth: user.dateOfBirth,
       };
-      responseStatus.setSuccess(201, "success", {
+      responseStatus.setSuccess(201, "successful", {
         ...data,
         token: generateToken(user._id),
       });

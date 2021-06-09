@@ -1,7 +1,9 @@
 import { Response, Request } from "express";
 import { fetchGenres, fetchOne } from "../services/genres";
 import { genreModel } from "../models/genreModel";
+import playlistModel from "../models/playlistModel";
 import ResponseStatus from "../utils/response";
+import axios from "axios";
 
 const responseStatus = new ResponseStatus();
 
@@ -73,3 +75,44 @@ export async function getOneGenre(
     return responseStatus.send(res);
   }
 }
+
+// controller to get all artists related to a particular genre
+export const getArtistsByGenre = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { id } = req.params;
+
+  // get artists
+  try {
+    const response = await axios.get(
+      `https://api.deezer.com/genre/${id}}/artists`
+    );
+    responseStatus.setSuccess(200, "successful", response.data.data);
+    return responseStatus.send(res);
+  } catch (error) {
+    responseStatus.setError(500, "an error ocurred");
+    return responseStatus.send(res);
+  }
+};
+
+// controller to get all playlist associated to a particular genre
+export const getPlaylistByGenre = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { id } = req.params;
+
+  try {
+    const playlists = await playlistModel.find({
+      genre_id: id,
+      isPublic: true,
+    });
+
+    responseStatus.setSuccess(200, "successful", playlists);
+    return responseStatus.send(res);
+  } catch (error) {
+    responseStatus.setError(500, "an error ocurred");
+    return responseStatus.send(res);
+  }
+};

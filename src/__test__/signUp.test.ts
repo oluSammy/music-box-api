@@ -2,7 +2,7 @@ import supertest from "supertest";
 import app from "../app";
 import { dbDisconnect } from "../database/mongoMemoryConnect";
 
-let id = "";
+// const id = "";
 const userData: Record<string, any> = {};
 const url = "/api/v1/music-box-api/";
 
@@ -23,7 +23,7 @@ describe("User  Register ANd Authentication", () => {
     const res = await supertest(app).post(`${url}users/register`).send(logUser);
     userData.id = res.body.data._id;
     userData.token = res.body.token;
-    id = res.body.data._id;
+    // id = res.body.data._id;
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("token");

@@ -29,7 +29,7 @@ export const requestPasswordReset = async (email: string): Promise<any> => {
     { name: user.firstName, link },
     "requestMail.hbs"
   );
-  return { link };
+  return { link, token: newToken };
 };
 
 export const resetPassword = async (

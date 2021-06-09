@@ -5,7 +5,7 @@
 import { Request, Response } from "express";
 import Playlist from "../models/playlistModel";
 import ResponseClass from "../utils/response";
-import { TPlaylist } from "../types/types";
+import { IPlaylist } from "../types/types";
 
 const response = new ResponseClass();
 
@@ -48,7 +48,7 @@ export const getPlaylist = async (
     if (playlist) {
       if (
         playlist.isPublic ||
-        (currentUser && playlist.owner_id == currentUser)
+        (currentUser && playlist.ownerId == currentUser)
       ) {
         response.setSuccess(200, "Successful!", { payload: playlist.tracks });
         return response.send(res);
@@ -69,8 +69,9 @@ export const getPlaylist = async (
 
 export const createPlaylist = async (req: Request, res: Response) => {
   try {
-    const playlist: TPlaylist = req.body;
-    playlist.owner_id = req.user!.id as string;
+    const playlist: IPlaylist = req.body;
+    playlist.ownerId = req.user!.id as string;
+    console.log(playlist);
     const newPlaylist = await Playlist.create(playlist);
     if (newPlaylist) {
       response.setSuccess(201, "Successful!", { payload: newPlaylist });
@@ -92,21 +93,23 @@ export const createPlaylist = async (req: Request, res: Response) => {
 export const addToPlaylist = async (req: Request, res: Response) => {
   try {
     const playlistId = req.params.id as string;
-    const newTrack: string = req.body.track as string;
+    const { id: newTrack } = req.body;
     const currentUser = req.user!.id as string;
     const playlist = await Playlist.findOne({
       _id: playlistId,
-      owner_id: currentUser,
+      ownerId: currentUser,
     }).exec();
 
     if (playlist && playlist.tracks) {
-      const duplicate = playlist.tracks.find((track) => track === newTrack);
+      const duplicate = playlist.tracks.find(
+        (track) => track.trackId === newTrack
+      );
       if (duplicate) {
         response.setError(400, "Track already exists");
         return response.send(res);
       }
 
-      playlist.tracks.push(newTrack);
+      playlist.tracks.push(req.body);
       const saved = await playlist.save();
 
       if (saved) {
@@ -126,16 +129,16 @@ export const addToPlaylist = async (req: Request, res: Response) => {
 export const removeFromPlaylist = async (req: Request, res: Response) => {
   try {
     const playlistId = req.params.id;
-    const unwantedTrack: string = req.body.track;
+    const { id: unwantedTrack } = req.body;
     const currentUser = req.user!.id;
     const playlist = await Playlist.findById({
       _id: playlistId,
-      owner_id: currentUser,
+      ownerId: currentUser,
     }).exec();
 
     if (playlist && playlist.tracks) {
       const index = playlist.tracks.findIndex(
-        (track) => track === unwantedTrack
+        (track) => track.trackId === unwantedTrack
       );
       if (index === -1) {
         response.setError(404, "Track not found");
@@ -166,7 +169,7 @@ export const removePlaylist = async (req: Request, res: Response) => {
     const currentUser = req.user!.id as string;
     const deleted = await Playlist.findOneAndRemove({
       _id: playlistId,
-      owner_id: currentUser,
+      ownerId: currentUser,
     }).exec();
 
     if (deleted) {

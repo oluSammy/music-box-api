@@ -14,15 +14,16 @@ export interface REQUESTUSER {
   id?: string;
   token?: string;
 }
-export interface TPlaylist {
+export interface IPlaylist {
   name: string;
-  genre_id: string;
-  tracks?: string[];
+  genreId: string;
+  tracks?: [{ trackId: number; title: string }];
   isPublic: boolean;
   likes?: string[];
-  owner_id?: string;
+  ownerId?: string;
+  listeningCount?: number;
+  likesCount?: number;
 }
-
 export interface GENRE {
   id: number;
   name: string;

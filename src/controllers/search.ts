@@ -1,0 +1,62 @@
+import { Request, Response } from "express";
+import { fetchAllQuery } from "../services/genres";
+import ResponseStatus from "../utils/response";
+import Playlist from "../models/playlistModel";
+
+const responseStatus = new ResponseStatus();
+export const searchPlaylist = async function (
+  req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const playlistId = req.params.id;
+    const songTitle = req.query.name as string;
+
+    const playlist = await Playlist.findById({ _id: playlistId });
+    if (!playlist) {
+      responseStatus.setError(404, "playlist not found");
+      return responseStatus.send(res);
+    }
+    const track = playlist.tracks;
+    if (track) {
+      const data = track.filter(
+        (song) =>
+          song.title.toLowerCase().indexOf(songTitle?.toLocaleLowerCase()) >= 0
+        //   return song;
+      );
+      if (data.length === 0) {
+        responseStatus.setError(404, "No song Found");
+        return responseStatus.send(res);
+      }
+      responseStatus.setSuccess(200, "successful", data);
+      return responseStatus.send(res);
+    }
+    responseStatus.setError(404, "empty track list");
+    return responseStatus.send(res);
+  } catch (error) {
+    responseStatus.setError(500, error.message);
+    return responseStatus.send(res);
+  }
+};
+export const searchQuery = async function (
+  req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const queryString = req.query.name;
+    if (queryString) {
+      const allSearch = await fetchAllQuery(queryString as string);
+      if (!allSearch) {
+        responseStatus.setError(404, "search not found");
+        return responseStatus.send(res);
+      }
+      responseStatus.setSuccess(200, "successfull", allSearch);
+      return responseStatus.send(res);
+    }
+    responseStatus.setError(400, "type the search word ");
+    return responseStatus.send(res);
+  } catch (error) {
+    responseStatus.setError(500, error.message);
+    return responseStatus.send(res);
+  }
+};

@@ -28,7 +28,7 @@ export const getLikedAlbumsByUser = async (req: Request, res: Response) => {
       return response.send(res);
     }
 
-    response.setError(404, "Playlist is empty");
+    response.setError(404, "Album is empty");
     return response.send(res);
   } catch (err) {
     console.error(err.message);

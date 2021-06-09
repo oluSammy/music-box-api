@@ -35,6 +35,17 @@ export interface GENRE {
   type: string;
 }
 
+export interface HISTORY {
+  userId: string;
+  history: {
+    id: number;
+    title: string;
+    album: string;
+    duration: string;
+    timeStamp: Date;
+  }[];
+}
+
 export interface RECENTLY_PLAYED {
   player_id: string;
   directory_id: string;

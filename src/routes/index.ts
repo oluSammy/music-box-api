@@ -5,6 +5,7 @@ import genreRoutes from "./genre";
 import albumRoutes from "./album";
 import authRouter from "./googleAuth";
 import fbRouter from "./fbAuth";
+import historyRoute from "./history";
 import recentlyPlayedRoutes from "./recentlyPlayed";
 import artistRoute from "./artist";
 
@@ -37,6 +38,8 @@ router.use("/auth", authRouter);
 // http://localhost:3000/api/v1/music-box-api/fb/facebook
 router.use("/fb", fbRouter);
 
+// listening history route
+router.use("/history", historyRoute);
 // controller for recently played music
 router.use("/recently-played", recentlyPlayedRoutes);
 

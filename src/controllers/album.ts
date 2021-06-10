@@ -36,7 +36,7 @@ export const getLikedAlbumsByUser = async (req: Request, res: Response) => {
     response.setError(400, "Error occured during query");
     return response.send(res);
   }
-}
+};
 
 export const searchAlbum = async (
   req: Request,
@@ -129,7 +129,7 @@ export const mostPlayedAlbum = async (req: Request, res: Response) => {
     response.setError(400, "Error occured during query");
     return response.send(res);
   }
-}
+};
 
 export const likedAlbum = async (
   req: Request,

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { fetchAllQuery } from "../services/genres";
 import ResponseStatus from "../utils/response";
 import Playlist from "../models/playlistModel";
+import { IPlaylist } from "../types/types";
 
 const responseStatus = new ResponseStatus();
 export const searchPlaylist = async function (
@@ -38,19 +39,23 @@ export const searchPlaylist = async function (
     return responseStatus.send(res);
   }
 };
+
+// search album playlist artist
 export const searchQuery = async function (
   req: Request,
   res: Response
 ): Promise<Response> {
   try {
-    const queryString = req.query.name;
+    const queryString = req.query.name as string;
     if (queryString) {
+      const playlistSearch = await searchPublicPlaylists(queryString);
       const allSearch = await fetchAllQuery(queryString as string);
-      if (!allSearch) {
+      const data = [...allSearch, ...playlistSearch];
+      if (data.length === 0) {
         responseStatus.setError(404, "search not found");
         return responseStatus.send(res);
       }
-      responseStatus.setSuccess(200, "successfull", allSearch);
+      responseStatus.setSuccess(200, "successfull", data);
       return responseStatus.send(res);
     }
     responseStatus.setError(400, "type the search word ");
@@ -58,5 +63,23 @@ export const searchQuery = async function (
   } catch (error) {
     responseStatus.setError(500, error.message);
     return responseStatus.send(res);
+  }
+};
+// search user playlist
+export const searchPublicPlaylists = async (
+  search: string
+): Promise<Record<string, any>[]> => {
+  try {
+    const publicPlaylists = await Playlist.find({ isPublic: true });
+    if (publicPlaylists) {
+      const data = publicPlaylists.filter(
+        (playlist: IPlaylist) =>
+          playlist.name.toLowerCase().indexOf(search?.toLocaleLowerCase()) >= 0
+      );
+      return data;
+    }
+    throw new Error("playlist not found");
+  } catch (error) {
+    throw new Error(error.message);
   }
 };

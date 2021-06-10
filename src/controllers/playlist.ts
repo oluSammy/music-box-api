@@ -31,7 +31,6 @@ export const getPublicPlaylists = async (req: Request, res: Response) => {
     response.setError(404, "No pulic playlist");
     return response.send(res);
   } catch (error) {
-    console.error(error.message);
     response.setError(404, "Invalid request");
     return response.send(res);
   }
@@ -62,7 +61,6 @@ export const getPlaylist = async (
     response.setError(404, "Playlist not found");
     return response.send(res);
   } catch (error) {
-    console.error(error);
     response.setError(400, "Invalid request");
     return response.send(res);
   }
@@ -129,7 +127,6 @@ export const addToPlaylist = async (req: Request, res: Response) => {
     response.setError(400, "User can't carry out operation");
     return response.send(res);
   } catch (error) {
-    console.error(error.message);
     response.setError(400, "Error adding song to playlist");
     return response.send(res);
   }
@@ -190,7 +187,6 @@ export const removePlaylist = async (req: Request, res: Response) => {
     response.setError(400, "User can't carry out operation");
     return response.send(res);
   } catch (error) {
-    console.error(error);
     response.setError(400, "Error removing playlist");
     return response.send(res);
   }

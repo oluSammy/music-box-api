@@ -35,6 +35,7 @@ export const registerUser = async function (
     await newUser.save();
 
     const token = generateToken(newUser._id);
+    newUser.password = undefined;
     responseStatus.setSuccess(201, "successful", { data: newUser, token });
     return responseStatus.send(res);
   } catch (error) {

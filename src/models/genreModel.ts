@@ -39,10 +39,12 @@ const genreSchema = new Schema(
     timestamps: true,
   }
 );
+
 // create relationship between genre and playlist
 genreSchema.virtual("playlist", {
   ref: "Playlist",
   localField: "_id",
-  foreignField: "owner_id",
+  foreignField: "ownerId",
 });
+
 export const genreModel = model("Genre", genreSchema);

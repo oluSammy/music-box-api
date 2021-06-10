@@ -68,8 +68,15 @@ const artistSchema = new Schema<IArtist>(
       required: true,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
-export const artistModel = model("Artist", artistSchema);
+
+artistSchema.virtual("Recently_played", {
+  ref: "Recent_play",
+  localField: "_id",
+  foreignField: "artist",
+  justOne: false,
+  match: { isActive: false },
+});
+
+export const ArtistModel = model("Artist", artistSchema);

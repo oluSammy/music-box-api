@@ -1,85 +1,143 @@
-import { Response, Request } from "express";
-import { artistModel } from "../models/artistModel";
-import ResponseStatus from "../utils/response";
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable eqeqeq */
+// eslint-disable-next-line consistent-return
+// eslint-disable-next-line no-console
+
+import { Request, Response } from "express";
+import ResponseClass from "../utils/response";
+import { ArtistModel } from "../models/artistModel";
 import axios from "axios";
 
-const responseStatus = new ResponseStatus();
+const response = new ResponseClass();
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-// eslint-disable-next-line consistent-return
-export const addArtistById = async (req: Request, res: Response) => {
+export const getLikedArtistsByUser = async (req: Request, res: Response) => {
+  try {
+    const { id: currentUser } = req.user as Record<string, any>;
+    const artists = await ArtistModel.find({}).lean().exec();
+
+    if (artists && artists.length) {
+      const userArtists = artists.filter((artist: any) => {
+        return (
+          artist.likes &&
+          artist.likes.some((like: string) => like == currentUser)
+        );
+      });
+
+      if (userArtists.length) {
+        response.setSuccess(201, "Successfully!", { payload: userArtists });
+        return response.send(res);
+      }
+
+      response.setError(404, "User liked no album");
+      return response.send(res);
+    }
+
+    response.setError(404, "Artist is empty");
+    return response.send(res);
+  } catch (err) {
+    console.error(err.message);
+    response.setError(400, "Error occured during query");
+    return response.send(res);
+  }
+};
+
+export const mostPlayedArtist = async (req: Request, res: Response) => {
+  try {
+    const { id: currentUser } = req.user as Record<string, any>;
+
+    if (!currentUser) {
+      response.setError(400, "Unauthorized access");
+      return response.send(res);
+    }
+
+    const mostPlayed = await ArtistModel.find({ isPublic: true })
+      .sort({ listeningCount: -1 })
+      .limit(5)
+      .lean()
+      .exec();
+
+    return mostPlayed;
+  } catch (err) {
+    console.error(err.message);
+    response.setError(400, "Error occured during query");
+    return response.send(res);
+  }
+};
+
+export const addArtistById = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
     const { id } = req.params;
-    const result = await artistModel.findOne({ id });
+    const result = await ArtistModel.findOne({ id });
     if (result === null) {
       const getArtist = await axios.get(`https://api.deezer.com/artist/${id}`);
-      const addArtist = await artistModel.create(getArtist.data);
-      responseStatus.setSuccess(201, "successful", addArtist);
-      return responseStatus.send(res);
+      const addArtist = await ArtistModel.create(getArtist.data);
+      response.setSuccess(201, "successful", addArtist);
+      return response.send(res);
     }
     const getArtist = await axios.get(`https://api.deezer.com/artist/${id}`);
-    responseStatus.setSuccess(
-      409,
-      "Artist already in database",
-      getArtist.data
-    );
-    return responseStatus.send(res);
+    response.setSuccess(409, "Artist already in database", getArtist.data);
+    return response.send(res);
   } catch (error) {
-    responseStatus.setError(400, "Artist does not exist");
-    return responseStatus.send(res);
+    response.setError(400, "Artist does not exist");
+    return response.send(res);
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-// eslint-disable-next-line consistent-return
-export const likeArtist = async (req: Request, res: Response) => {
+export const likeArtist = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
     const { id } = req.params;
-    const artistProfile = await artistModel.findOne({ id });
-    // eslint-disable-next-line no-console
-    if (artistProfile.likedBy.includes(req.user?._id)) {
-      const updateArtistProfile = await artistModel
-        .findOneAndUpdate(
-          { id },
-          {
-            $pull: { likedBy: req.user?._id },
-            $inc: { likedCount: -1 },
-          },
-          { new: true }
-        )
-        .exec();
-      responseStatus.setSuccess(201, "successful", updateArtistProfile);
-      return responseStatus.send(res);
-    }
-    const updateArtistProfile = await artistModel
-      .findOneAndUpdate(
+    const { _id } = req.user as Record<string, any>;
+    const artistProfile = await ArtistModel.findOne({ id });
+    if (artistProfile.likedBy.includes(_id)) {
+      const updateArtistProfile = await ArtistModel.findOneAndUpdate(
         { id },
         {
-          $push: { likedBy: req.user?._id },
-          $inc: { likedCount: 1 },
+          $pull: { likedBy: _id },
+          $inc: { likedCount: -1 },
         },
         { new: true }
-      )
-      .exec();
-    responseStatus.setSuccess(201, "successful", updateArtistProfile);
-    return responseStatus.send(res);
+      ).exec();
+      response.setSuccess(201, "successful", updateArtistProfile);
+      return response.send(res);
+    }
+    const updateArtistProfile = await ArtistModel.findOneAndUpdate(
+      { id },
+      {
+        $push: { likedBy: _id },
+        $inc: { likedCount: 1 },
+      },
+      { new: true }
+    ).exec();
+    response.setSuccess(201, "successful", updateArtistProfile);
+    return response.send(res);
   } catch (err) {
-    responseStatus.setError(400, "Artist does not exist");
-    return responseStatus.send(res);
+    response.setError(400, "Artist does not exist");
+    return response.send(res);
   }
 };
 
-// eslint-disable-next-line consistent-return
-export const listeningCount = async (req: Request, res: Response) => {
+export const listeningCount = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
     const { id } = req.params;
-    const updateListeningCount = await artistModel
-      .findOneAndUpdate({ id }, { $inc: { listeningCount: 1 } }, { new: true })
-      .exec();
-    responseStatus.setSuccess(201, "successful", updateListeningCount);
-    return responseStatus.send(res);
+    const updateListeningCount = await ArtistModel.findOneAndUpdate(
+      { id },
+      { $inc: { listeningCount: 1 } },
+      { new: true }
+    ).exec();
+    response.setSuccess(201, "successful", updateListeningCount);
+    return response.send(res);
   } catch (err) {
-    responseStatus.setError(400, "Artist does not exist");
-    return responseStatus.send(res);
+    response.setError(400, "Artist does not exist");
+    return response.send(res);
   }
 };

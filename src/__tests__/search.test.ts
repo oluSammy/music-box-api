@@ -7,7 +7,7 @@ let token: string;
 const url = "/api/v1/music-box-api/";
 const userInfo = {
   firstName: "David",
-  lastName: "Adejo",
+  lastName: "Adej",
   gender: "Male",
   dateOfBirth: "1995/10/11",
   email: "emmanuelhemarxyll12@gmail.com",

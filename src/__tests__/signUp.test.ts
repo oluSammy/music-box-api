@@ -21,12 +21,11 @@ describe("User  Register ANd Authentication", () => {
       dateOfBirth: "2000/05/12",
     };
     const res = await supertest(app).post(`${url}users/register`).send(logUser);
-    userData.id = res.body.data._id;
-    userData.token = res.body.token;
-    // id = res.body.data._id;
+    userData.id = res.body.data.data._id;
+    userData.token = res.body.data.token;
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty("data");
-    expect(res.body).toHaveProperty("token");
+    expect(res.body.data).toHaveProperty("token");
     expect(res.body).toHaveProperty("status");
     expect(res.body.status).toEqual("successful");
   });

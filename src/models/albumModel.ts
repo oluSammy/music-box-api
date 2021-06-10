@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { IAlbum } from "../types/types";
+import { Album } from "../types/types";
 
 const trackSchema = new Schema({
   id: {
@@ -31,7 +31,7 @@ const contributorSchema = new Schema({
   },
 });
 
-const albumSchema = new Schema<IAlbum>(
+const albumSchema = new Schema<Album>(
   {
     id: {
       type: String,
@@ -82,24 +82,34 @@ const albumSchema = new Schema<IAlbum>(
       {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "user",
+        ref: "User",
       },
     ],
     listened: [
       {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "user",
+        ref: "User",
       },
     ],
     likeCount: {
       type: Number,
+      default: 0,
     },
     listeningCount: {
       type: Number,
+      default: 0,
     },
   },
   { timestamps: true }
 );
 
-export default model("Album", albumSchema);
+albumSchema.virtual("Recently_played", {
+  ref: "Recent_play",
+  localField: "_id",
+  foreignField: "directory_info",
+  justOne: false,
+  match: { isActive: false },
+});
+
+export const AlbumModel = model("Album", albumSchema);

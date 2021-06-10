@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable no-console */
 import mongoose from "mongoose";
 
-const message = "Successfully connected to MongoDB Local!";
+const message =
+  process.env.NODE_ENV !== "production"
+    ? "Successfully connected to MongoDB Atlas!"
+    : "Successfully connected to MongoDB Local!";
 
-const connectDB = (): void => {
-  const url = "mongodb://127.0.0.1:27017/music-box";
-
+const connectDB = () => {
+  const url: string = process.env.DATABASE_URL as string;
   mongoose
     .connect(url, {
       useNewUrlParser: true,

@@ -1,7 +1,3 @@
-export interface REQUESTUSER {
-  id?: string;
-  token?: string;
-}
 export interface IUser {
   user: any;
   email: string;
@@ -15,6 +11,12 @@ export interface IUser {
   last_login?: string;
 }
 
+export interface REQUESTUSER {
+  _id: string;
+  id?: string;
+  token?: string;
+}
+
 export interface IPlaylist {
   name: string;
   genreId: string;
@@ -26,11 +28,41 @@ export interface IPlaylist {
   likesCount?: number;
 }
 
+export interface GENRE {
+  id: number;
+  name: string;
+  picture: string;
+  picture_small: string;
+  picture_medium: string;
+  picture_big: string;
+  picture_xl: string;
+  type: string;
+}
+
+export interface HISTORY {
+  userId: string;
+  history: {
+    id: number;
+    title: string;
+    album: string;
+    duration: string;
+    timeStamp: Date;
+  }[];
+}
+
+export interface RECENTLY_PLAYED {
+  player_id: string;
+  directory_id: string;
+  directory_info: string;
+  directory_type: string;
+}
+
 export interface IArtist {
   id: number;
   name: string;
   share: string;
   likedBy: string[];
+  likedCount: number;
   listeningCount: number;
   picture: string;
   picture_small: string;
@@ -44,7 +76,7 @@ export interface IArtist {
   type: string;
 }
 
-export interface IAlbum {
+export interface Album {
   id: number;
   title: string;
   cover: string;
@@ -54,21 +86,14 @@ export interface IAlbum {
   genre_id: string;
   artist: string;
   tracklist: string;
+  duration: number;
+  nb_tracks: number;
+  tracks: string[];
+  contributors: string[];
   likes?: string[];
   listened?: string[];
   likeCount?: number;
   listeningCount?: number;
-}
-
-export interface GENRE {
-  id: number;
-  name: string;
-  picture: string;
-  picture_small: string;
-  picture_medium: string;
-  picture_big: string;
-  picture_xl: string;
-  type: string;
 }
 
 export type ResponseData = Record<string, any> | Record<string, any>[];

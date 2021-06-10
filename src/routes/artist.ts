@@ -1,12 +1,19 @@
 import express from "express";
-import verifyToken from "../middleware/auth";
+
 import {
+  mostPlayedArtist,
+  getLikedArtistsByUser,
   addArtistById,
   likeArtist,
   listeningCount,
 } from "../controllers/artist";
 
+import verifyToken from "../middleware/auth";
+
 const router = express.Router();
+
+router.get("/likes", verifyToken, getLikedArtistsByUser);
+router.get("/mostPlayed", verifyToken, mostPlayedArtist);
 
 // route to get artist by id
 router.get("/id/:id", verifyToken, addArtistById);

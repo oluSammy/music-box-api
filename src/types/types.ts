@@ -10,11 +10,13 @@ export interface IUser {
   token?: string;
   last_login?: string;
 }
+
 export interface REQUESTUSER {
   _id: string;
   id?: string;
   token?: string;
 }
+
 export interface IPlaylist {
   name: string;
   genreId: string;
@@ -25,6 +27,7 @@ export interface IPlaylist {
   listeningCount?: number;
   likesCount?: number;
 }
+
 export interface GENRE {
   id: number;
   name: string;
@@ -92,4 +95,5 @@ export interface Album {
   likeCount?: number;
   listeningCount?: number;
 }
+
 export type ResponseData = Record<string, any> | Record<string, any>[];

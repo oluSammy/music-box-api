@@ -78,4 +78,5 @@ artistSchema.virtual("Recently_played", {
   justOne: false,
   match: { isActive: false },
 });
+
 export const ArtistModel = model("Artist", artistSchema);

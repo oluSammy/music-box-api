@@ -24,4 +24,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn
+      - name: install dependencies
+        run: |
+          rm -rf node_modules/
+          yarn install --frozen-lockfile
+          
+      - name: transpile typescript 
+        run: yarn test

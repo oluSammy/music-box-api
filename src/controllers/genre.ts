@@ -11,7 +11,6 @@ export async function getGenres(
   req: Request,
   res: Response
 ): Promise<Response> {
-  //
   try {
     // find all genres in database
     const genre = await genreModel.find({});

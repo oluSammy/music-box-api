@@ -24,11 +24,13 @@ const trackSchema = new Schema({
     name: String,
   },
 });
+
 const contributorSchema = new Schema({
   name: {
     type: String,
   },
 });
+
 const albumSchema = new Schema<Album>(
   {
     id: {
@@ -101,6 +103,7 @@ const albumSchema = new Schema<Album>(
   },
   { timestamps: true }
 );
+
 albumSchema.virtual("Recently_played", {
   ref: "Recent_play",
   localField: "_id",
@@ -108,4 +111,5 @@ albumSchema.virtual("Recently_played", {
   justOne: false,
   match: { isActive: false },
 });
+
 export const AlbumModel = model("Album", albumSchema);

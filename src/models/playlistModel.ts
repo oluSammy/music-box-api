@@ -43,7 +43,6 @@ const playlistSchema = new Schema<IPlaylist>(
   },
   { timestamps: true }
 );
-export default model<IPlaylist>("Playlist", playlistSchema);
 
 playlistSchema.pre("find", async function (next) {
   try {
@@ -61,3 +60,5 @@ playlistSchema.virtual("Recently_played", {
   justOne: false,
   match: { isActive: false },
 });
+
+export default model<IPlaylist>("Playlist", playlistSchema);

@@ -104,7 +104,7 @@ export const getPlaylistByGenre = async (
 
   try {
     const playlists = await playlistModel.find({
-      genre_id: id,
+      genreId: id,
       isPublic: true,
     });
 

@@ -6,7 +6,6 @@ import { AlbumModel } from "../../models/albumModel";
 import { ArtistModel } from "../../models/artistModel";
 
 const responseStatus = new ResponseStatus();
-
 export default {
   playlist: async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -20,7 +19,6 @@ export default {
         directory_type: req.body.directory,
         player_id: req.user.id,
       });
-
       if (alreadyExist) {
         const existData = await RecentlyPlayedModel.findByIdAndUpdate(
           alreadyExist._id,
@@ -29,7 +27,6 @@ export default {
         responseStatus.setSuccess(201, "added to recently played", existData);
         return responseStatus.send(res);
       }
-
       // save to database
       const playlist = new RecentlyPlayedModel({
         player_id: req.user.id,
@@ -37,7 +34,6 @@ export default {
         onModel: "Playlist",
         directory_type: req.body.directory,
       });
-
       const playData = await playlist.save();
       responseStatus.setSuccess(201, "added to recently played", playData);
       return responseStatus.send(res);
@@ -46,17 +42,14 @@ export default {
       return responseStatus.send(res);
     }
   },
-
   album: async (req: Request, res: Response): Promise<Response> => {
     try {
       await AlbumModel.findById(req.body.id);
-
       const alreadyExist = await RecentlyPlayedModel.findOne({
         directory_info: req.body.id,
         directory_type: req.body.directory,
         player_id: req.user.id,
       });
-
       if (alreadyExist) {
         const existData = await RecentlyPlayedModel.findByIdAndUpdate(
           alreadyExist._id,
@@ -65,7 +58,6 @@ export default {
         responseStatus.setSuccess(201, "added to recently played", existData);
         return responseStatus.send(res);
       }
-
       // save to database
       const album = new RecentlyPlayedModel({
         player_id: req.user.id,
@@ -73,7 +65,6 @@ export default {
         onModel: "Album",
         directory_type: req.body.directory,
       });
-
       const albumData = await album.save();
       responseStatus.setSuccess(201, "added to recently played", albumData);
       return responseStatus.send(res);
@@ -82,7 +73,6 @@ export default {
       return responseStatus.send(res);
     }
   },
-
   artist: async (req: Request, res: Response): Promise<Response> => {
     try {
       await ArtistModel.findById(req.body.id);
@@ -91,7 +81,6 @@ export default {
         directory_type: req.body.directory,
         player_id: req.user.id,
       });
-
       if (alreadyExist) {
         const existData = await RecentlyPlayedModel.findByIdAndUpdate(
           alreadyExist._id,
@@ -100,7 +89,6 @@ export default {
         responseStatus.setSuccess(201, "added to recently played", existData);
         return responseStatus.send(res);
       }
-
       // save to database
       const artist = new RecentlyPlayedModel({
         player_id: req.user.id,
@@ -108,7 +96,6 @@ export default {
         onModel: "Artist",
         directory_type: req.body.directory,
       });
-
       const artistData = await artist.save();
       responseStatus.setSuccess(201, "added to recently played", artistData);
       return responseStatus.send(res);

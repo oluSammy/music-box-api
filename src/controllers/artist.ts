@@ -53,11 +53,11 @@ export const mostPlayedArtist = async (req: Request, res: Response) => {
 
     const mostPlayed = await ArtistModel.find({ isPublic: true })
       .sort({ listeningCount: -1 })
-      .limit(5)
       .lean()
       .exec();
 
-    return mostPlayed;
+    response.setSuccess(200, "Successful", { payload: mostPlayed });
+    return response.send(res);
   } catch (err) {
     console.error(err.message);
     response.setError(400, "Error occured during query");

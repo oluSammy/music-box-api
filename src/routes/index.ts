@@ -21,7 +21,7 @@ router.use("/album", albumRoute);
 // controllers for artist route
 router.use("/artist", artistRoute);
 
-router.get("/", (req: Request, res: Response) => {
+router.get("/", (_req: Request, res: Response) => {
   res.send("music-box server is live");
 });
 
@@ -34,10 +34,9 @@ router.use("/users", usersRoute);
 // controller for genre route
 router.use("/genres", genreRoutes);
 
-// controller for playlist
-
 // controller for album
 router.use("/album", albumRoute);
+
 // google authentication route
 // http://localhost:3000/api/v1/music-box-api/auth/google
 router.use("/auth", authRouter);
@@ -48,8 +47,10 @@ router.use("/fb", fbRouter);
 
 // controller for user route
 router.use("/users", usersRoute);
+
 // listening history route
 router.use("/history", historyRoute);
+
 // controller for recently played music
 router.use("/recently-played", recentlyPlayedRoutes);
 

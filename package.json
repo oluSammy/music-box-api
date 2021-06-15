@@ -9,7 +9,7 @@
     "start:dev": "nodemon --watch src/ --exec \"yarn serve\" -e ts",
     "serve": "tsc && node ./bin/www",
     "compile": "tsc -p ./tsconfig.json",
-    "test": "jest --runInBand",
+    "test": "jest --runInBand --detectOpenHandles",
     "clean": "rm -rf daist && mkdir dist",
     "heroku-postbuild": "yarn clean && yarn compile",
     "lint": "eslint . --ext ts",
@@ -85,7 +85,6 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.3",
     "eslint-plugin-prettier": "^3.4.0",
-    "jest": "^27.0.4",
     "nodemon": "^2.0.7",
     "prettier": "^2.3.0",
     "typescript": "^4.3.2"

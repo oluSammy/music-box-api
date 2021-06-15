@@ -15,6 +15,11 @@ import verifyToken from "../middleware/auth";
 
 const router = express.Router();
 
+router.get("/mostPlayed", verifyToken, mostPlayedPlaylist);
+router.get("/likes", verifyToken, getLikedPlaylistsByUser);
+router.put("/likes/:id", verifyToken, likePublicPost);
+router.delete("/delete/:id", verifyToken, removePlaylist);
+
 router
   .route("/")
   .get(verifyToken, getPublicPlaylists)
@@ -25,10 +30,5 @@ router
   .get(verifyToken, getPlaylist)
   .put(verifyToken, addToPlaylist)
   .delete(verifyToken, removeFromPlaylist);
-
-router.get("/mostPlayed", mostPlayedPlaylist);
-router.get("/likes", getLikedPlaylistsByUser);
-router.put("/likes/:id", verifyToken, likePublicPost);
-router.delete("/delete/:id", verifyToken, removePlaylist);
 
 export default router;

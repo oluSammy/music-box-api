@@ -13,7 +13,7 @@ import verifyToken from "../middleware/auth";
 const router = express.Router();
 
 router.get("/likes", verifyToken, getLikedAlbumsByUser);
-router.get("/mostplayed", verifyToken, mostPlayedAlbum);
+router.get("/mostPlayed", verifyToken, mostPlayedAlbum);
 
 router.post("/", verifyToken, searchAlbum);
 router.put("/likes/:id", verifyToken, likedAlbum);

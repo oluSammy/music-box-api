@@ -96,10 +96,8 @@ export const createPlaylist = async (req: Request, res: Response) => {
 export const addToPlaylist = async (req: Request, res: Response) => {
   try {
     const { id: playlistId } = req.params;
-    console.log(playlistId);
     const { id: trackId, title } = req.body as Record<string, any>;
     const { id: currentUser } = req.user as Record<string, any>;
-    console.log(currentUser);
     const playlist = await Playlist.findOne({
       _id: playlistId,
       ownerId: currentUser,
@@ -238,11 +236,11 @@ export const mostPlayedPlaylist = async (req: Request, res: Response) => {
 
     const mostPlayed = await Playlist.find({ isPublic: true })
       .sort({ listeningCount: -1 })
-      .limit(5)
       .lean()
       .exec();
 
-    return mostPlayed;
+    response.setSuccess(200, "Successful", { payload: mostPlayed });
+    return response.send(res);
   } catch (err) {
     console.error(err.message);
     response.setError(400, "Error occured during query");

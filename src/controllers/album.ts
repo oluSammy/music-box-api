@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable no-console */
 /* eslint-disable eqeqeq */
@@ -36,7 +37,7 @@ export const getLikedAlbumsByUser = async (req: Request, res: Response) => {
     response.setError(400, "Error occured during query");
     return response.send(res);
   }
-}
+};
 
 export const searchAlbum = async (
   req: Request,
@@ -119,17 +120,17 @@ export const mostPlayedAlbum = async (req: Request, res: Response) => {
 
     const mostPlayed = await AlbumModel.find({ isPublic: true })
       .sort({ listeningCount: -1 })
-      .limit(5)
       .lean()
       .exec();
 
-    return mostPlayed;
+    response.setSuccess(200, "Successful", { payload: mostPlayed });
+    return response.send(res);
   } catch (err) {
     console.error(err.message);
     response.setError(400, "Error occured during query");
     return response.send(res);
   }
-}
+};
 
 export const likedAlbum = async (
   req: Request,

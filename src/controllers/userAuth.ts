@@ -35,6 +35,7 @@ export const registerUser = async function (
     await newUser.save();
 
     const token = generateToken(newUser._id);
+    newUser.password = undefined;
     responseStatus.setSuccess(201, "successful", { data: newUser, token });
     return responseStatus.send(res);
   } catch (error) {
@@ -60,7 +61,7 @@ export async function loginUser(
         gender: user.gender,
         dateOfBirth: user.dateOfBirth,
       };
-      responseStatus.setSuccess(201, "success", {
+      responseStatus.setSuccess(200, "success", {
         ...data,
         token: generateToken(user._id),
       });

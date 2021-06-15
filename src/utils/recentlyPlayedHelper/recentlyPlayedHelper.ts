@@ -6,7 +6,6 @@ import { AlbumModel } from "../../models/albumModel";
 import { ArtistModel } from "../../models/artistModel";
 
 const responseStatus = new ResponseStatus();
-
 export default {
   playlist: async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -43,7 +42,6 @@ export default {
       return responseStatus.send(res);
     }
   },
-
   album: async (req: Request, res: Response): Promise<Response> => {
     try {
       await AlbumModel.findById(req.body.id);
@@ -75,7 +73,6 @@ export default {
       return responseStatus.send(res);
     }
   },
-
   artist: async (req: Request, res: Response): Promise<Response> => {
     try {
       await ArtistModel.findById(req.body.id);

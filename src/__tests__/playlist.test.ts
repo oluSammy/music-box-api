@@ -1,10 +1,15 @@
 /* eslint-disable no-console */
 import request from "supertest";
 import app from "../app";
+import { dbDisconnect } from "../database/mongoMemoryConnect";
 
 const currentUser: Record<string, string> = {};
 const uri = "/api/v1/music-box-api";
 let playlistId = "";
+
+afterAll(async () => {
+  await dbDisconnect();
+});
 
 describe("test for user authentication", () => {
   it("should be able to signup ", async () => {

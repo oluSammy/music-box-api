@@ -48,6 +48,10 @@ app.use(passport.session());
 googleStrategy(passport);
 facebookStrategy(passport);
 
+app.get("/", (_req: Request, res: Response) => {
+  res.redirect("/api/v1/music-box-api");
+});
+
 //= = Root Route ==============
 app.use("/api/v1/music-box-api", indexRouter);
 
@@ -65,10 +69,6 @@ app.use((err: HttpError, req: Request, res: Response) => {
   // render the error page
   res.status(err.status || 500);
   res.render("error");
-});
-
-app.get("/", (_req: Request, res: Response) => {
-  res.redirect("/api/v1/music-box-api");
 });
 
 export default app;

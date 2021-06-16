@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon ./bin/www",
+    "start": "node ./bin/www",
     "tsc": "tsc -p ./tsconfig.json",
     "start:dev": "nodemon --watch src/ --exec \"yarn serve\" -e ts",
     "serve": "tsc && node ./bin/www",

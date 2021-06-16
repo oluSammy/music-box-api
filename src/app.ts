@@ -37,15 +37,15 @@ app.use(cookieParser());
 app.use("/api/v1/music-box-api", indexRouter);
 
 // passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(
   session({
-    secret: "akfc76q3gbd83bqdh",
+    secret: "akfc76q3gbd83bqd",
     resave: false,
     saveUninitialized: true,
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 
 // middleware for social login
 googleStrategy(passport);

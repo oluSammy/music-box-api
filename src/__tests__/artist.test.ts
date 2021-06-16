@@ -39,7 +39,7 @@ describe("test relating to Auth", () => {
 describe("test for artists", () => {
   it("should add artists to artist collection", async () => {
     const res = await request(app)
-      .get(`${url}/artist/id/960`)
+      .post(`${url}/artist/960`)
       .set("authorization", `Bearer ${currentUser.token}`);
 
     expect(res.body.status).toBe("successful");

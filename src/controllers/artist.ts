@@ -79,7 +79,10 @@ export const addArtistById = async (
       return response.send(res);
     }
     const getArtist = await axios.get(`https://api.deezer.com/artist/${id}`);
-    response.setSuccess(409, "Artist already in database", getArtist.data);
+    response.setError(
+      409,
+      `Artist with the id of ${getArtist.data.id} is already in the database`
+    );
     return response.send(res);
   } catch (error) {
     response.setError(400, "Artist does not exist");

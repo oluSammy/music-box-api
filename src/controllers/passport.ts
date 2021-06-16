@@ -39,6 +39,8 @@ export const facebookStrategy = (passport: passport.PassportStatic) => {
         profileFields: ["id", "displayName", "photos", "email"],
       },
       (accessToken: string, refreshToken: string, profile: any, done) => {
+        console.log(profile);
+
         return done(null, profile);
       }
     )

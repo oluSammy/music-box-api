@@ -50,7 +50,8 @@ export const searchQuery = async function (
     if (queryString) {
       const playlistSearch = await searchPublicPlaylists(queryString);
       const allSearch = await fetchAllQuery(queryString as string);
-      const data = [...allSearch, ...playlistSearch];
+      const [album, artist] = allSearch;
+      const data = [{ album, artist, playlist: playlistSearch }];
       if (data.length === 0) {
         responseStatus.setError(404, "search not found");
         return responseStatus.send(res);

@@ -33,9 +33,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-//= = Root Route ==============
-app.use("/api/v1/music-box-api", indexRouter);
-
 // passport middleware
 app.use(
   session({
@@ -50,6 +47,9 @@ app.use(passport.session());
 // middleware for social login
 googleStrategy(passport);
 facebookStrategy(passport);
+
+//= = Root Route ==============
+app.use("/api/v1/music-box-api", indexRouter);
 
 // catch 404 and forward to error handler
 app.use((_req: Request, _res: Response, next: NextFunction) => {

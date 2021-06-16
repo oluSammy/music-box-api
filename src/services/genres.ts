@@ -27,9 +27,10 @@ export const fetchAllQuery = async (
     const responseAlbum = await axios.get(`${albumUrl}${search}`);
     const responseArtist = await axios.get(`${artistUrl}${search}`);
     const responseResult = Promise.all([
-      responseAlbum.data,
-      responseArtist.data,
+      responseAlbum.data.data,
+      responseArtist.data.data,
     ]);
+
     return responseResult;
   } catch (error) {
     throw new Error(error.response);

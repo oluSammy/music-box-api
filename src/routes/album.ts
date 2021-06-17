@@ -15,7 +15,7 @@ const router = express.Router();
 router.get("/likes", verifyToken, getLikedAlbumsByUser);
 router.get("/mostplayed", verifyToken, mostPlayedAlbum);
 
-router.post("/", verifyToken, searchAlbum);
+router.get("/", verifyToken, searchAlbum);
 router.put("/likes/:id", verifyToken, likedAlbum);
 router.put("/listened/:id", verifyToken, listenedAlbumCount);
 

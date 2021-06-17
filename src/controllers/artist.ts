@@ -7,6 +7,7 @@
 import { Request, Response } from "express";
 import ResponseClass from "../utils/response";
 import { ArtistModel } from "../models/artistModel";
+import { Types } from "mongoose";
 import axios from "axios";
 
 const response = new ResponseClass();
@@ -14,26 +15,23 @@ const response = new ResponseClass();
 export const getLikedArtistsByUser = async (req: Request, res: Response) => {
   try {
     const { id: currentUser } = req.user as Record<string, any>;
-    const artists = await ArtistModel.find({}).lean().exec();
+    const userArtists = ArtistModel.find({
+      likes: Types.ObjectId(currentUser),
+    })
+      .lean()
+      .exec();
 
-    if (artists && artists.length) {
-      const userArtists = artists.filter((artist: any) => {
-        return (
-          artist.likes &&
-          artist.likes.some((like: string) => like == currentUser)
-        );
-      });
-
+    if (userArtists) {
       if (userArtists.length) {
-        response.setSuccess(201, "Successfully!", { payload: userArtists });
+        response.setSuccess(200, "Successful!", { payload: userArtists });
         return response.send(res);
       }
 
-      response.setError(404, "User liked no album");
+      response.setError(404, "User liked no artist");
       return response.send(res);
     }
 
-    response.setError(404, "Artist is empty");
+    response.setError(404, "Artist collection is empty");
     return response.send(res);
   } catch (err) {
     console.error(err.message);

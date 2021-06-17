@@ -149,7 +149,7 @@ describe("GET all album liked by a user", () => {
 
     expect(res.body.status).toBe("error");
     expect(res.status).toBe(404);
-    expect(res.body.message).toBe("Album is empty");
+    expect(res.body.message).toBe("User liked no album");
   });
 });
 
@@ -161,7 +161,7 @@ describe("GET all artist liked by a user", () => {
 
     expect(res.body.status).toBe("error");
     expect(res.status).toBe(404);
-    expect(res.body.message).toBe("Artist is empty");
+    expect(res.body.message).toBe("User liked no artist");
   });
 });
 

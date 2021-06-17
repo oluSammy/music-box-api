@@ -31,7 +31,7 @@ describe("test relating to albums", () => {
   it("successfully searches for an album", async () => {
     const queryParams = "227789382";
     const result = await request(app)
-      .post(`/api/v1/music-box-api/album?album=${queryParams}`)
+      .get(`/api/v1/music-box-api/album?album=${queryParams}`)
       .set("authorization", `Bearer ${token}`);
     expect(result.status).toEqual(200);
     expect(result.body.message).toEqual("Successful" || "Album gotten");

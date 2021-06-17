@@ -33,23 +33,27 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-//= = Root Route ==============
-app.use("/api/v1/music-box-api", indexRouter);
-
 // passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(
   session({
-    secret: "akfc76q3gbd83bqdh",
+    secret: "akfc76q3gbd83bqd",
     resave: false,
     saveUninitialized: true,
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 
 // middleware for social login
 googleStrategy(passport);
 facebookStrategy(passport);
+
+app.get("/", (_req: Request, res: Response) => {
+  res.redirect("/api/v1/music-box-api");
+});
+
+//= = Root Route ==============
+app.use("/api/v1/music-box-api", indexRouter);
 
 // catch 404 and forward to error handler
 app.use((_req: Request, _res: Response, next: NextFunction) => {
@@ -65,10 +69,6 @@ app.use((err: HttpError, req: Request, res: Response) => {
   // render the error page
   res.status(err.status || 500);
   res.render("error");
-});
-
-app.get("/", (_req: Request, res: Response) => {
-  res.redirect("/api/v1/music-box-api");
 });
 
 export default app;

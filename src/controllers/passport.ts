@@ -35,10 +35,13 @@ export const facebookStrategy = (passport: passport.PassportStatic) => {
       {
         clientID: process.env.FACEBOOK_CLIENT_ID as string,
         clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
-        callbackURL: "/api/v1/music-box-api/fb/facebook/success",
+        callbackURL:
+          "https://music-box-b.herokuapp.com/api/v1/music-box-api/fb/facebook/success",
         profileFields: ["id", "displayName", "photos", "email"],
       },
       (accessToken: string, refreshToken: string, profile: any, done) => {
+        console.log(profile);
+
         return done(null, profile);
       }
     )

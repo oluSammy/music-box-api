@@ -61,7 +61,6 @@ export async function getRecentlySaved(
     responseStatus.setSuccess(200, "successful", data);
     return responseStatus.send(res);
   } catch (error) {
-    console.log(error);
     responseStatus.setError(500, "An unknown error occurred");
     return responseStatus.send(res);
   }

@@ -102,9 +102,9 @@ export const googleAuthController = async (req: Request, res: Response) => {
       token,
       user,
     };
-
-    responseStatus.setSuccess(201, "successful", data);
-    return responseStatus.send(res);
+    return res.redirect(`${process.env.REDIRECT_URL}/${token}`);
+    // responseStatus.setSuccess(201, "successful", data);
+    // return responseStatus.send(res);
   } catch (e) {
     responseStatus.setError(500, "an error occurred");
     return responseStatus.send(res);

@@ -97,7 +97,6 @@ export const googleAuthController = async (req: Request, res: Response) => {
 
     // if user is a registered user
     const token = generateToken(user._id!);
-
     const data = {
       token,
       user,

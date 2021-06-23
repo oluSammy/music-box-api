@@ -75,8 +75,9 @@ export const googleAuthController = async (req: Request, res: Response) => {
         token,
         user: newUser,
       };
+
       return res.redirect(`${process.env.REDIRECT_URL}/${token}`);
-      // responseStatus.setSuccess(201, "successful", data);
+      // responseStatus.setSuccess(201, "successful", data)
       // return responseStatus.send(res);
     }
 

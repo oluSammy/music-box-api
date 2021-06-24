@@ -5,7 +5,6 @@
 import { Request, Response } from "express";
 import { AlbumModel } from "../models/albumModel";
 import ResponseClass from "../utils/response";
-import { Types } from "mongoose";
 import axios from "axios";
 
 const response = new ResponseClass();
@@ -13,15 +12,13 @@ const response = new ResponseClass();
 export const getLikedAlbumsByUser = async (req: Request, res: Response) => {
   try {
     const { id: currentUser } = req.user as Record<string, any>;
-    const userAlbums = AlbumModel.find({
-      likes: Types.ObjectId(currentUser),
-    })
+    const albums = await AlbumModel.find({ likes: { $in: [currentUser] } })
       .lean()
       .exec();
 
-    if (userAlbums) {
-      if (userAlbums.length) {
-        response.setSuccess(200, "Successful!", { payload: userAlbums });
+    if (albums) {
+      if (albums.length) {
+        response.setSuccess(201, "Successfully!", { payload: albums });
         return response.send(res);
       }
 
@@ -29,7 +26,7 @@ export const getLikedAlbumsByUser = async (req: Request, res: Response) => {
       return response.send(res);
     }
 
-    response.setError(404, "Album collection is empty");
+    response.setError(404, "No public album");
     return response.send(res);
   } catch (err) {
     console.error(err.message);

@@ -18,8 +18,14 @@ const playlistSchema = new Schema<IPlaylist>(
     },
     tracks: [
       {
-        trackId: Number,
+        id: Number,
         title: String,
+        duration: Number,
+        artist: String,
+        album: String,
+        preview: String,
+        releaseDate: String,
+        link: String,
       },
     ],
     genreId: {

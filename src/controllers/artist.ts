@@ -90,12 +90,12 @@ export const likeArtist = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const { id } = req.params;
+    const { _id: artistId } = req.params;
     const { _id } = req.user as Record<string, any>;
-    const artistProfile = await ArtistModel.findOne({ id });
+    const artistProfile = await ArtistModel.findOne({ artistId });
     if (artistProfile.likedBy.includes(_id)) {
       const updateArtistProfile = await ArtistModel.findOneAndUpdate(
-        { id },
+        { artistId },
         {
           $pull: { likedBy: _id },
           $inc: { likedCount: -1 },
@@ -106,7 +106,7 @@ export const likeArtist = async (
       return response.send(res);
     }
     const updateArtistProfile = await ArtistModel.findOneAndUpdate(
-      { id },
+      { artistId },
       {
         $push: { likedBy: _id },
         $inc: { likedCount: 1 },
@@ -136,6 +136,25 @@ export const listeningCount = async (
     return response.send(res);
   } catch (err) {
     response.setError(400, "Artist does not exist");
+    return response.send(res);
+  }
+};
+
+export const getArtistDetails = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const artist = await ArtistModel.findById({ _id: id });
+
+    if (artist) {
+      response.setSuccess(200, "successful", artist);
+      return response.send(res);
+    }
+
+    response.setError(404, "Artist does not exist");
+    return response.send(res);
+  } catch (err) {
+    console.log(err);
+    response.setError(400, "an error occurred");
     return response.send(res);
   }
 };

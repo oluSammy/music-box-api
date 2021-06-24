@@ -21,8 +21,6 @@ export const googleStrategy = (passport: PassportStatic) => {
         callbackURL: "/api/v1/music-box-api/auth/google/success",
       },
       (accessToken: string, refreshToken: string, profile: any, done) => {
-        // console.log(profile);
-
         return done(null, profile);
       }
     )
@@ -40,8 +38,6 @@ export const facebookStrategy = (passport: passport.PassportStatic) => {
         profileFields: ["id", "displayName", "photos", "email"],
       },
       (accessToken: string, refreshToken: string, profile: any, done) => {
-        console.log(profile);
-
         return done(null, profile);
       }
     )
@@ -78,38 +74,33 @@ export const googleAuthController = async (req: Request, res: Response) => {
         user: newUser,
       };
 
-      responseStatus.setSuccess(201, "successful", data);
-      return responseStatus.send(res);
+      const dataUrl = JSON.stringify(data);
+
+      // redirect user to frontend url
+      return res.redirect(`${process.env.REDIRECT_URL}/${dataUrl}`);
     }
 
     // if provider is not google,
     if (user.provider === "facebook") {
-      responseStatus.setError(
-        400,
-        "you already have an account with facebook, please login with facebook"
-      );
-      return responseStatus.send(res);
+      return res.redirect(`${process.env.REDIRECT_URL}/facebookAcct`);
     }
 
-    // if provider is not facebook,
+    // if provider is local,
     if (user.provider === "local") {
-      responseStatus.setError(400, "login with your email and password");
-      return responseStatus.send(res);
+      return res.redirect(`${process.env.REDIRECT_URL}/localeAcct`);
     }
 
     // if user is a registered user
     const token = generateToken(user._id!);
-
     const data = {
       token,
       user,
     };
 
-    responseStatus.setSuccess(201, "successful", data);
-    return responseStatus.send(res);
+    const dataUrl = JSON.stringify(data);
+    return res.redirect(`${process.env.REDIRECT_URL}/${dataUrl}`);
   } catch (e) {
-    responseStatus.setError(500, "an error occurred");
-    return responseStatus.send(res);
+    return res.redirect(`${process.env.REDIRECT_URL}/error`);
   }
 };
 
@@ -150,16 +141,17 @@ export const fbAuthController = async (req: Request, res: Response) => {
         user: newUser,
       };
 
-      responseStatus.setSuccess(201, "successful", data);
-      return responseStatus.send(res);
+      const dataUrl = JSON.stringify(data);
+      return res.redirect(`${process.env.REDIRECT_URL}/${dataUrl}`);
     }
 
     if (user.provider === "google") {
-      responseStatus.setError(
-        400,
-        "you already have an account with google, please login with google"
-      );
-      return responseStatus.send(res);
+      return res.redirect(`${process.env.REDIRECT_URL}/googleAcct`);
+    }
+
+    // if provider is local,
+    if (user.provider === "local") {
+      return res.redirect(`${process.env.REDIRECT_URL}/localeAcct`);
     }
 
     const token = generateToken(user._id!);
@@ -169,10 +161,9 @@ export const fbAuthController = async (req: Request, res: Response) => {
       user,
     };
 
-    responseStatus.setSuccess(201, "successful", data);
-    return responseStatus.send(res);
+    const dataUrl = JSON.stringify(data);
+    return res.redirect(`${process.env.REDIRECT_URL}/${dataUrl}`);
   } catch (e) {
-    responseStatus.setError(500, "an error occurred");
-    return responseStatus.send(res);
+    return res.redirect(`${process.env.REDIRECT_URL}/error`);
   }
 };

@@ -21,8 +21,6 @@ export const googleStrategy = (passport: PassportStatic) => {
         callbackURL: "/api/v1/music-box-api/auth/google/success",
       },
       (accessToken: string, refreshToken: string, profile: any, done) => {
-        // console.log(profile);
-
         return done(null, profile);
       }
     )

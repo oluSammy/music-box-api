@@ -90,10 +90,8 @@ export const likeArtist = async (
 ): Promise<Response> => {
   try {
     const { id } = req.params;
-    console.log(typeof id);
     const { _id } = req.user as Record<string, any>;
     const artistProfile = await ArtistModel.findOne({ _id: id });
-    console.log(artistProfile);
     if (artistProfile && artistProfile.likedBy.includes(_id)) {
       const updateArtistProfile = await ArtistModel.findOneAndUpdate(
         { _id: id },
@@ -147,7 +145,6 @@ export const getArtistDetails = async (
   res: Response
 ): Promise<Response> => {
   const { id } = req.params;
-  console.log(id);
   // get artist details
   try {
     const artist = await axios.get(`https://api.deezer.com/artist/${id}`);
@@ -158,7 +155,6 @@ export const getArtistDetails = async (
     response.setError(404, "Artist not found");
     return response.send(res);
   } catch (err) {
-    console.log(err);
     response.setError(400, "an error occurred");
     return response.send(res);
   }

@@ -37,6 +37,7 @@ export interface IPlaylist {
   ownerId?: string;
   listeningCount?: number;
   likesCount?: number;
+  imgURL?: string;
 }
 
 export interface GENRE {

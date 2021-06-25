@@ -36,6 +36,35 @@ export const getPublicPlaylists = async (req: Request, res: Response) => {
   }
 };
 
+export const getPlaylistsCreatedByUser = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { id: currentUser } = req.user as Record<string, any>;
+
+    if (!currentUser) {
+      response.setError(401, "Unauthorized access");
+      return response.send(res);
+    }
+
+    const playlists = await Playlist.find({ ownerId: currentUser })
+      .lean()
+      .exec();
+
+    if (playlists) {
+      response.setSuccess(200, "Successful!", { payload: playlists });
+      return response.send(res);
+    }
+
+    response.setError(404, "No playlist created by user");
+    return response.send(res);
+  } catch (error) {
+    response.setError(404, "Invalid request");
+    return response.send(res);
+  }
+};
+
 export const getPlaylist = async (
   req: Request,
   res: Response

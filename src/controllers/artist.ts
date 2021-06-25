@@ -139,17 +139,20 @@ export const listeningCount = async (
   }
 };
 
-export const getArtistDetails = async (req: Request, res: Response) => {
+export const getArtistDetails = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { id } = req.params;
+  console.log(id);
+  // get artist details
   try {
-    const { id } = req.params;
-    const artist = await ArtistModel.findById({ _id: id });
-
-    if (artist) {
-      response.setSuccess(200, "successful", artist);
+    const artist = await axios.get(`https://api.deezer.com/artist/${id}`);
+    if (!artist.data.error) {
+      response.setSuccess(200, "Successful", artist.data);
       return response.send(res);
     }
-
-    response.setError(404, "Artist does not exist");
+    response.setError(404, "Artist not found");
     return response.send(res);
   } catch (err) {
     console.log(err);

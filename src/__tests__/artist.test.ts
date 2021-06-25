@@ -50,7 +50,7 @@ describe("test for artists", () => {
 
   it("should count artists' likes", async () => {
     const res = await request(app)
-      .put(`${url}/artist/like/960`)
+      .put(`${url}/artist/like/60d65db5c7053e1cc8e70db8`)
       .set("authorization", `Bearer ${currentUser.token}`);
 
     expect(res.body.status).toBe("successful");
@@ -60,7 +60,7 @@ describe("test for artists", () => {
 
   it("should update artists' listening count", async () => {
     const res = await request(app)
-      .put(`${url}/artist/listened/960`)
+      .put(`${url}/artist/listened/60d65db5c7053e1cc8e70db8`)
       .set("authorization", `Bearer ${currentUser.token}`);
 
     expect(res.body.status).toBe("successful");

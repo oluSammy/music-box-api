@@ -94,9 +94,11 @@ export const likeArtist = async (
 ): Promise<Response> => {
   try {
     const { id } = req.params;
+    console.log(typeof id);
     const { _id } = req.user as Record<string, any>;
-    const artistProfile = await ArtistModel.findById(id);
-    if (artistProfile.likedBy.includes(_id)) {
+    const artistProfile = await ArtistModel.findOne({ _id: id });
+    console.log(artistProfile);
+    if (artistProfile && artistProfile.likedBy.includes(_id)) {
       const updateArtistProfile = await ArtistModel.findOneAndUpdate(
         { _id: id },
         {
@@ -119,6 +121,7 @@ export const likeArtist = async (
     response.setSuccess(201, "successful", updateArtistProfile);
     return response.send(res);
   } catch (err) {
+    console.log(err);
     response.setError(400, "Artist does not exist");
     return response.send(res);
   }
@@ -131,7 +134,7 @@ export const listeningCount = async (
   try {
     const { id } = req.params;
     const updateListeningCount = await ArtistModel.findOneAndUpdate(
-      { id },
+      { _id: id },
       { $inc: { listeningCount: 1 } },
       { new: true }
     ).exec();

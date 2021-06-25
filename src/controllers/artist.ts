@@ -89,12 +89,12 @@ export const likeArtist = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const { _id: artistId } = req.params;
+    const { id } = req.params;
     const { _id } = req.user as Record<string, any>;
-    const artistProfile = await ArtistModel.findOne({ artistId });
-    if (artistProfile.likedBy.includes(_id)) {
+    const artistProfile = await ArtistModel.findOne({ _id: id });
+    if (artistProfile && artistProfile.likedBy.includes(_id)) {
       const updateArtistProfile = await ArtistModel.findOneAndUpdate(
-        { artistId },
+        { _id: id },
         {
           $pull: { likedBy: _id },
           $inc: { likedCount: -1 },
@@ -105,7 +105,7 @@ export const likeArtist = async (
       return response.send(res);
     }
     const updateArtistProfile = await ArtistModel.findOneAndUpdate(
-      { artistId },
+      { _id: id },
       {
         $push: { likedBy: _id },
         $inc: { likedCount: 1 },
@@ -115,6 +115,7 @@ export const likeArtist = async (
     response.setSuccess(201, "successful", updateArtistProfile);
     return response.send(res);
   } catch (err) {
+    console.log(err);
     response.setError(400, "Artist does not exist");
     return response.send(res);
   }
@@ -127,7 +128,7 @@ export const listeningCount = async (
   try {
     const { id } = req.params;
     const updateListeningCount = await ArtistModel.findOneAndUpdate(
-      { id },
+      { _id: id },
       { $inc: { listeningCount: 1 } },
       { new: true }
     ).exec();
@@ -144,7 +145,6 @@ export const getArtistDetails = async (
   res: Response
 ): Promise<Response> => {
   const { id } = req.params;
-  console.log(id);
   // get artist details
   try {
     const artist = await axios.get(`https://api.deezer.com/artist/${id}`);
@@ -155,7 +155,6 @@ export const getArtistDetails = async (
     response.setError(404, "Artist not found");
     return response.send(res);
   } catch (err) {
-    console.log(err);
     response.setError(400, "an error occurred");
     return response.send(res);
   }

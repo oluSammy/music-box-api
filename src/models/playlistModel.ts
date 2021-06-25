@@ -46,6 +46,10 @@ const playlistSchema = new Schema<IPlaylist>(
       type: Number,
       default: 0,
     },
+    imgURL: {
+      type: String,
+      required: false,
+    },
   },
   { timestamps: true }
 );

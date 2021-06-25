@@ -9,6 +9,7 @@ import {
   likePublicPost,
   getLikedPlaylistsByUser,
   mostPlayedPlaylist,
+  getPlaylistsCreatedByUser,
 } from "../controllers/playlist";
 
 import verifyToken from "../middleware/auth";
@@ -16,6 +17,7 @@ import verifyToken from "../middleware/auth";
 const router = express.Router();
 
 router.get("/mostPlayed", verifyToken, mostPlayedPlaylist);
+router.get("/created", verifyToken, getPlaylistsCreatedByUser);
 router.get("/likes", verifyToken, getLikedPlaylistsByUser);
 router.put("/likes/:id", verifyToken, likePublicPost);
 router.delete("/delete/:id", verifyToken, removePlaylist);

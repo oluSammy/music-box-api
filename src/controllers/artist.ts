@@ -14,7 +14,7 @@ const response = new ResponseClass();
 export const getLikedArtistsByUser = async (req: Request, res: Response) => {
   try {
     const { id: currentUser } = req.user as Record<string, any>;
-    const artists = await ArtistModel.find({ likes: { $in: [currentUser] } })
+    const artists = await ArtistModel.find({ likedBy: { $in: [currentUser] } })
       .lean()
       .exec();
 
@@ -23,7 +23,6 @@ export const getLikedArtistsByUser = async (req: Request, res: Response) => {
         response.setSuccess(201, "Successfully!", { payload: artists });
         return response.send(res);
       }
-
       response.setError(404, "User liked no artist");
       return response.send(res);
     }

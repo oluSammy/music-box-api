@@ -17,13 +17,12 @@ export const getLikedArtistsByUser = async (req: Request, res: Response) => {
     const artists = await ArtistModel.find({ likedBy: { $in: [currentUser] } })
       .lean()
       .exec();
+
     if (artists) {
-      console.log(artists);
       if (artists.length) {
         response.setSuccess(201, "Successfully!", { payload: artists });
         return response.send(res);
       }
-      console.log("I'm here");
       response.setError(404, "User liked no artist");
       return response.send(res);
     }

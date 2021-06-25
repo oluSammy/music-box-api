@@ -93,12 +93,12 @@ export const likeArtist = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const { _id: artistId } = req.params;
+    const { id } = req.params;
     const { _id } = req.user as Record<string, any>;
-    const artistProfile = await ArtistModel.findOne({ artistId });
+    const artistProfile = await ArtistModel.findById(id);
     if (artistProfile.likedBy.includes(_id)) {
       const updateArtistProfile = await ArtistModel.findOneAndUpdate(
-        { artistId },
+        { _id: id },
         {
           $pull: { likedBy: _id },
           $inc: { likedCount: -1 },
@@ -109,7 +109,7 @@ export const likeArtist = async (
       return response.send(res);
     }
     const updateArtistProfile = await ArtistModel.findOneAndUpdate(
-      { artistId },
+      { _id: id },
       {
         $push: { likedBy: _id },
         $inc: { likedCount: 1 },

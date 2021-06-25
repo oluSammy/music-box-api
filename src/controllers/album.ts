@@ -98,18 +98,23 @@ export const searchAlbum = async (
       });
 
       // get more album by artist
-      const moreAlbum = await axios(`https://api.deezer.com/album/${albumId}`);
       const albumData = await savedAlbum.save();
-      console.log(albumData);
-      response.setSuccess(200, "Successful", albumData);
+      const moreAlbum = await axios.get(
+        `https://api.deezer.com/artist/${albumData.artist.id}/albums`
+      );
+
+      response.setSuccess(200, "Successful", {
+        result: albumData,
+        moreAlbum: moreAlbum.data.data,
+      });
       return response.send(res);
     }
+
     // get more album by artist
-    console.log(result.artist.id, "***8");
     const moreAlbum = await axios.get(
       `https://api.deezer.com/artist/${result.artist.id}/albums`
     );
-    // result.moreAlbum = moreAlbum.data.data;
+
     response.setSuccess(200, "Successful", {
       result,
       moreAlbum: moreAlbum.data.data,

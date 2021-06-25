@@ -35,7 +35,7 @@ describe("test relating to albums", () => {
       .set("authorization", `Bearer ${token}`);
     expect(result.status).toEqual(200);
     expect(result.body.message).toEqual("Successful" || "Album gotten");
-    albumId = result.body.data._id;
+    albumId = result.body.data.result._id;
   });
 });
 

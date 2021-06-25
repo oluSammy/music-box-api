@@ -7,7 +7,6 @@
 import { Request, Response } from "express";
 import ResponseClass from "../utils/response";
 import { ArtistModel } from "../models/artistModel";
-import { Types } from "mongoose";
 import axios from "axios";
 
 const response = new ResponseClass();
@@ -15,23 +14,20 @@ const response = new ResponseClass();
 export const getLikedArtistsByUser = async (req: Request, res: Response) => {
   try {
     const { id: currentUser } = req.user as Record<string, any>;
-    const userArtists = ArtistModel.find({
-      likes: Types.ObjectId(currentUser),
-    })
+    const artists = await ArtistModel.find({ likedBy: { $in: [currentUser] } })
       .lean()
       .exec();
 
-    if (userArtists) {
-      if (userArtists.length) {
-        response.setSuccess(200, "Successful!", { payload: userArtists });
+    if (artists) {
+      if (artists.length) {
+        response.setSuccess(201, "Successfully!", { payload: artists });
         return response.send(res);
       }
-
       response.setError(404, "User liked no artist");
       return response.send(res);
     }
 
-    response.setError(404, "Artist collection is empty");
+    response.setError(404, "No public artist");
     return response.send(res);
   } catch (err) {
     console.error(err.message);

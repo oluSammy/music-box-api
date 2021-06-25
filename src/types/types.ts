@@ -20,12 +20,24 @@ export interface REQUESTUSER {
 export interface IPlaylist {
   name: string;
   genreId: string;
-  tracks?: [{ trackId: number; title: string }];
+  tracks?: [
+    {
+      id: number;
+      title: string;
+      duration: number;
+      artist: string;
+      album: string;
+      preview: string;
+      releaseDate: string;
+      link: string;
+    }
+  ];
   isPublic: boolean;
   likes?: string[];
   ownerId?: string;
   listeningCount?: number;
   likesCount?: number;
+  imgURL?: string;
 }
 
 export interface GENRE {

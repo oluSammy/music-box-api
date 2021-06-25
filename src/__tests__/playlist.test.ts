@@ -165,6 +165,18 @@ describe("GET all artist liked by a user", () => {
   });
 });
 
+describe("GET all playlist liked by a user", () => {
+  it("should retrieve all playlist liked by a user", async () => {
+    const res = await request(app)
+      .get(`${uri}/playlist/likes`)
+      .set("Authorization", `Bearer ${currentUser.token}`);
+
+    expect(res.body.status).toBe("error");
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("User liked no playlist");
+  });
+});
+
 describe("ADD a track to a playlist", () => {
   const data = {
     trackId: 12345,

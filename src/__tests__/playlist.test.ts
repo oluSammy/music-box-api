@@ -181,13 +181,11 @@ describe("ADD a track to a playlist", () => {
   const data = {
     id: 322,
     title: "playlist",
-    link: "https://www.deezer.com/track/3135556",
     preview:
       "https://cdns-preview-d.dzcdn.net/stream/c-deda7fa9316d9e9e880d2c6207e92260-8.mp3",
     artist: "emekus",
     album: "beetles",
     duration: "4:20",
-    releaseDate: "2019-06-06",
     albumImgUrl: "https://api.deezer.com/album/302127/image",
   };
 

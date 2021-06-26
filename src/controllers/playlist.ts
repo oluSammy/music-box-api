@@ -126,26 +126,15 @@ export const addToPlaylist = async (req: Request, res: Response) => {
     const { id: playlistId } = req.params;
     const {
       id: trackId,
-      link,
       duration,
       artist,
       album,
       preview,
-      releaseDate,
       title,
       albumImgUrl,
     } = req.body as ITrack;
 
-    if (
-      !link ||
-      !duration ||
-      !artist ||
-      !album ||
-      !preview ||
-      !releaseDate ||
-      !title ||
-      !albumImgUrl
-    ) {
+    if (!duration || !artist || !album || !preview || !title || !albumImgUrl) {
       response.setError(400, "incomplete track input");
       return response.send(res);
     }

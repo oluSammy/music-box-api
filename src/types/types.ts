@@ -24,8 +24,6 @@ export interface ITrack {
   artist: string;
   album: string;
   preview: string;
-  releaseDate: string;
-  link: string;
   albumImgUrl: string;
 }
 

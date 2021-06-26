@@ -17,21 +17,21 @@ export interface REQUESTUSER {
   token?: string;
 }
 
+export interface ITrack {
+  id: number;
+  title: string;
+  duration: string;
+  artist: string;
+  album: string;
+  preview: string;
+  releaseDate: string;
+  link: string;
+}
+
 export interface IPlaylist {
   name: string;
   genreId: string;
-  tracks?: [
-    {
-      id: number;
-      title: string;
-      duration: number;
-      artist: string;
-      album: string;
-      preview: string;
-      releaseDate: string;
-      link: string;
-    }
-  ];
+  tracks?: ITrack[];
   isPublic: boolean;
   likes?: string[];
   ownerId?: string;

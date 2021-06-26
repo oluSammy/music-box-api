@@ -20,7 +20,7 @@ const playlistSchema = new Schema<IPlaylist>(
       {
         id: Number,
         title: String,
-        duration: Number,
+        duration: String,
         artist: String,
         album: String,
         preview: String,

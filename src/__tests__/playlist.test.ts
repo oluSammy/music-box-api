@@ -179,9 +179,17 @@ describe("GET all playlist liked by a user", () => {
 
 describe("ADD a track to a playlist", () => {
   const data = {
-    trackId: 12345,
-    title: "Jowo",
+    id: 322,
+    title: "playlist",
+    link: "https://www.deezer.com/track/3135556",
+    preview:
+      "https://cdns-preview-d.dzcdn.net/stream/c-deda7fa9316d9e9e880d2c6207e92260-8.mp3",
+    artist: "emekus",
+    album: "beetles",
+    duration: "4:20",
+    releaseDate: "2019-06-06",
   };
+
   it("should add a track to a playlist", async () => {
     const res = await request(app)
       .put(`${uri}/playlist/${playlistId}`)
@@ -196,9 +204,17 @@ describe("ADD a track to a playlist", () => {
 
 describe("DELETE a track from a playlist", () => {
   const data = {
-    trackId: 12345,
-    title: "Jowo",
+    id: 322,
+    title: "playlist",
+    link: "https://www.deezer.com/track/3135556",
+    preview:
+      "https://cdns-preview-d.dzcdn.net/stream/c-deda7fa9316d9e9e880d2c6207e92260-8.mp3",
+    artist: "emekus",
+    album: "beetles",
+    duration: "4:20",
+    releaseDate: "2019-06-06",
   };
+
   it("should delete a track from a playlist", async () => {
     const res = await request(app)
       .delete(`${uri}/playlist/${playlistId}`)

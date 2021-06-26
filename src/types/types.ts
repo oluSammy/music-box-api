@@ -26,6 +26,7 @@ export interface ITrack {
   preview: string;
   releaseDate: string;
   link: string;
+  albumImgUrl: string;
 }
 
 export interface IPlaylist {

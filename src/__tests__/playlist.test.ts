@@ -188,6 +188,7 @@ describe("ADD a track to a playlist", () => {
     album: "beetles",
     duration: "4:20",
     releaseDate: "2019-06-06",
+    albumImgUrl: "https://api.deezer.com/album/302127/image",
   };
 
   it("should add a track to a playlist", async () => {

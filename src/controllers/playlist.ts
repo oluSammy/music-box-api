@@ -133,6 +133,7 @@ export const addToPlaylist = async (req: Request, res: Response) => {
       preview,
       releaseDate,
       title,
+      albumImgUrl,
     } = req.body as ITrack;
 
     if (
@@ -142,7 +143,8 @@ export const addToPlaylist = async (req: Request, res: Response) => {
       !album ||
       !preview ||
       !releaseDate ||
-      !title
+      !title ||
+      !albumImgUrl
     ) {
       response.setError(400, "incomplete track input");
       return response.send(res);

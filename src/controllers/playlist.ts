@@ -6,7 +6,7 @@
 import { Request, Response } from "express";
 import Playlist from "../models/playlistModel";
 import ResponseClass from "../utils/response";
-import { IPlaylist } from "../types/types";
+import { IPlaylist, ITrack } from "../types/types";
 
 const response = new ResponseClass();
 
@@ -124,7 +124,29 @@ export const createPlaylist = async (req: Request, res: Response) => {
 export const addToPlaylist = async (req: Request, res: Response) => {
   try {
     const { id: playlistId } = req.params;
-    const { id: trackId } = req.body as Record<string, any>;
+    const {
+      id: trackId,
+      link,
+      duration,
+      artist,
+      album,
+      preview,
+      releaseDate,
+      title,
+    } = req.body as ITrack;
+
+    if (
+      !link ||
+      !duration ||
+      !artist ||
+      !album ||
+      !preview ||
+      !releaseDate ||
+      !title
+    ) {
+      response.setError(400, "incomplete track input");
+      return response.send(res);
+    }
     const { id: currentUser } = req.user as Record<string, any>;
     const playlist = await Playlist.findOne({
       _id: playlistId,
@@ -150,6 +172,7 @@ export const addToPlaylist = async (req: Request, res: Response) => {
     response.setError(400, "User can't carry out operation");
     return response.send(res);
   } catch (error) {
+    console.log(error);
     response.setError(400, "Error adding song to playlist");
     return response.send(res);
   }

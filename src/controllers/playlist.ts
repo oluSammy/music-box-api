@@ -79,7 +79,7 @@ export const getPlaylist = async (
         playlist.isPublic ||
         (currentUser && playlist.ownerId == currentUser)
       ) {
-        response.setSuccess(200, "Successful!", { payload: playlist.tracks });
+        response.setSuccess(200, "Successful!", { payload: playlist });
         return response.send(res);
       }
       response.setError(401, "Private playlist");

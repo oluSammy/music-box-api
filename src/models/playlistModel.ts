@@ -24,8 +24,7 @@ const playlistSchema = new Schema<IPlaylist>(
         artist: String,
         album: String,
         preview: String,
-        releaseDate: String,
-        link: String,
+        albumImgUrl: String,
       },
     ],
     genreId: {

@@ -107,7 +107,8 @@ describe("Get all recently played of a user", () => {
     expect(res.status).toBe(200);
     expect(res.body.status).toBe("successful");
     expect(res.body).toHaveProperty("data");
-    expect(Array.isArray(res.body.data)).toBe(true);
-    expect(res.body.data).toHaveLength(3);
+    expect(res.body.data).toHaveProperty("playlist");
+    expect(res.body.data).toHaveProperty("artist");
+    expect(res.body.data).toHaveProperty("album");
   });
 });

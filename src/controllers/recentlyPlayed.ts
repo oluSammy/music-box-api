@@ -52,13 +52,21 @@ export async function getRecentlySaved(
   res: Response
 ): Promise<Response> {
   try {
-    const data: RECENTLY_PLAYED = await RecentlyPlayedModel.find({
+    const data: RECENTLY_PLAYED[] = await RecentlyPlayedModel.find({
       player_id: req.user.id,
     })
       .populate({ path: "directory_info" })
       .sort({ updatedAt: -1 })
-      .limit(5);
-    responseStatus.setSuccess(200, "successful", data);
+      .limit(20);
+    const playlist = data.filter((play) => play.directory_type === "playlist");
+    const artist = data.filter((play) => play.directory_type === "artist");
+    const album = data.filter((play) => play.directory_type === "album");
+    const result = {
+      playlist,
+      artist,
+      album,
+    };
+    responseStatus.setSuccess(200, "successful", result);
     return responseStatus.send(res);
   } catch (error) {
     responseStatus.setError(500, "An unknown error occurred");

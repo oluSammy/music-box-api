@@ -133,7 +133,7 @@ export const mostPlayedAlbum = async (req: Request, res: Response) => {
       return response.send(res);
     }
 
-    const mostPlayed = await AlbumModel.find({ isPublic: true })
+    const mostPlayed = await AlbumModel.find({})
       .sort({ listeningCount: -1 })
       .lean()
       .exec();

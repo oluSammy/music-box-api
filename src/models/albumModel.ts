@@ -76,6 +76,7 @@ const albumSchema = new Schema<Album>(
     nb_tracks: {
       type: Number,
     },
+    release_date: Date,
     tracks: { type: [trackSchema] },
     contributors: { type: [contributorSchema] },
     likes: [

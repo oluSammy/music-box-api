@@ -60,6 +60,7 @@ export const searchAlbum = async (
         contributors,
         duration,
         nb_tracks,
+        release_date,
       } = albumDetails;
       const tracks = albumDetails.tracks.data;
       const data = {
@@ -76,6 +77,7 @@ export const searchAlbum = async (
         artist,
         tracks,
         duration,
+        release_date,
       };
 
       const savedAlbum = new AlbumModel({
@@ -92,6 +94,7 @@ export const searchAlbum = async (
         artist,
         tracks,
         nb_tracks,
+        release_date,
       });
 
       // get more album by artist

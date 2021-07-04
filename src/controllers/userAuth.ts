@@ -62,7 +62,7 @@ export async function loginUser(
         dateOfBirth: user.dateOfBirth,
       };
       responseStatus.setSuccess(200, "success", {
-        ...data,
+        data,
         token: generateToken(user._id),
       });
       return responseStatus.send(res);

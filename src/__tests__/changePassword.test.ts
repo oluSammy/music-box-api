@@ -29,9 +29,9 @@ describe("test relating to user signup", () => {
     currentUser.token = res.body.token;
     expect(res.status).toBe(200);
     expect(res.body.data).toHaveProperty("token");
-    expect(res.body.data.email).toBe("emeka@gmail.com");
+    expect(res.body.data.data.email).toBe("emeka@gmail.com");
     currentUser.token = res.body.data.token;
-    currentUser.id = res.body.data._id;
+    currentUser.id = res.body.data.data._id;
   });
 
   it("change user password", async () => {
@@ -42,6 +42,7 @@ describe("test relating to user signup", () => {
         newPassword: "123456",
       })
       .set("authorization", `Bearer ${currentUser.token}`);
+
     expect(res.status).toBe(200);
     expect(res.body.status).toBe("successful");
   });
@@ -54,7 +55,7 @@ describe("test relating to user signup", () => {
     currentUser.token = res.body.token;
     expect(res.status).toBe(200);
     expect(res.body.data).toHaveProperty("token");
-    expect(res.body.data.email).toBe("emeka@gmail.com");
+    expect(res.body.data.data.email).toBe("emeka@gmail.com");
     currentUser.token = res.body.data.token;
     currentUser.id = res.body.data._id;
   });

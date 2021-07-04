@@ -29,7 +29,7 @@ describe("test relating to Auth", () => {
     currentUser.token = res.body.token;
     expect(res.status).toBe(200);
     expect(res.body.data).toHaveProperty("token");
-    expect(res.body.data.email).toBe("emeka@gmail.com");
+    expect(res.body.data.data.email).toBe("emeka@gmail.com");
     currentUser.token = res.body.data.token;
   });
 });

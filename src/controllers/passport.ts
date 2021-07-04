@@ -71,7 +71,7 @@ export const googleAuthController = async (req: Request, res: Response) => {
       const token = generateToken(newUser._id!);
       const data = {
         token,
-        user: newUser,
+        data: newUser,
       };
 
       const dataUrl = JSON.stringify(data);
@@ -94,7 +94,7 @@ export const googleAuthController = async (req: Request, res: Response) => {
     const token = generateToken(user._id!);
     const data = {
       token,
-      user,
+      data: user,
     };
 
     const dataUrl = JSON.stringify(data);
@@ -138,7 +138,7 @@ export const fbAuthController = async (req: Request, res: Response) => {
       const token = generateToken(newUser._id!);
       const data = {
         token,
-        user: newUser,
+        data: newUser,
       };
 
       const dataUrl = JSON.stringify(data);
@@ -158,7 +158,7 @@ export const fbAuthController = async (req: Request, res: Response) => {
 
     const data = {
       token,
-      user,
+      data: user,
     };
 
     const dataUrl = JSON.stringify(data);

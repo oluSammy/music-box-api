@@ -28,11 +28,12 @@ describe("test relating to Auth", () => {
       password: "12345",
     });
     currentUser.token = res.body.token;
+
     expect(res.status).toBe(200);
     expect(res.body.data).toHaveProperty("token");
-    expect(res.body.data.email).toBe("jamesbond@gmail.com");
+    expect(res.body.data.data.email).toBe("jamesbond@gmail.com");
     currentUser.token = res.body.data.token;
-    currentUser.id = res.body.data._id;
+    currentUser.id = res.body.data.data._id;
   });
 });
 

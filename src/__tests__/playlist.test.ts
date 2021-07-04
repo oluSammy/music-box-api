@@ -36,7 +36,7 @@ describe("test for user authentication", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.data).toHaveProperty("token");
-    expect(res.body.data.email).toBe("bayo@gmail.com");
+    expect(res.body.data.data.email).toBe("bayo@gmail.com");
   });
 });
 

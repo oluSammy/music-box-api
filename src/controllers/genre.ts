@@ -115,3 +115,24 @@ export const getPlaylistByGenre = async (
     return responseStatus.send(res);
   }
 };
+
+// get single artist details
+export const getArtistDetails = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { id } = req.params;
+  // get artist details
+  try {
+    const artist = await axios.get(`https://api.deezer.com/artist/${id}`);
+    if (!artist.data.error) {
+      responseStatus.setSuccess(200, "Successful", artist.data);
+      return responseStatus.send(res);
+    }
+    responseStatus.setError(404, "Artist not found");
+    return responseStatus.send(res);
+  } catch (err) {
+    responseStatus.setError(400, "an error occurred");
+    return responseStatus.send(res);
+  }
+};

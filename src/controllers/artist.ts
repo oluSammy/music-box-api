@@ -147,9 +147,54 @@ export const getArtistDetails = async (
   const { id } = req.params;
   // get artist details
   try {
+    // find artist from db, if artist is found, send it as response
+    const dbArtist = await ArtistModel.findOne({ id });
+
+    if (dbArtist) {
+      response.setSuccess(200, "Successful", dbArtist);
+      console.log("from our database");
+      return response.send(res);
+    }
+
+    // if artist is not found, search artist on deezer, save to database and send response
+
     const artist = await axios.get(`https://api.deezer.com/artist/${id}`);
     if (!artist.data.error) {
-      response.setSuccess(200, "Successful", artist.data);
+      const {
+        id: deezerId,
+        name,
+        share,
+        picture,
+        picture_small,
+        picture_medium,
+        picture_big,
+        picture_xl,
+        nb_album,
+        nb_fan,
+        radio,
+        tracklist,
+        type,
+      } = artist.data;
+
+      const deezerArtist = await ArtistModel.create({
+        id: deezerId,
+        name,
+        share,
+        picture,
+        picture_small,
+        picture_medium,
+        picture_xl,
+        picture_big,
+        nb_album,
+        nb_fan,
+        radio,
+        tracklist,
+        type,
+        likedBy: [],
+      });
+
+      // console.log(artist.data);
+      response.setSuccess(200, "Successful", deezerArtist);
       return response.send(res);
     }
     response.setError(404, "Artist not found");

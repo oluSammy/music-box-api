@@ -45,7 +45,7 @@ export const mostPlayedArtist = async (req: Request, res: Response) => {
       return response.send(res);
     }
 
-    const mostPlayed = await ArtistModel.find({})
+    const mostPlayed = await ArtistModel.find({ isPublic: true })
       .sort({ listeningCount: -1 })
       .lean()
       .exec();

@@ -45,7 +45,7 @@ export const mostPlayedArtist = async (req: Request, res: Response) => {
       return response.send(res);
     }
 
-    const mostPlayed = await ArtistModel.find({})
+    const mostPlayed = await ArtistModel.find({ isPublic: true })
       .sort({ listeningCount: -1 })
       .lean()
       .exec();
@@ -91,21 +91,73 @@ export const likeArtist = async (
   try {
     const { id } = req.params;
     const { _id } = req.user as Record<string, any>;
-    const artistProfile = await ArtistModel.findOne({ _id: id });
+
+    // find artist in database
+    const artistProfile = await ArtistModel.findOne({ id });
+
+    // if artist is not found in db, search deezer
+    if (!artistProfile) {
+      const deezerArtistProfile = await axios.get(
+        `https://api.deezer.com/artist/${id}`
+      );
+
+      if (!deezerArtistProfile) {
+        response.setError(400, "Artist does not exist");
+        return response.send(res);
+      }
+
+      const {
+        name,
+        share,
+        picture,
+        picture_small,
+        picture_medium,
+        picture_big,
+        picture_xl,
+        nb_album,
+        nb_fan,
+        radio,
+        tracklist,
+        type,
+      } = deezerArtistProfile.data;
+
+      const newArtistProfile = await ArtistModel.create({
+        id,
+        name,
+        share,
+        picture,
+        picture_small,
+        picture_medium,
+        picture_big,
+        picture_xl,
+        nb_album,
+        nb_fan,
+        radio,
+        tracklist,
+        type,
+        likedBy: [_id],
+        likedCount: 1,
+      });
+
+      response.setSuccess(201, "successful", newArtistProfile);
+      return response.send(res);
+    }
+
     if (artistProfile && artistProfile.likedBy.includes(_id)) {
       const updateArtistProfile = await ArtistModel.findOneAndUpdate(
-        { _id: id },
+        { id },
         {
           $pull: { likedBy: _id },
           $inc: { likedCount: -1 },
         },
         { new: true }
       ).exec();
+
       response.setSuccess(201, "successful", updateArtistProfile);
       return response.send(res);
     }
     const updateArtistProfile = await ArtistModel.findOneAndUpdate(
-      { _id: id },
+      { id },
       {
         $push: { likedBy: _id },
         $inc: { likedCount: 1 },

@@ -245,7 +245,6 @@ export const getArtistDetails = async (
         likedBy: [],
       });
 
-      // console.log(artist.data);
       response.setSuccess(200, "Successful", deezerArtist);
       return response.send(res);
     }

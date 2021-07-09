@@ -250,10 +250,27 @@ export const likePublicPost = async (
         response.setSuccess(200, "Successful", newData);
         return response.send(res);
       }
+
       response.setError(400, "failed");
       return response.send(res);
     }
-    response.setError(400, "you can not like a playlist more than once");
+    // response.setError(400, "you can not like a playlist more than once");
+    // return response.send(res);
+
+    const removedLike = await Playlist.findOneAndUpdate(
+      { _id: req.params.id, isPublic: true },
+      { $pull: { likes: id } },
+      { new: true }
+    ).exec();
+
+    // removedLike.likeCount = removedLike.likes.length;
+    // await removedLike.save();
+
+    const newData = {
+      data: removedLike,
+    };
+
+    response.setSuccess(200, "Successful", newData);
     return response.send(res);
   } catch (err) {
     response.setError(400, "failed");

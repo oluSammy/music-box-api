@@ -15,11 +15,11 @@ const sendEmail = async (
     // Create a nodemailer transporter with the outlook mail account
     const transporter = nodemailer.createTransport({
       service: "hotmail",
-      auth: { 
+      auth: {
         user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS
-      }
-    })
+        pass: process.env.MAIL_PASS,
+      },
+    });
     // Template source which contains specific email format
     const templateSource = fs.readFileSync(
       path.join(__dirname, "../../../templates/", template),

@@ -203,8 +203,18 @@ export const getArtistDetails = async (
     const dbArtist = await ArtistModel.findOne({ id });
 
     if (dbArtist) {
-      response.setSuccess(200, "Successful", dbArtist);
-      console.log("from our database");
+      const songs = await axios.get(`https://api.deezer.com/artist/${id}/top`);
+      const albums = await axios.get(
+        `https://api.deezer.com/artist/${id}/albums`
+      );
+
+      const artistDetail = {
+        dbArtist,
+        songs: songs.data.data,
+        albums: albums.data.data,
+      };
+
+      response.setSuccess(200, "Successful", artistDetail);
       return response.send(res);
     }
 
@@ -245,13 +255,27 @@ export const getArtistDetails = async (
         likedBy: [],
       });
 
-      response.setSuccess(200, "Successful", deezerArtist);
+      const songs = await axios.get(`https://api.deezer.com/artist/${id}/top`);
+      const albums = await axios.get(
+        `https://api.deezer.com/artist/${id}/albums`
+      );
+
+      const allArtistDetail = {
+        deezerArtist,
+        songs: songs.data.data,
+        albums: albums.data.data,
+      };
+      response.setSuccess(200, "Successful", allArtistDetail);
       return response.send(res);
     }
     response.setError(404, "Artist not found");
     return response.send(res);
   } catch (err) {
+    console.log(err);
+
     response.setError(400, "an error occurred");
     return response.send(res);
   }
 };
+
+// artist track list

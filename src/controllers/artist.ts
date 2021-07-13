@@ -209,7 +209,7 @@ export const getArtistDetails = async (
       );
 
       const artistDetail = {
-        dbArtist,
+        artist: dbArtist,
         songs: songs.data.data,
         albums: albums.data.data,
       };
@@ -261,7 +261,7 @@ export const getArtistDetails = async (
       );
 
       const allArtistDetail = {
-        deezerArtist,
+        artist: deezerArtist,
         songs: songs.data.data,
         albums: albums.data.data,
       };

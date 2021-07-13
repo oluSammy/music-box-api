@@ -55,7 +55,16 @@ const playlistSchema = new Schema<IPlaylist>(
 
 playlistSchema.pre("find", async function (next) {
   try {
-    this.populate({ path: "genre_id", select: "name" });
+    this.populate({ path: "genreId", select: "name" });
+    next();
+  } catch (error) {
+    // eslint-disable-next-line no-console
+  }
+});
+
+playlistSchema.pre("find", async function (next) {
+  try {
+    this.populate({ path: "ownerId", select: "firstName lastName" });
     next();
   } catch (error) {
     // eslint-disable-next-line no-console

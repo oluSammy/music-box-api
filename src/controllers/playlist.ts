@@ -240,7 +240,7 @@ export const likePublicPost = async (
     if (!toLike) {
       const addedLike = await Playlist.findOneAndUpdate(
         { _id: req.params.id, isPublic: true },
-        { $push: { likes: id } },
+        { $push: { likes: id }, $inc: { likesCount: 1 } },
         { new: true }
       ).exec();
       if (addedLike) {
@@ -250,10 +250,27 @@ export const likePublicPost = async (
         response.setSuccess(200, "Successful", newData);
         return response.send(res);
       }
+
       response.setError(400, "failed");
       return response.send(res);
     }
-    response.setError(400, "you can not like a playlist more than once");
+    // response.setError(400, "you can not like a playlist more than once");
+    // return response.send(res);
+
+    const removedLike = await Playlist.findOneAndUpdate(
+      { _id: req.params.id, isPublic: true },
+      { $pull: { likes: id }, $inc: { likesCount: -1 } },
+      { new: true }
+    ).exec();
+
+    // removedLike.likeCount = removedLike.likes.length;
+    // await removedLike.save();
+
+    const newData = {
+      data: removedLike,
+    };
+
+    response.setSuccess(200, "Successful", newData);
     return response.send(res);
   } catch (err) {
     response.setError(400, "failed");
@@ -273,6 +290,27 @@ export const mostPlayedPlaylist = async (req: Request, res: Response) => {
       .lean()
       .exec();
     response.setSuccess(200, "Successful", { payload: mostPlayed });
+    return response.send(res);
+  } catch (err) {
+    console.error(err.message);
+    response.setError(400, "Error occured during query");
+    return response.send(res);
+  }
+};
+
+export const mostLikedPlaylist = async (req: Request, res: Response) => {
+  try {
+    const { id: currentUser } = req.user as Record<string, any>;
+    if (!currentUser) {
+      response.setError(400, "Unauthorized access");
+      return response.send(res);
+    }
+    const mostLiked = await Playlist.find({ isPublic: true })
+      .sort({ likesCount: -1 })
+      .lean()
+      .limit(10)
+      .exec();
+    response.setSuccess(200, "Successful", { payload: mostLiked });
     return response.send(res);
   } catch (err) {
     console.error(err.message);

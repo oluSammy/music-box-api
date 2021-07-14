@@ -9,6 +9,7 @@ const trackSchema = new Schema({
   link: { type: String, required: true },
   preview: { type: String, required: true },
   artist: { type: SchemaTypes.Mixed, required: true },
+  albumImg: { type: String, required: true },
   timestamp: { type: Date, default: Date.now() },
 });
 const historySchema = new Schema<HISTORY>({

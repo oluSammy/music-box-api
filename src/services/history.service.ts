@@ -7,6 +7,7 @@ export const fetchTrack = async (
     // Fetch song from deezer api by id
     const { data } = await axios.get(`https://api.deezer.com/track/${id}`);
     if (data.error) throw new Error("Track not found");
+    const albumImg = data.album.cover;
     const {
       title,
       duration,
@@ -16,7 +17,7 @@ export const fetchTrack = async (
       artist,
     } = data;
 
-    return { title, duration, album, link, preview, artist };
+    return { title, duration, album, link, preview, artist, albumImg };
   } catch ({ message }) {
     throw new Error(message);
   }

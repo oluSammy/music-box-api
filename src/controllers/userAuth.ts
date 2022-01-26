@@ -36,7 +36,14 @@ export const registerUser = async function (
 
     const token = generateToken(newUser._id);
     newUser.password = undefined;
-    responseStatus.setSuccess(201, "successful", { data: newUser, token });
+    const today = new Date(Date.now());
+    today.setDate(today.getDate() + 20);
+    // const expiresIn = today;
+    responseStatus.setSuccess(201, "successful", {
+      data: newUser,
+      token,
+      tokenExpiresIn: today,
+    });
     return responseStatus.send(res);
   } catch (error) {
     responseStatus.setError(401, "invalid credentials");
@@ -61,9 +68,13 @@ export async function loginUser(
         gender: user.gender,
         dateOfBirth: user.dateOfBirth,
       };
+      const today = new Date(Date.now());
+      today.setDate(today.getDate() + 20);
+      // const expiresIn = today;
       responseStatus.setSuccess(200, "success", {
         data,
         token: generateToken(user._id),
+        tokenExpiresIn: today,
       });
       return responseStatus.send(res);
     }

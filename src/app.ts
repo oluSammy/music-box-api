@@ -10,7 +10,7 @@ import connectDB from "./database/mongoConnect";
 import passport from "passport";
 import { dbConnect } from "./database/mongoMemoryConnect";
 import { facebookStrategy, googleStrategy } from "./controllers/passport";
-import session from "express-session";
+// import session from "express-session";
 
 dotenv.config();
 
@@ -34,19 +34,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // passport middleware
-app.use(
-  session({
-    secret: "akfc76q3gbd83bqd",
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(
+//   session({
+//     secret: "akfc76q3gbd83bqd",
+//     resave: false,
+//     saveUninitialized: true,
+//   })
+// );
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 // middleware for social login
-googleStrategy(passport);
-facebookStrategy(passport);
+// googleStrategy(passport);
+// facebookStrategy(passport);
 
 app.get("/", (_req: Request, res: Response) => {
   res.redirect("/api/v1/music-box-api");

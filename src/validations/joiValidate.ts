@@ -10,7 +10,7 @@ export const validateUser = function (obj: IUser): Record<string, any> {
       .email({ minDomainSegments: 2, tlds: { allow: false } })
       .required(),
     password: Joi.string()
-      .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
+      .min(6)
       .error(new Error("password is too short"))
       .required(),
     firstName: Joi.string().min(3).max(30).required(),

@@ -24,12 +24,10 @@ export const fetchAllQuery = async (
   const albumUrl = process.env.SEARCH_ALBUM_URL;
   const artistUrl = process.env.SEARCH_ARTIST_URL;
   try {
-    const responseAlbum = await axios.get(`${albumUrl}${search}`);
-    const responseArtist = await axios.get(`${artistUrl}${search}`);
-    const responseResult = Promise.all([
-      responseAlbum.data.data,
-      responseArtist.data.data,
-    ]);
+    const responseAlbum = (await axios.get(`${albumUrl}${search}`)).data.data;
+    const responseArtist = (await axios.get(`${artistUrl}${search}`)).data.data;
+
+    const responseResult = await Promise.all([responseAlbum, responseArtist]);
 
     return responseResult;
   } catch (error) {

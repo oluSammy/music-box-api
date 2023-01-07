@@ -167,7 +167,6 @@ export const likeArtist = async (
     response.setSuccess(201, "successful", updateArtistProfile);
     return response.send(res);
   } catch (err) {
-    console.log(err);
     response.setError(400, "Artist does not exist");
     return response.send(res);
   }
@@ -271,8 +270,6 @@ export const getArtistDetails = async (
     response.setError(404, "Artist not found");
     return response.send(res);
   } catch (err) {
-    console.log(err);
-
     response.setError(400, "an error occurred");
     return response.send(res);
   }

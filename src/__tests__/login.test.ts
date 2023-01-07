@@ -31,8 +31,6 @@ describe("User  Login", () => {
     };
     const res = await supertest(app).post(`${url}users/login`).send(logUser);
 
-    console.log(res.body);
-
     userData.id = res.body.data._id;
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("data");

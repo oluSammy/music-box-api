@@ -108,8 +108,8 @@ export const addSongToHistory = async (
     }
     response.setError(400, "Track not found");
     return response.send(res);
-  } catch ({ message }) {
-    response.setError(400, message);
+  } catch (error: any) {
+    response.setError(400, error.message);
     return response.send(res);
   }
 };
@@ -150,8 +150,8 @@ export const removeSongFromHistory = async (
     }
     response.setError(400, "track not found in history");
     return response.send(res);
-  } catch ({ message }) {
-    response.setError(400, message);
+  } catch (error: any) {
+    response.setError(400, error.message);
     return response.send(res);
   }
 };

@@ -29,7 +29,7 @@ export const getLikedArtistsByUser = async (req: Request, res: Response) => {
 
     response.setError(404, "No public artist");
     return response.send(res);
-  } catch (err) {
+  } catch (err: any) {
     console.error(err.message);
     response.setError(400, "Error occured during query");
     return response.send(res);
@@ -52,7 +52,7 @@ export const mostPlayedArtist = async (req: Request, res: Response) => {
 
     response.setSuccess(200, "Successful", { payload: mostPlayed });
     return response.send(res);
-  } catch (err) {
+  } catch (err: any) {
     console.error(err.message);
     response.setError(400, "Error occured during query");
     return response.send(res);

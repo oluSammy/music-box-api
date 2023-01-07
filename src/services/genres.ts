@@ -12,7 +12,7 @@ export const fetchOne = async (id: number): Promise<AxiosResponse<any>> => {
   try {
     const response = await axios.get(`${url}/${id}`);
     return response;
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(error.data.error.message);
   }
 };
@@ -30,7 +30,7 @@ export const fetchAllQuery = async (
     const responseResult = await Promise.all([responseAlbum, responseArtist]);
 
     return responseResult;
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(error.response);
   }
 };

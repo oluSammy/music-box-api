@@ -28,7 +28,7 @@ export const getLikedAlbumsByUser = async (req: Request, res: Response) => {
 
     response.setError(404, "No public album");
     return response.send(res);
-  } catch (err) {
+  } catch (err: any) {
     console.error(err.message);
     response.setError(400, "Error occured during query");
     return response.send(res);
@@ -120,7 +120,7 @@ export const searchAlbum = async (
       moreAlbum: moreAlbum.data.data,
     });
     return response.send(res);
-  } catch (error) {
+  } catch (error: any) {
     console.log(error.response);
     response.setError(400, "failed, Can not find result");
     return response.send(res);
@@ -143,7 +143,7 @@ export const mostPlayedAlbum = async (req: Request, res: Response) => {
 
     response.setSuccess(200, "Successful", { payload: mostPlayed });
     return response.send(res);
-  } catch (err) {
+  } catch (err: any) {
     console.error(err.message);
     response.setError(400, "Error occured during query");
     return response.send(res);

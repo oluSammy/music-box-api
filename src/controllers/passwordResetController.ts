@@ -23,7 +23,7 @@ export const requestPasswordResetController = async (
     }
     response.setSuccess(200, "password reset request successful", { ...resp });
     return response.send(res);
-  } catch (error) {
+  } catch (error: any) {
     response.setError(400, error.message);
     return response.send(res);
   }

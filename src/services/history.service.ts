@@ -18,7 +18,7 @@ export const fetchTrack = async (
     } = data;
 
     return { title, duration, album, link, preview, artist, albumImg };
-  } catch ({ message }) {
-    throw new Error(message);
+  } catch (err: any) {
+    throw new Error(err.message);
   }
 };

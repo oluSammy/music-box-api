@@ -110,8 +110,7 @@ export const createPlaylist = async (req: Request, res: Response) => {
 
     response.setError(400, "Invalid input data");
     return response.send(res);
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
     if (error.message.split(" ").includes("duplicate")) {
       response.setError(400, `${error.keyValue.name} already exists`);
       return response.send(res);
@@ -291,7 +290,7 @@ export const mostPlayedPlaylist = async (req: Request, res: Response) => {
       .exec();
     response.setSuccess(200, "Successful", { payload: mostPlayed });
     return response.send(res);
-  } catch (err) {
+  } catch (err: any) {
     console.error(err.message);
     response.setError(400, "Error occured during query");
     return response.send(res);
@@ -312,7 +311,7 @@ export const mostLikedPlaylist = async (req: Request, res: Response) => {
       .exec();
     response.setSuccess(200, "Successful", { payload: mostLiked });
     return response.send(res);
-  } catch (err) {
+  } catch (err: any) {
     console.error(err.message);
     response.setError(400, "Error occured during query");
     return response.send(res);
@@ -341,7 +340,7 @@ export const getLikedPlaylistsByUser = async (req: Request, res: Response) => {
 
     response.setError(404, "No public playlist");
     return response.send(res);
-  } catch (err) {
+  } catch (err: any) {
     console.error(err.message);
     response.setError(400, "Error occured during query");
     return response.send(res);

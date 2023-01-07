@@ -34,7 +34,7 @@ export const searchPlaylist = async function (
     }
     responseStatus.setError(404, "empty track list");
     return responseStatus.send(res);
-  } catch (error) {
+  } catch (error: any) {
     responseStatus.setError(500, error.message);
     return responseStatus.send(res);
   }
@@ -61,7 +61,7 @@ export const searchQuery = async function (
     }
     responseStatus.setError(400, "type the search word ");
     return responseStatus.send(res);
-  } catch (error) {
+  } catch (error: any) {
     responseStatus.setError(500, error.message);
     return responseStatus.send(res);
   }
@@ -80,7 +80,7 @@ export const searchPublicPlaylists = async (
       return data;
     }
     throw new Error("playlist not found");
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(error.message);
   }
 };

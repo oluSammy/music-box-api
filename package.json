@@ -6,7 +6,7 @@
   "scripts": {
     "tsc": "tsc -p ./tsconfig.json",
     "start:dev": "nodemon --watch src/ --exec \"yarn serve\" -e ts",
-    "start": "tsc && node ./bin/www",
+    "start": "tsc -p ./tsconfig.json && node ./bin/www",
     "compile": "tsc -p ./tsconfig.json",
     "test": "jest --runInBand --detectOpenHandles",
     "clean": "rm -rf daist && mkdir dist",

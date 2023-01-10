@@ -43,7 +43,7 @@ export const searchAlbum = async (
   try {
     const albumId = req.query.album;
 
-    const result = await AlbumModel.findOne({ id: albumId });
+    const result = await AlbumModel.findOne({ id: albumId as string });
     if (!result) {
       const album = await axios(`https://api.deezer.com/album/${albumId}`);
       const albumDetails = album.data;

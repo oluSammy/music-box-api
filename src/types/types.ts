@@ -1,4 +1,6 @@
-export interface IUser {
+import { Types, Document } from "mongoose";
+
+export interface IUser extends Document<Types.ObjectId> {
   user: any;
   email: string;
   password?: string;
@@ -68,7 +70,7 @@ export interface RECENTLY_PLAYED {
   directory_type: string;
 }
 
-export interface IArtist {
+export interface IArtist extends Document<Types.ObjectId> {
   id: number;
   name: string;
   share: string;
@@ -87,7 +89,7 @@ export interface IArtist {
   type: string;
 }
 
-export interface Album {
+export interface Album extends Document<Types.ObjectId> {
   id: number;
   title: string;
   cover: string;

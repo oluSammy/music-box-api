@@ -66,7 +66,7 @@ export const addArtistById = async (
 ): Promise<Response> => {
   try {
     const { id } = req.params;
-    const result = await ArtistModel.findOne({ id: id as string });
+    const result = await ArtistModel.findOne({ id: +id });
     if (result === null) {
       const getArtist = await axios.get(`https://api.deezer.com/artist/${id}`);
       const addArtist = await ArtistModel.create(getArtist.data);
@@ -94,7 +94,7 @@ export const likeArtist = async (
     const { _id } = req.user;
 
     // find artist in database
-    const artistProfile = await ArtistModel.findOne({ id: id as string });
+    const artistProfile = await ArtistModel.findOne({ id: +id });
 
     // if artist is not found in db, search deezer
     if (!artistProfile) {
@@ -146,7 +146,7 @@ export const likeArtist = async (
 
     if (artistProfile && artistProfile.likedBy.includes(_id)) {
       const updateArtistProfile = await ArtistModel.findOneAndUpdate(
-        { id },
+        { id: +id },
         {
           $pull: { likedBy: _id as string },
           $inc: { likedCount: -1 },
@@ -158,7 +158,7 @@ export const likeArtist = async (
       return response.send(res);
     }
     const updateArtistProfile = await ArtistModel.findOneAndUpdate(
-      { id: id as string },
+      { id: +id },
       {
         $push: { likedBy: _id as string },
         $inc: { likedCount: 1 },
@@ -200,7 +200,7 @@ export const getArtistDetails = async (
   // get artist details
   try {
     // find artist from db, if artist is found, send it as response
-    const dbArtist = await ArtistModel.findOne({ id: id as string });
+    const dbArtist = await ArtistModel.findOne({ id: +id });
 
     if (dbArtist) {
       const songs = await axios.get(`https://api.deezer.com/artist/${id}/top`);

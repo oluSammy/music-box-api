@@ -68,7 +68,7 @@ export const googleAuthController = async (req: Request, res: Response) => {
         provider: "google",
       });
 
-      const token = generateToken(newUser._id!);
+      const token = generateToken(String(newUser._id));
       const data = {
         token,
         data: newUser,
@@ -135,7 +135,7 @@ export const fbAuthController = async (req: Request, res: Response) => {
         provider: "facebook",
       });
 
-      const token = generateToken(newUser._id!);
+      const token = generateToken(String(newUser._id));
       const data = {
         token,
         data: newUser,

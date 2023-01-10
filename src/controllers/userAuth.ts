@@ -34,7 +34,7 @@ export const registerUser = async function (
     });
     await newUser.save();
 
-    const token = generateToken(newUser._id);
+    const token = generateToken(String(newUser._id));
     newUser.password = undefined;
     const today = new Date(Date.now());
     today.setDate(today.getDate() + 20);

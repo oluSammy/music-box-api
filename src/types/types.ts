@@ -97,7 +97,9 @@ export interface Album extends Document<Types.ObjectId> {
   cover_medium: string;
   cover_big: string;
   genre_id: string;
-  artist: string;
+  artist: {
+    id: string;
+  };
   tracklist: string;
   duration: number;
   nb_tracks: number;

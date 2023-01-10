@@ -8,6 +8,7 @@ import { Request, Response } from "express";
 import ResponseClass from "../utils/response";
 import { ArtistModel } from "../models/artistModel";
 import axios from "axios";
+import { ObjectId } from "mongoose";
 
 const response = new ResponseClass();
 
@@ -89,8 +90,8 @@ export const likeArtist = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const { id } = req.params;
-    const { _id } = req.user as Record<string, any>;
+    const id = req.params.id as unknown as ObjectId;
+    const _id = req.user._id as unknown as ObjectId;
 
     // find artist in database
     const artistProfile = await ArtistModel.findOne({ id });

@@ -6,6 +6,7 @@ import { Request, Response } from "express";
 import { AlbumModel } from "../models/albumModel";
 import ResponseClass from "../utils/response";
 import axios from "axios";
+import { ObjectId } from "mongoose";
 
 const response = new ResponseClass();
 
@@ -40,7 +41,7 @@ export const searchAlbum = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const albumId = req.query.album;
+    const albumId = req.query.album as unknown as ObjectId;
 
     const result = await AlbumModel.findOne({ id: albumId });
     if (!result) {

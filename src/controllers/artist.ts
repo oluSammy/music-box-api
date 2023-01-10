@@ -90,8 +90,8 @@ export const likeArtist = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const id = req.params.id as unknown as ObjectId;
-    const _id = req.user._id as unknown as ObjectId;
+    const { id } = req.params;
+    const { _id } = req.user;
 
     // find artist in database
     const artistProfile = await ArtistModel.findOne({ id });

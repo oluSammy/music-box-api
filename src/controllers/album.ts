@@ -41,7 +41,7 @@ export const searchAlbum = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const albumId = req.query.album as unknown as ObjectId;
+    const albumId = req.query.album;
 
     const result = await AlbumModel.findOne({ id: albumId });
     if (!result) {
